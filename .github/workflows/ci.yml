@@ -1,0 +1,43 @@
+name: Java CI Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      - 'feature/**'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set executable permissions for Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Setup Java 25 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+          cache: 'gradle'
+
+      - name: Run Checkstyle analysis
+        run: ./gradlew --no-daemon checkstyleMain
+
+      - name: Run unit tests
+        run: ./gradlew --no-daemon test
+
+      - name: Generate JaCoCo coverage report
+        run: ./gradlew --no-daemon jacocoTestReport
+
+      - name: Verify coverage threshold (minimum 80 %)
+        run: ./gradlew --no-daemon jacocoTestCoverageVerification
+
+      - name: Build project
+        run: ./gradlew --no-daemon build
