@@ -1,81 +1,52 @@
 package ru.mentee.power.crm.domain;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 class LeadTest {
   @Test
-  void shouldReturnId_whenGetIdCalled() {
-
+  void shouldReturnIdWhenGetIdCalled() {
     Lead lead = new Lead("L1", "test@example.com", "+71234567890", "TestCorp", "NEW");
-
-
     String id = lead.getId();
-
-
     assertThat(id).isEqualTo("L1");
   }
 
   @Test
-  void shouldReturnEmail_whenGetEmailCalled() {
-
+  void shouldReturnEmailWhenGetEmailCalled() {
     Lead lead = new Lead("L1", "test@example.com", "+71234567890", "TestCorp", "NEW");
-
-
     String email = lead.getEmail();
-
-
     assertThat(email).isEqualTo("test@example.com");
   }
 
   @Test
-  void shouldReturnPhone_whenGetPhoneCalled() {
-
+  void shouldReturnPhoneWhenGetPhoneCalled() {
     Lead lead = new Lead("L1", "test@example.com", "+71234567890", "TestCorp", "NEW");
-
-
     String phone = lead.getPhone();
-
-
     assertThat(phone).isEqualTo("+71234567890");
   }
 
   @Test
-  void shouldReturnCompany_whenGetCompanyCalled() {
-
+  void shouldReturnCompanyWhenGetCompanyCalled() {
     Lead lead = new Lead("L1", "test@example.com", "+71234567890", "TestCorp", "NEW");
-
-
     String company = lead.getCompany();
-
-
     assertThat(company).isEqualTo("TestCorp");
   }
 
   @Test
-  void shouldReturnStatus_whenGetStatusCalled() {
-
+  void shouldReturnStatusWhenGetStatusCalled() {
     Lead lead = new Lead("L1", "test@example.com", "+71234567890", "TestCorp", "NEW");
-
-
     String status = lead.getStatus();
-
-
     assertThat(status).isEqualTo("NEW");
   }
 
   @Test
-  void shouldReturnFormattedString_whenToStringCalled() {
-
+  void shouldReturnFormattedStringWhenToStringCalled() {
     Lead lead = new Lead("L1", "test@example.com", "+71234567890", "TestCorp", "NEW");
-
-
     String result = lead.toString();
-
-
     assertThat(result).isEqualTo(
-        "Lead{id='L1', email='test@example.com', phone='+71234567890', company='TestCorp', status='NEW'}"
+        "Lead{id='L1', email='test@example.com', "
+            + "phone='+71234567890', company='TestCorp', status='NEW'}"
     );
   }
 }
