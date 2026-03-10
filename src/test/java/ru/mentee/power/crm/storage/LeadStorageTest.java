@@ -1,14 +1,15 @@
 package ru.mentee.power.crm.storage;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.crm.domain.Lead;
-
-import static org.assertj.core.api.Assertions.*;
 
 class LeadStorageTest {
 
   @Test
-  void shouldAddLead_whenLeadIsUnique() {
+  void shouldAddLeadWhenLeadIsUnique() {
     // Given
     LeadStorage storage = new LeadStorage();
     Lead uniqueLead = new Lead("1", "ivan@mail.ru", "+7123", "TechCorp", "NEW");
@@ -23,7 +24,7 @@ class LeadStorageTest {
   }
 
   @Test
-  void shouldRejectDuplicate_whenEmailAlreadyExists() {
+  void shouldRejectDuplicateWhenEmailAlreadyExists() {
     // Given
     LeadStorage storage = new LeadStorage();
     Lead existingLead = new Lead("1", "ivan@mail.ru", "+7123", "TechCorp", "NEW");
@@ -40,14 +41,15 @@ class LeadStorageTest {
   }
 
   @Test
-  void shouldThrowException_whenStorageIsFull() {
+  void shouldThrowExceptionWhenStorageIsFull() {
     // Given: Заполни хранилище 100 лидами
     LeadStorage storage = new LeadStorage();
     for (int index = 0; index < 100; index++) {
-      storage.add(new Lead(String.valueOf(index), "lead" + index + "@mail.ru", "+7000", "Company", "NEW"));
+      storage.add(new Lead(String.valueOf(index), "lead" + index + "@mail.ru",
+          "+7000", "Company", "NEW"));
     }
 
-    // When + Then: 101-й лид должен выбросить исключение
+    // When + Then: 101‑й лид должен выбросить исключение
     Lead hundredFirstLead = new Lead("101", "lead101@mail.ru", "+7001", "Company", "NEW");
 
     assertThatThrownBy(() -> storage.add(hundredFirstLead))
@@ -56,7 +58,7 @@ class LeadStorageTest {
   }
 
   @Test
-  void shouldReturnOnlyAddedLeads_whenFindAllCalled() {
+  void shouldReturnOnlyAddedLeadsWhenFindAllCalled() {
     // Given
     LeadStorage storage = new LeadStorage();
     Lead firstLead = new Lead("1", "ivan@mail.ru", "+7123", "TechCorp", "NEW");
