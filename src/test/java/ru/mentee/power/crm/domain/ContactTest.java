@@ -1,6 +1,7 @@
 package ru.mentee.power.crm.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,32 +10,30 @@ class ContactTest {
   @Test
   void shouldCreateContactWhenValidData() {
     // Given
-    Contact contact = new Contact("John", "Doe", "john@example.com");
+    Address address = new Address("San Francisco", "123 Main St", "94105");
+    Contact contact = new Contact("john@example.com", "+123456789", address);
 
     // Then
-    assertThat(contact.firstName()).isEqualTo("John");
-    assertThat(contact.lastName()).isEqualTo("Doe");
-    assertThat(contact.email()).isEqualTo("john@example.com");
+    assertThat(contact.address()).isEqualTo(address);
+    assertThat(contact.address().city()).isEqualTo("San Francisco");
   }
 
   @Test
-  void shouldBeEqualWhenSameData() {
+  void shouldDelegateToAddressWhenAccessingCity() {
     // Given
-    Contact contact1 = new Contact("John", "Doe", "john@example.com");
-    Contact contact2 = new Contact("John", "Doe", "john@example.com");
+    Address expectedAddress = new Address("New York", "Broadway", "10001");
+    Contact contact = new Contact("alice@example.com", "+987654321", expectedAddress);
 
     // Then
-    assertThat(contact1).isEqualTo(contact2);
-    assertThat(contact1.hashCode()).isEqualTo(contact2.hashCode());
+    assertThat(contact.address().city()).isEqualTo("New York");
+    assertThat(contact.address().street()).isEqualTo("Broadway");
   }
 
   @Test
-  void shouldNotBeEqualWhenDifferentData() {
-    // Given
-    Contact contact1 = new Contact("John", "Doe", "john@example.com");
-    Contact contact2 = new Contact("Jane", "Smith", "jane@example.com");
-
-    // Then
-    assertThat(contact1).isNotEqualTo(contact2);
+  void shouldThrowExceptionWhenAddressIsNull() {
+    // When & Then
+    assertThatThrownBy(() -> new Contact("test@example.com", "+123", null))
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Address cannot be null");
   }
 }
