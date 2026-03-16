@@ -36,18 +36,18 @@ class LeadTest {
   @Test
   void shouldBeEqualWhenSameIdButDifferentContact() {
     // Given
-    Address addr1 = new Address("City1", "Street1", "11111");
-    Address addr2 = new Address("City2", "Street2", "22222");
-    Contact contact1 = new Contact("email1@example.com", "+111", addr1);
-    Contact contact2 = new Contact("email2@example.com", "+222", addr2);
+    Address addressFirst = new Address("City1", "Street1", "11111");
+    Address addressSecond = new Address("City2", "Street2", "22222");
+    Contact contactFirst = new Contact("email1@example.com", "+111", addressFirst);
+    Contact contactSecond = new Contact("email2@example.com", "+222", addressSecond);
 
     UUID sameId = UUID.randomUUID();
-    Lead lead1 = new Lead(sameId, contact1, "CompanyA", "NEW");
-    Lead lead2 = new Lead(sameId, contact2, "CompanyB", "NEW");
+    Lead leadFist = new Lead(sameId, contactFirst, "CompanyA", "NEW");
+    Lead leadSecond = new Lead(sameId, contactSecond, "CompanyB", "NEW");
 
     // Then
-    assertThat(lead1).isNotEqualTo(lead2);
-    assertThat(lead1.id()).isEqualTo(lead2.id());
+    assertThat(leadFist).isNotEqualTo(leadSecond);
+    assertThat(leadFist.id()).isEqualTo(leadSecond.id());
   }
 
   @Test

@@ -44,7 +44,7 @@ class InMemoryLeadRepositoryTest {
     InMemoryLeadRepository repository = new InMemoryLeadRepository();
     UUID sameId = UUID.randomUUID();
     Lead existingLead = createTestLead(sameId);
-    Lead duplicateLead = createTestLead(sameId); // тот же ID
+    Lead duplicateLead = createTestLead(sameId);
 
     // When
     boolean firstAdded = repository.add(existingLead);
