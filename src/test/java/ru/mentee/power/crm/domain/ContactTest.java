@@ -203,7 +203,7 @@ class ContactTest {
     Contact contact1 = new Contact("first@example.com", "+111", sharedAddress);
     Contact contact2 = new Contact("second@example.com", "+222", sharedAddress);
 
-    // Then: проверяем, что оба контакта используют один и тот же объект Address
+    // Then
     assertThat(contact1.address()).isSameAs(contact2.address());
   }
 }
