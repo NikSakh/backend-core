@@ -93,15 +93,15 @@ class ContactTest {
   @Test
   void shouldBeEqualWhenSameData() {
     // Given
-    Address address1 = new Address("City1", "Street1", "11111");
-    Address address2 = new Address("City1", "Street1", "11111");
+    Address addressFirst = new Address("City1", "Street1", "11111");
+    Address addressSecond = new Address("City1", "Street1", "11111");
 
-    Contact contact1 = new Contact("test1@example.com", "+111", address1);
-    Contact contact2 = new Contact("test1@example.com", "+111", address2);
+    Contact contactFirst = new Contact("test1@example.com", "+111", addressFirst);
+    Contact contactSecond = new Contact("test1@example.com", "+111", addressSecond);
 
     // Then
-    assertThat(contact1).isEqualTo(contact2);
-    assertThat(contact1.hashCode()).isEqualTo(contact2.hashCode());
+    assertThat(contactFirst).isEqualTo(contactSecond);
+    assertThat(contactFirst.hashCode()).isEqualTo(contactSecond.hashCode());
   }
 
   @Test
@@ -109,11 +109,11 @@ class ContactTest {
     // Given
     Address address = new Address("City", "Street", "12345");
 
-    Contact contact1 = new Contact("test1@example.com", "+123", address);
-    Contact contact2 = new Contact("test2@example.com", "+123", address);
+    Contact contactFirst = new Contact("test1@example.com", "+123", address);
+    Contact contactSecond = new Contact("test2@example.com", "+123", address);
 
     // Then
-    assertThat(contact1).isNotEqualTo(contact2);
+    assertThat(contactFirst).isNotEqualTo(contactSecond);
   }
 
   @Test
@@ -121,24 +121,24 @@ class ContactTest {
     // Given
     Address address = new Address("City", "Street", "12345");
 
-    Contact contact1 = new Contact("test@example.com", "+123", address);
-    Contact contact2 = new Contact("test@example.com", "+456", address);
+    Contact contactFirst = new Contact("test@example.com", "+123", address);
+    Contact contactSecond = new Contact("test@example.com", "+456", address);
 
     // Then
-    assertThat(contact1).isNotEqualTo(contact2);
+    assertThat(contactFirst).isNotEqualTo(contactSecond);
   }
 
   @Test
   void shouldNotBeEqualWhenDifferentAddress() {
     // Given
-    Address address1 = new Address("City1", "Street1", "11111");
-    Address address2 = new Address("City2", "Street2", "22222");
+    Address addressFirst = new Address("City1", "Street1", "11111");
+    Address addressSecond = new Address("City2", "Street2", "22222");
 
-    Contact contact1 = new Contact("test@example.com", "+123", address1);
-    Contact contact2 = new Contact("test@example.com", "+123", address2);
+    Contact contactFirst = new Contact("test@example.com", "+123", addressFirst);
+    Contact contactSecond = new Contact("test@example.com", "+123", addressSecond);
 
     // Then
-    assertThat(contact1).isNotEqualTo(contact2);
+    assertThat(contactFirst).isNotEqualTo(contactSecond);
   }
 
   @Test
@@ -200,10 +200,10 @@ class ContactTest {
   void shouldPreserveImmutabilityWhenReusingAddress() {
     // Given
     Address sharedAddress = new Address("Shared City", "Shared St", "55555");
-    Contact contact1 = new Contact("first@example.com", "+111", sharedAddress);
-    Contact contact2 = new Contact("second@example.com", "+222", sharedAddress);
+    Contact contactFirst = new Contact("first@example.com", "+111", sharedAddress);
+    Contact contactSecond = new Contact("second@example.com", "+222", sharedAddress);
 
     // Then
-    assertThat(contact1.address()).isSameAs(contact2.address());
+    assertThat(contactFirst.address()).isSameAs(contactSecond.address());
   }
 }
