@@ -81,11 +81,11 @@ class InMemoryLeadRepositoryTest {
     repository.add(createTestLead(UUID.randomUUID()));
     repository.add(createTestLead(UUID.randomUUID()));
 
-    // When: клиент получает список и пытается его изменить
+    // When
     List<Lead> clientList = repository.findAll();
     clientList.clear();
 
-    // Then: внутреннее хранилище не изменилось
+    // Then
     assertThat(repository.findAll()).hasSize(2);
   }
 

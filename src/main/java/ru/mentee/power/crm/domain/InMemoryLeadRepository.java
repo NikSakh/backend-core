@@ -41,7 +41,6 @@ public class InMemoryLeadRepository implements Repository<Lead> {
 
   @Override
   public List<Lead> findAll() {
-    // Defensive copy: возвращаем копию списка, чтобы клиент не мог изменить внутреннее хранилище
     return new ArrayList<>(internalStorage);
   }
 

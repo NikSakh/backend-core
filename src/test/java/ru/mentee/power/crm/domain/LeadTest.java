@@ -35,7 +35,7 @@ class LeadTest {
 
   @Test
   void shouldBeEqualWhenSameIdButDifferentContact() {
-    // Given: создаём два Lead с одинаковым UUID, но разными Contact
+    // Given
     Address addr1 = new Address("City1", "Street1", "11111");
     Address addr2 = new Address("City2", "Street2", "22222");
     Contact contact1 = new Contact("email1@example.com", "+111", addr1);
@@ -45,7 +45,7 @@ class LeadTest {
     Lead lead1 = new Lead(sameId, contact1, "CompanyA", "NEW");
     Lead lead2 = new Lead(sameId, contact2, "CompanyB", "NEW");
 
-    // Then: по умолчанию record использует equals по всем полям
+    // Then
     assertThat(lead1).isNotEqualTo(lead2);
     assertThat(lead1.id()).isEqualTo(lead2.id());
   }
@@ -86,18 +86,17 @@ class LeadTest {
 
   @Test
   void shouldDemonstrateThreeLevelCompositionWhenAccessingCity() {
-    // Given: полная композиция Lead → Contact → Address
+    // Given
     Address expectedAddress = new Address("Seattle", "Pike St", "98101");
     Contact expectedContact = new Contact("bob@example.com", "+555", expectedAddress);
     Lead lead = new Lead(UUID.randomUUID(), expectedContact, "Cloud Corp", "CONVERTED");
 
-    // When: демонстрируем трёхуровневую делегацию
-    Contact contact = lead.contact();           // уровень 1
-    Address address = contact.address();         // уровень 2
-    String city = address.city();               // уровень 3
+    // When
+    Contact contact = lead.contact();
+    Address address = contact.address();
+    String city = address.city();
 
-    // Или сокращённо:
-    String cityDirect = lead.contact().address().city(); // 3 уровня одной строкой
+    String cityDirect = lead.contact().address().city();
 
     // Then
     assertThat(city).isEqualTo("Seattle");
