@@ -1,15 +1,15 @@
 package ru.mentee.power.crm.domain;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class InMemoryLeadRepositoryTest {
 
@@ -81,7 +81,7 @@ class InMemoryLeadRepositoryTest {
   }
 
   @Test
-  @DisplayName("Should not remove non-existent lead")
+  @DisplayName("Should not remove non‑existent lead")
   void shouldNotRemoveNonExistentLead() {
     UUID nonExistentId = UUID.randomUUID();
     boolean removed = repository.remove(nonExistentId);
@@ -123,7 +123,7 @@ class InMemoryLeadRepositoryTest {
   }
 
   @Test
-  @DisplayName("Should return empty optional for non-existent ID")
+  @DisplayName("Should return empty optional for non‑existent ID")
   void shouldReturnEmptyOptionalForNonExistentId() {
     UUID nonExistentId = UUID.randomUUID();
     Optional<Lead> result = repository.findById(nonExistentId);
@@ -206,7 +206,9 @@ class InMemoryLeadRepositoryTest {
     // Given - populate with multiple leads
     for (int i = 0; i < 5; i++) {
       UUID id = UUID.randomUUID();
-      Address address = new Address("City " + i, "Street " + i, String.format("%05d", i));
+      Address address = new Address(
+          "City " + i, "Street " + i, String.format("%05d", i)
+      );
       Contact contact = new Contact("email" + i + "@test.com", "+123" + i, address);
       Lead lead = new Lead(id, contact, "Company " + i, "NEW");
       repository.add(lead);
@@ -225,10 +227,9 @@ class InMemoryLeadRepositoryTest {
     Lead newLead = new Lead(newId, newContact, "New Company", "NEW");
     boolean added = repository.add(newLead);
 
-    // Then - verify consistency
     assertThat(removed).isTrue();
     assertThat(added).isTrue();
-    assertThat(repository.findAll()).hasSize(initialSize); // size remains the same (1 removed, 1 added)
+    assertThat(repository.findAll()).hasSize(initialSize);
   }
 
   @Test
@@ -245,7 +246,6 @@ class InMemoryLeadRepositoryTest {
     Address address2 = new Address("City2", "Street2", "22222");
     Contact contact2 = new Contact("two@test.com", "+222", address2);
     Lead lead2 = new Lead(id2, contact2, "Company2", "NEW");
-
 
     Address address3 = new Address("City3", "Street3", "33333");
     Contact contact3 = new Contact("three@test.com", "+333", address3);
