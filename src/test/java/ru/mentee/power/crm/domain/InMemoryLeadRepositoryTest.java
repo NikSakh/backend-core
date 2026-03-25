@@ -1,15 +1,15 @@
 package ru.mentee.power.crm.domain;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class InMemoryLeadRepositoryTest {
 
@@ -81,7 +81,7 @@ class InMemoryLeadRepositoryTest {
   }
 
   @Test
-  @DisplayName("Should not remove non-existent lead")
+  @DisplayName("Should not remove non‑existent lead")
   void shouldNotRemoveNonExistentLead() {
     UUID nonExistentId = UUID.randomUUID();
     boolean removed = repository.remove(nonExistentId);
@@ -123,7 +123,7 @@ class InMemoryLeadRepositoryTest {
   }
 
   @Test
-  @DisplayName("Should return empty optional for non-existent ID")
+  @DisplayName("Should return empty optional for non‑existent ID")
   void shouldReturnEmptyOptionalForNonExistentId() {
     UUID nonExistentId = UUID.randomUUID();
     Optional<Lead> result = repository.findById(nonExistentId);
@@ -206,7 +206,9 @@ class InMemoryLeadRepositoryTest {
     // Given - populate with multiple leads
     for (int i = 0; i < 5; i++) {
       UUID id = UUID.randomUUID();
-      Address address = new Address("City " + i, "Street " + i, String.format("%05d", i));
+      Address address = new Address(
+          "City " + i, "Street " + i, String.format("%05d", i)
+      );
       Contact contact = new Contact("email" + i + "@test.com", "+123" + i, address);
       Lead lead = new Lead(id, contact, "Company " + i, "NEW");
       repository.add(lead);
@@ -225,46 +227,44 @@ class InMemoryLeadRepositoryTest {
     Lead newLead = new Lead(newId, newContact, "New Company", "NEW");
     boolean added = repository.add(newLead);
 
-    // Then - verify consistency
     assertThat(removed).isTrue();
     assertThat(added).isTrue();
-    assertThat(repository.findAll()).hasSize(initialSize); // size remains the same (1 removed, 1 added)
+    assertThat(repository.findAll()).hasSize(initialSize);
   }
 
   @Test
   @DisplayName("Should maintain consistency after multiple operations")
   void shouldMaintainConsistencyAfterMultipleOperations() {
-    UUID id1 = UUID.randomUUID();
-    UUID id2 = UUID.randomUUID();
-    UUID id3 = UUID.randomUUID();
+    UUID idFirst = UUID.randomUUID();
+    UUID idSecond = UUID.randomUUID();
+    UUID idThird = UUID.randomUUID();
 
-    Address address1 = new Address("City1", "Street1", "11111");
-    Contact contact1 = new Contact("one@test.com", "+111", address1);
-    Lead lead1 = new Lead(id1, contact1, "Company1", "NEW");
+    Address addressFirst = new Address("City1", "Street1", "11111");
+    Contact contactFirst = new Contact("one@test.com", "+111", addressFirst);
+    Lead leadFirst = new Lead(idFirst, contactFirst, "Company1", "NEW");
 
-    Address address2 = new Address("City2", "Street2", "22222");
-    Contact contact2 = new Contact("two@test.com", "+222", address2);
-    Lead lead2 = new Lead(id2, contact2, "Company2", "NEW");
+    Address addressSecond = new Address("City2", "Street2", "22222");
+    Contact contactSecond = new Contact("two@test.com", "+222", addressSecond);
+    Lead leadSecond = new Lead(idSecond, contactSecond, "Company2", "NEW");
 
+    Address addressThird = new Address("City3", "Street3", "33333");
+    Contact contactThird = new Contact("three@test.com", "+333", addressThird);
+    Lead leadThird = new Lead(idThird, contactThird, "Company3", "NEW");
 
-    Address address3 = new Address("City3", "Street3", "33333");
-    Contact contact3 = new Contact("three@test.com", "+333", address3);
-    Lead lead3 = new Lead(id3, contact3, "Company3", "NEW");
+    repository.add(leadFirst);
+    repository.add(leadSecond);
+    repository.add(leadThird);
 
-    repository.add(lead1);
-    repository.add(lead2);
-    repository.add(lead3);
-
-    boolean remove1 = repository.remove(id1);
-    boolean add1Again = repository.add(lead1);
-    Optional<Lead> find2 = repository.findById(id2);
+    boolean removeFirst = repository.remove(idFirst);
+    boolean addFirstAgain = repository.add(leadFirst);
+    Optional<Lead> findSecond = repository.findById(idSecond);
     List<Lead> all = repository.findAll();
 
-    assertThat(remove1).isTrue();
-    assertThat(add1Again).isTrue();
-    assertThat(find2).contains(lead2);
+    assertThat(removeFirst).isTrue();
+    assertThat(addFirstAgain).isTrue();
+    assertThat(findSecond).contains(leadSecond);
     assertThat(all).hasSize(3);
-    assertThat(all).containsExactlyInAnyOrder(lead1, lead2, lead3);
+    assertThat(all).containsExactlyInAnyOrder(leadFirst, leadSecond, leadThird);
   }
 
   @Test
@@ -289,31 +289,31 @@ class InMemoryLeadRepositoryTest {
   @Test
   @DisplayName("Should preserve order of elements as added")
   void shouldPreserveOrderOfElementsAsAdded() {
-    UUID id1 = UUID.randomUUID();
-    UUID id2 = UUID.randomUUID();
-    UUID id3 = UUID.randomUUID();
+    UUID idFirst = UUID.randomUUID();
+    UUID idSecond = UUID.randomUUID();
+    UUID idThird = UUID.randomUUID();
 
-    Address address1 = new Address("First City", "First Street", "11111");
-    Contact contact1 = new Contact("first@test.com", "+111", address1);
-    Lead lead1 = new Lead(id1, contact1, "First Company", "NEW");
+    Address addressFirst = new Address("First City", "First Street", "11111");
+    Contact contactFirst = new Contact("first@test.com", "+111", addressFirst);
+    Lead leadFirst = new Lead(idFirst, contactFirst, "First Company", "NEW");
 
-    Address address2 = new Address("Second City", "Second Street", "22222");
-    Contact contact2 = new Contact("second@test.com", "+222", address2);
-    Lead lead2 = new Lead(id2, contact2, "Second Company", "NEW");
+    Address addressSecond = new Address("Second City", "Second Street", "22222");
+    Contact contactSecond = new Contact("second@test.com", "+222", addressSecond);
+    Lead leadSecond = new Lead(idSecond, contactSecond, "Second Company", "NEW");
 
-    Address address3 = new Address("Third City", "Third Street", "33333");
-    Contact contact3 = new Contact("third@test.com", "+333", address3);
-    Lead lead3 = new Lead(id3, contact3, "Third Company", "NEW");
+    Address addressThird = new Address("Third City", "Third Street", "33333");
+    Contact contactThird = new Contact("third@test.com", "+333", addressThird);
+    Lead lead3 = new Lead(idThird, contactThird, "Third Company", "NEW");
 
-    repository.add(lead1);
-    repository.add(lead2);
+    repository.add(leadFirst);
+    repository.add(leadSecond);
     repository.add(lead3);
 
     List<Lead> allLeads = repository.findAll();
 
     assertThat(allLeads).hasSize(3);
-    assertThat(allLeads.get(0)).isEqualTo(lead1);
-    assertThat(allLeads.get(1)).isEqualTo(lead2);
+    assertThat(allLeads.get(0)).isEqualTo(leadFirst);
+    assertThat(allLeads.get(1)).isEqualTo(leadSecond);
     assertThat(allLeads.get(2)).isEqualTo(lead3);
   }
 }
