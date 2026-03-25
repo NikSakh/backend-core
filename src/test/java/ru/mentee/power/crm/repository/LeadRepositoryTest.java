@@ -43,21 +43,21 @@ class LeadRepositoryTest {
 
   @Test
   void shouldReturnAllLeadsWhenMultipleLeadsSaved() {
-    Lead lead1 = new Lead("lead-1", "alice@example.com", "+79991111111",
+    Lead leadFirst = new Lead("lead-1", "alice@example.com", "+79991111111",
         "Company 1", "NEW");
-    Lead lead2 = new Lead("lead-2", "bob@example.com", "+79992222222",
+    Lead leadSecond = new Lead("lead-2", "bob@example.com", "+79992222222",
         "Company 2", "QUALIFIED");
-    Lead lead3 = new Lead("lead-3", "charlie@example.com", "+79993333333",
+    Lead leadThird = new Lead("lead-3", "charlie@example.com", "+79993333333",
         "Company 3", "CONVERTED");
 
-    repository.save(lead1);
-    repository.save(lead2);
-    repository.save(lead3);
+    repository.save(leadFirst);
+    repository.save(leadSecond);
+    repository.save(leadThird);
 
     List<Lead> allLeads = repository.findAll();
 
     assertThat(allLeads).hasSize(3);
-    assertThat(allLeads).containsExactlyInAnyOrder(lead1, lead2, lead3);
+    assertThat(allLeads).containsExactlyInAnyOrder(leadFirst, leadSecond, leadThird);
   }
 
   @Test
