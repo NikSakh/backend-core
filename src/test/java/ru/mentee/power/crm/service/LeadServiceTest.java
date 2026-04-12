@@ -2,6 +2,12 @@ package ru.mentee.power.crm.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,125 +15,163 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.mentee.power.crm.model.Lead;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
 
+@ExtendWith(MockitoExtension.class)
 class LeadServiceTest {
 
-  private LeadRepository repository;
+  @Mock
+  private LeadRepository mockRepository;
+
+  @InjectMocks
   private LeadService service;
 
   @BeforeEach
   void setUp() {
-    repository = new LeadRepository();
-    service = new LeadService(repository);
   }
 
   @Test
-  void addLeadWhenValidDataShouldCreateAndSaveLead() {
-    Lead result = service.addLead("test@example.com", "Test Company", LeadStatus.NEW);
+  void shouldCallRepositorySaveWhenAddingNewLead() {
+    when(mockRepository.findByEmail(any(String.class)))
+        .thenReturn(Optional.empty());
 
-    assertThat(result).isNotNull();
-    assertThat(result.email()).isEqualTo("test@example.com");
-    assertThat(result.company()).isEqualTo("Test Company");
+    when(mockRepository.save(any(Lead.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    Lead result = service.addLead("new@example.com", "Company", LeadStatus.NEW);
+
+    verify(mockRepository, times(1)).save(any(Lead.class));
+
+    assertThat(result.email()).isEqualTo("new@example.com");
+    assertThat(result.company()).isEqualTo("Company");
     assertThat(result.status()).isEqualTo(LeadStatus.NEW);
-    Optional<Lead> found = repository.findById(result.id());
-    assertThat(found).hasValue(result);
   }
 
   @Test
-  void addLeadWhenEmailIsNullShouldThrowIllegalArgumentException() {
-    assertThatThrownBy(() -> service.addLead(null, "Test Company", LeadStatus.NEW))
+  void shouldNotCallSaveWhenEmailExists() {
+    UUID existingId = UUID.randomUUID();
+    Lead existingLead = new Lead(
+        existingId.toString(),
+        "existing@example.com",
+        null,
+        "Existing Company",
+        LeadStatus.CONTACTED
+    );
+    when(mockRepository.findByEmail("existing@example.com"))
+        .thenReturn(Optional.of(existingLead));
+
+    assertThatThrownBy(() ->
+        service.addLead("existing@example.com", "New Company", LeadStatus.NEW)
+    )
+        .isInstanceOf(IllegalStateException.class)
+        .hasMessageContaining("Lead with email 'existing@example.com' already exists");
+
+    verify(mockRepository, never()).save(any(Lead.class));
+  }
+
+  @Test
+  void shouldCallFindByEmailBeforeSave() {
+    when(mockRepository.findByEmail(any(String.class)))
+        .thenReturn(Optional.empty());
+    when(mockRepository.save(any(Lead.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    service.addLead("test@example.com", "Company", LeadStatus.NEW);
+
+    var inOrder = inOrder(mockRepository);
+    inOrder.verify(mockRepository).findByEmail("test@example.com");
+    inOrder.verify(mockRepository).save(any(Lead.class));
+  }
+
+  @Test
+  void shouldNormalizeEmailWhenAddingLead() {
+    when(mockRepository.findByEmail("test@example.com"))
+        .thenReturn(Optional.empty());
+    when(mockRepository.save(any(Lead.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    Lead result = service.addLead("  TEST@EXAMPLE.COM  ", "Company", LeadStatus.NEW);
+
+    assertThat(result.email()).isEqualTo("test@example.com");
+  }
+
+  @Test
+  void shouldThrowIllegalArgumentExceptionWhenEmailIsNull() {
+    assertThatThrownBy(() -> service.addLead(null, "Company", LeadStatus.NEW))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Email cannot be null or empty");
   }
 
   @Test
-  void addLeadWhenEmailIsEmptyShouldThrowIllegalArgumentException() {
-    assertThatThrownBy(() -> service.addLead("   ", "Test Company", LeadStatus.NEW))
+  void shouldThrowIllegalArgumentExceptionWhenEmailIsEmpty() {
+    assertThatThrownBy(() -> service.addLead("   ", "Company", LeadStatus.NEW))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Email cannot be null or empty");
   }
 
   @Test
-  void addLeadWhenCompanyIsNullShouldThrowIllegalArgumentException() {
+  void shouldThrowIllegalArgumentExceptionWhenCompanyIsNull() {
     assertThatThrownBy(() -> service.addLead("test@example.com", null, LeadStatus.NEW))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Company cannot be null or empty");
   }
 
   @Test
-  void addLeadWhenCompanyIsEmptyShouldThrowIllegalArgumentException() {
+  void shouldThrowIllegalArgumentExceptionWhenCompanyIsEmpty() {
     assertThatThrownBy(() -> service.addLead("test@example.com", "   ", LeadStatus.NEW))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Company cannot be null or empty");
   }
 
   @Test
-  void addLeadWhenStatusIsNullShouldThrowIllegalArgumentException() {
-    assertThatThrownBy(() -> service.addLead("test@example.com", "Test Company", null))
+  void shouldThrowIllegalArgumentExceptionWhenStatusIsNull() {
+    assertThatThrownBy(() -> service.addLead("test@example.com", "Company", null))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessage("Status cannot be null");
   }
 
   @Test
-  void addLeadWhenLeadWithEmailExistsShouldThrowIllegalStateException() {
-    service.addLead("existing@example.com", "Existing Company", LeadStatus.NEW);
-
-    assertThatThrownBy(() -> service.addLead("existing@example.com",
-        "Another Company", LeadStatus.NEW))
-        .isInstanceOf(IllegalStateException.class)
-        .hasMessageContaining("Lead with email 'existing@example.com' already exists");
-  }
-
-  @Test
-  void addLeadShouldNormalizeEmail() {
-    Lead result = service.addLead("  TEST@EXAMPLE.COM  ", "Test Company", LeadStatus.NEW);
-
-    assertThat(result.email()).isEqualTo("test@example.com");
-  }
-
-  @Test
-  void findAllShouldReturnAllLeads() {
-    service.addLead("lead1@example.com", "Company 1", LeadStatus.NEW);
-    service.addLead("lead2@example.com", "Company 2", LeadStatus.CONTACTED);
+  void findAllShouldDelegateToRepository() {
+    List<Lead> expectedLeads = List.of(
+        new Lead("1", "lead1@example.com", null, "Company 1", LeadStatus.NEW),
+        new Lead("2", "lead2@example.com", null, "Company 2", LeadStatus.CONTACTED)
+    );
+    when(mockRepository.findAll()).thenReturn(expectedLeads);
 
     List<Lead> result = service.findAll();
 
-    assertThat(result).hasSize(2);
+    assertThat(result).isEqualTo(expectedLeads);
+    verify(mockRepository, times(1)).findAll();
   }
 
   @Test
-  void findByIdWhenLeadExistsShouldReturnOptionalWithLead() {
-    Lead lead = service.addLead("test@example.com", "Test Company", LeadStatus.NEW);
-    UUID id = UUID.fromString(lead.id());
+  void findByIdShouldDelegateToRepository() {
+    UUID id = UUID.randomUUID();
+    Lead expectedLead = new Lead(id.toString(), "test@example.com", null,
+        "Company", LeadStatus.NEW);
+    when(mockRepository.findById(id.toString())).thenReturn(Optional.of(expectedLead));
 
     Optional<Lead> result = service.findById(id);
 
-    assertThat(result).hasValue(lead);
+    assertThat(result).hasValue(expectedLead);
+    verify(mockRepository, times(1)).findById(id.toString());
   }
 
   @Test
-  void findByIdWhenLeadDoesNotExistShouldReturnEmptyOptional() {
-    Optional<Lead> result = service.findById(UUID.randomUUID());
+  void findByEmailShouldDelegateToRepository() {
+    String email = "search@example.com";
+    Lead expectedLead = new Lead("1", email, null, "Search Company", LeadStatus.NEW);
+    when(mockRepository.findByEmail(email)).thenReturn(Optional.of(expectedLead));
 
-    assertThat(result).isEmpty();
-  }
+    Optional<Lead> result = service.findByEmail(email);
 
-  @Test
-  void findByEmailWhenLeadExistsShouldReturnOptionalWithLead() {
-    service.addLead("search@example.com", "Search Company", LeadStatus.NEW);
-
-    Optional<Lead> result = service.findByEmail("search@example.com");
-
-    assertThat(result).isNotEmpty();
-  }
-
-  @Test
-  void findByEmailWhenLeadDoesNotExistShouldReturnEmptyOptional() {
-    Optional<Lead> result = service.findByEmail("nonexistent@example.com");
-
-    assertThat(result).isEmpty();
+    assertThat(result).hasValue(expectedLead);
+    verify(mockRepository, times(1)).findByEmail(email);
   }
 }
