@@ -2,176 +2,149 @@ package ru.mentee.power.crm.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.crm.model.Lead;
+import ru.mentee.power.crm.model.LeadStatus;
 
 class LeadRepositoryTest {
+
   private LeadRepository repository;
+  private Lead lead1;
+  private Lead lead2;
 
   @BeforeEach
   void setUp() {
     repository = new LeadRepository();
-  }
-
-  @Test
-  void shouldSaveAndFindLeadByIdWhenLeadSaved() {
-    String leadId = "lead-1";
-    Lead lead = new Lead(leadId, "john@example.com", "+79991234567", "Company A", "NEW");
-
-    repository.save(lead);
-
-    Lead foundLead = repository.findById(leadId);
-    assertThat(foundLead).isNotNull();
-    assertThat(foundLead.id()).isEqualTo(leadId);
-    assertThat(foundLead.email()).isEqualTo("john@example.com");
-    assertThat(foundLead.company()).isEqualTo("Company A");
-    assertThat(foundLead.status()).isEqualTo("NEW");
-  }
-
-  @Test
-  void shouldReturnNullWhenLeadNotFound() {
-    String unknownId = "unknown-id";
-    Lead foundLead = repository.findById(unknownId);
-
-    assertThat(foundLead).isNull();
-  }
-
-  @Test
-  void shouldReturnAllLeadsWhenMultipleLeadsSaved() {
-    Lead leadFirst = new Lead("lead-1", "alice@example.com", "+79991111111",
-        "Company 1", "NEW");
-    Lead leadSecond = new Lead("lead-2", "bob@example.com", "+79992222222",
-        "Company 2", "QUALIFIED");
-    Lead leadThird = new Lead("lead-3", "charlie@example.com", "+79993333333",
-        "Company 3", "CONVERTED");
-
-    repository.save(leadFirst);
-    repository.save(leadSecond);
-    repository.save(leadThird);
-
-    List<Lead> allLeads = repository.findAll();
-
-    assertThat(allLeads).hasSize(3);
-    assertThat(allLeads).containsExactlyInAnyOrder(leadFirst, leadSecond, leadThird);
-  }
-
-  @Test
-  void shouldDeleteLeadWhenLeadExists() {
-    String leadId = "lead-1";
-    Lead lead = new Lead(leadId, "test@example.com",
-        "+79994444444", "Test Company", "NEW");
-    repository.save(lead);
-
-    repository.delete(leadId);
-
-    Lead foundLead = repository.findById(leadId);
-    assertThat(foundLead).isNull();
-    assertThat(repository.size()).isEqualTo(0);
-  }
-
-  @Test
-  void shouldOverwriteLeadWhenSaveWithSameId() {
-    String sameId = "lead-1";
-    Lead originalLead = new Lead(sameId, "original@example.com",
-        "+79995555555", "Original Company", "NEW");
-    repository.save(originalLead);
-
-    Lead updatedLead = new Lead(sameId, "updated@example.com",
-        "+79996666666", "Updated Company", "QUALIFIED");
-    repository.save(updatedLead);
-
-    Lead foundLead = repository.findById(sameId);
-    assertThat(foundLead).isNotNull();
-    assertThat(foundLead.email()).isEqualTo("updated@example.com");
-    assertThat(foundLead.phone()).isEqualTo("+79996666666");
-    assertThat(foundLead.company()).isEqualTo("Updated Company");
-    assertThat(foundLead.status()).isEqualTo("QUALIFIED");
-    assertThat(repository.size()).isEqualTo(1);
-  }
-
-  @Test
-  void shouldFindFasterWithMapThanWithListFilter() {
-    List<Lead> leadList = new ArrayList<>();
-    for (int i = 0; i < 1000; i++) {
-      String id = "lead-" + i;
-      String email = "email" + i + "@test.com";
-      String phone = "+7" + i;
-      String company = "Company" + i;
-      String status = "NEW";
-
-      Lead lead = new Lead(id, email, phone, company, status);
-      repository.save(lead);
-      leadList.add(lead);
-    }
-
-    String targetId = "lead-500";
-
-    long mapStart = System.nanoTime();
-    Lead foundInMap = repository.findById(targetId);
-    long mapDuration = System.nanoTime() - mapStart;
-
-    long listStart = System.nanoTime();
-    Lead foundInList = leadList.stream()
-        .filter(lead -> lead.id().equals(targetId))
-        .findFirst()
-        .orElse(null);
-    long listDuration = System.nanoTime() - listStart;
-
-    assertThat(foundInMap).isEqualTo(foundInList);
-    assertThat(listDuration).isGreaterThan(mapDuration * 10);
-
-    System.out.println("Map поиск: " + mapDuration + " ns");
-    System.out.println("List поиск: " + listDuration + " ns");
-    System.out.println("Ускорение: " + (listDuration / (double) mapDuration) + "x");
-  }
-
-  @Test
-  void shouldSaveBothLeadsEvenWithSameEmailAndPhoneBecauseRepositoryDoesNotCheckBusinessRules() {
-    String email = "ivan@mail.ru";
-    String phone = "+79001234567";
-
-    String originalId = UUID.randomUUID().toString();
-    Lead originalLead = new Lead(
-        originalId,
-        email,
-        phone,
-        "Acme Corp",
-        "NEW"
-    );
-
-    String duplicateId = UUID.randomUUID().toString();
-    Lead duplicateLead = new Lead(
-        duplicateId,
-        email,
-        phone,
+    lead1 = new Lead(
+        "1",
+        "john@example.com",
+        "+123456789",
         "TechCorp",
-        "HOT"
+        LeadStatus.NEW
     );
+    lead2 = new Lead(
+        "2",
+        "jane@example.com",
+        "+987654321",
+        "InnovateInc",
+        LeadStatus.CONTACTED
+    );
+  }
 
-    repository.save(originalLead);
+  @Test
+  void saveShouldSaveLeadAndReturnIt() {
+    Lead savedLead = repository.save(lead1);
+    assertThat(savedLead).isEqualTo(lead1);
+    assertThat(repository.findById("1")).hasValue(lead1);
+  }
+
+  @Test
+  void findByIdWhenLeadExistsShouldReturnOptionalWithLead() {
+    repository.save(lead1);
+    Optional<Lead> result = repository.findById("1");
+    assertThat(result).hasValue(lead1);
+  }
+
+  @Test
+  void findByIdWhenLeadDoesNotExistShouldReturnEmptyOptional() {
+    Optional<Lead> result = repository.findById("non-existent-id");
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  void findByEmailWhenLeadWithEmailExistsShouldReturnOptionalWithLead() {
+    repository.save(lead1);
+    Optional<Lead> result = repository.findByEmail("john@example.com");
+    assertThat(result).hasValue(lead1);
+  }
+
+  @Test
+  void findByEmailWhenNoLeadWithEmailExistsShouldReturnEmptyOptional() {
+    Optional<Lead> result = repository.findByEmail("nonexistent@example.com");
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  void findByEmailWhenMultipleLeadsWithSameEmailShouldReturnFirstFound() {
+    Lead duplicateLead = new Lead(
+        "3",
+        "john@example.com",
+        "+111111111",
+        "DuplicateCo",
+        LeadStatus.NEW
+    );
+    repository.save(lead1);
     repository.save(duplicateLead);
+    Optional<Lead> result = repository.findByEmail("john@example.com");
+    assertThat(result).hasValueSatisfying(lead ->
+        assertThat(lead).isEqualTo(lead1)
+    );
+  }
 
-    assertThat(repository.size()).isEqualTo(2);
+  @Test
+  void findAllWhenRepositoryEmptyShouldReturnEmptyList() {
+    List<Lead> result = repository.findAll();
+    assertThat(result).isEmpty();
+  }
 
-    Lead foundOriginal = repository.findById(originalId);
-    Lead foundDuplicate = repository.findById(duplicateId);
+  @Test
+  void findAllWhenLeadsExistShouldReturnAllLeads() {
+    repository.save(lead1);
+    repository.save(lead2);
+    List<Lead> result = repository.findAll();
+    assertThat(result)
+        .hasSize(2)
+        .containsExactlyInAnyOrder(lead1, lead2);
+  }
 
-    assertThat(foundOriginal).isNotNull();
-    assertThat(foundDuplicate).isNotNull();
+  @Test
+  void saveWhenSavingMultipleLeadsShouldStoreAllLeadsCorrectly() {
+    repository.save(lead1);
+    repository.save(lead2);
+    assertThat(repository.findById("1")).hasValue(lead1);
+    assertThat(repository.findById("2")).hasValue(lead2);
+    assertThat(repository.findAll()).hasSize(2);
+  }
 
-    assertThat(foundOriginal.email()).isEqualTo(email);
-    assertThat(foundOriginal.phone()).isEqualTo(phone);
-    assertThat(foundDuplicate.email()).isEqualTo(email);
-    assertThat(foundDuplicate.phone()).isEqualTo(phone);
+  @Test
+  void saveWhenUpdatingExistingLeadShouldReplaceExistingLead() {
+    Lead originalLead = new Lead(
+        "1",
+        "john@old.com",
+        "+000000000",
+        "OldCompany",
+        LeadStatus.NEW
+    );
+    Lead updatedLead = new Lead(
+        "1",
+        "john@new.com",
+        "+999999999",
+        "UpdatedCompany",
+        LeadStatus.CONVERTED
+    );
+    repository.save(originalLead);
+    Lead savedLead = repository.save(updatedLead);
+    assertThat(savedLead).isEqualTo(updatedLead);
+    assertThat(repository.findById("1")).hasValue(updatedLead);
+  }
 
-    assertThat(foundOriginal.company()).isEqualTo("Acme Corp");
-    assertThat(foundDuplicate.company()).isEqualTo("TechCorp");
-    assertThat(foundOriginal.status()).isEqualTo("NEW");
-    assertThat(foundDuplicate.status()).isEqualTo("HOT");
+  @Test
+  void findByEmailShouldBeCaseSensitive() {
+    repository.save(lead1);
+    assertThat(repository.findByEmail("JOHN@EXAMPLE.COM")).isEmpty();
+    assertThat(repository.findByEmail("john@example.com")).hasValue(lead1);
+  }
+
+  @Test
+  void findAllShouldReturnNewListInstanceEachTime() {
+    repository.save(lead1);
+    List<Lead> firstCall = repository.findAll();
+    List<Lead> secondCall = repository.findAll();
+    assertThat(firstCall).isEqualTo(secondCall);
+    assertThat(firstCall).isNotSameAs(secondCall);
   }
 }

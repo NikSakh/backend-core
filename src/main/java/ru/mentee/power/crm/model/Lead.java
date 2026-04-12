@@ -5,6 +5,6 @@ public record Lead(
     String email,
     String phone,
     String company,
-    String status
+    LeadStatus status
 ) {
 }
