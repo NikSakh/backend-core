@@ -1,0 +1,63 @@
+package ru.mentee.power.crm.servlet;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import ru.mentee.power.crm.domain.Lead;
+import ru.mentee.power.crm.service.LeadService;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+
+@WebServlet("/leads")
+public class LeadListServlet extends HttpServlet {
+
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+
+    LeadService leadService = (LeadService) getServletContext().getAttribute("leadService");
+
+    if (leadService == null) {
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+          "LeadService not found in ServletContext");
+      return;
+    }
+
+    List<Lead> leads = leadService.findAll();
+
+    response.setContentType("text/html; charset=UTF-8");
+    PrintWriter writer = response.getWriter();
+
+    writer.println("<!DOCTYPE html>");
+    writer.println("<html>");
+    writer.println("<head><title>CRM - Lead List</title></head>");
+    writer.println("<body>");
+    writer.println("<h1>Lead List</h1>");
+    writer.println("<table border='1'>");
+    writer.println("<thead>");
+    writer.println("<tr>");
+    writer.println("<th>Email</th>");
+    writer.println("<th>Company</th>");
+    writer.println("<th>Status</th>");
+    writer.println("</tr>");
+    writer.println("</thead>");
+    writer.println("<tbody>");
+
+    for (Lead lead : leads) {
+      writer.println("<tr>");
+      writer.println("<td>" + (lead.getEmail() != null ? lead.getEmail() : "") + "</td>");
+      writer.println("<td>" + (lead.getCompany() != null ? lead.getCompany() : "") + "</td>");
+      writer.println("<td>" + (lead.getStatus() != null ? lead.getStatus() : "") + "</td>");
+      writer.println("</tr>");
+    }
+
+    writer.println("</tbody>");
+    writer.println("</table>");
+    writer.println("</body>");
+    writer.println("</html>");
+  }
+}
