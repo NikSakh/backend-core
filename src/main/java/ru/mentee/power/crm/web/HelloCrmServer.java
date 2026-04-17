@@ -25,7 +25,6 @@ public class HelloCrmServer {
     System.out.println("Server started on http://localhost:" + port);
   }
 
-  @SuppressWarnings("deprecation")
   public void stop() {
     server.stop(0);
   }

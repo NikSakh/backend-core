@@ -15,7 +15,7 @@ class InMemoryLeadRepositoryTest {
 
   private InMemoryLeadRepository repository;
   private UUID testId;
-  private Lead testLead;
+  private LeadEntity testLead;
 
   @BeforeEach
   void setUp() {
@@ -23,7 +23,7 @@ class InMemoryLeadRepositoryTest {
     testId = UUID.randomUUID();
     Address address = new Address("City", "Street", "12345");
     Contact contact = new Contact("test@example.com", "+123", address);
-    testLead = new Lead(testId, contact, "Test Company", "NEW");
+    testLead = new LeadEntity(testId, contact, "Test Company", "NEW");
   }
 
   @Test
@@ -58,7 +58,7 @@ class InMemoryLeadRepositoryTest {
     UUID secondId = UUID.randomUUID();
     Address secondAddress = new Address("Another City", "Another Street", "54321");
     Contact secondContact = new Contact("another@example.com", "+456", secondAddress);
-    Lead secondLead = new Lead(secondId, secondContact, "Another Company", "NEW");
+    LeadEntity secondLead = new LeadEntity(secondId, secondContact, "Another Company", "NEW");
 
     boolean firstAdded = repository.add(testLead);
     boolean secondAdded = repository.add(secondLead);
@@ -102,7 +102,7 @@ class InMemoryLeadRepositoryTest {
     UUID secondId = UUID.randomUUID();
     Address secondAddress = new Address("Another City", "Another Street", "54321");
     Contact secondContact = new Contact("another@example.com", "+456", secondAddress);
-    Lead secondLead = new Lead(secondId, secondContact, "Another Company", "NEW");
+    LeadEntity secondLead = new LeadEntity(secondId, secondContact, "Another Company", "NEW");
     repository.add(testLead);
     repository.add(secondLead);
 
@@ -118,7 +118,7 @@ class InMemoryLeadRepositoryTest {
   @DisplayName("Should find existing lead by ID")
   void shouldFindExistingLeadById() {
     repository.add(testLead);
-    Optional<Lead> result = repository.findById(testId);
+    Optional<LeadEntity> result = repository.findById(testId);
     assertThat(result).contains(testLead);
   }
 
@@ -126,7 +126,7 @@ class InMemoryLeadRepositoryTest {
   @DisplayName("Should return empty optional for non‑existent ID")
   void shouldReturnEmptyOptionalForNonExistentId() {
     UUID nonExistentId = UUID.randomUUID();
-    Optional<Lead> result = repository.findById(nonExistentId);
+    Optional<LeadEntity> result = repository.findById(nonExistentId);
     assertThat(result).isEmpty();
   }
 
@@ -145,10 +145,10 @@ class InMemoryLeadRepositoryTest {
     UUID secondId = UUID.randomUUID();
     Address secondAddress = new Address("Another City", "Another Street", "54321");
     Contact secondContact = new Contact("another@example.com", "+456", secondAddress);
-    Lead secondLead = new Lead(secondId, secondContact, "Another Company", "NEW");
+    LeadEntity secondLead = new LeadEntity(secondId, secondContact, "Another Company", "NEW");
     repository.add(secondLead);
 
-    List<Lead> clientList = repository.findAll();
+    List<LeadEntity> clientList = repository.findAll();
     clientList.clear();
 
     assertThat(repository.findAll()).hasSize(2);
@@ -157,7 +157,7 @@ class InMemoryLeadRepositoryTest {
   @Test
   @DisplayName("Should return empty list when repository is empty")
   void shouldReturnEmptyListWhenRepositoryIsEmpty() {
-    List<Lead> allLeads = repository.findAll();
+    List<LeadEntity> allLeads = repository.findAll();
     assertThat(allLeads).isEmpty();
   }
 
@@ -167,11 +167,11 @@ class InMemoryLeadRepositoryTest {
     UUID secondId = UUID.randomUUID();
     Address secondAddress = new Address("Another City", "Another Street", "54321");
     Contact secondContact = new Contact("another@example.com", "+456", secondAddress);
-    Lead secondLead = new Lead(secondId, secondContact, "Another Company", "NEW");
+    LeadEntity secondLead = new LeadEntity(secondId, secondContact, "Another Company", "NEW");
     repository.add(testLead);
     repository.add(secondLead);
 
-    List<Lead> allLeads = repository.findAll();
+    List<LeadEntity> allLeads = repository.findAll();
 
     assertThat(allLeads).hasSize(2);
     assertThat(allLeads).containsExactlyInAnyOrder(testLead, secondLead);
@@ -183,15 +183,15 @@ class InMemoryLeadRepositoryTest {
     UUID secondId = UUID.randomUUID();
     Address secondAddress = new Address("Another City", "Another Street", "54321");
     Contact secondContact = new Contact("another@example.com", "+456", secondAddress);
-    Lead secondLead = new Lead(secondId, secondContact, "Another Company", "NEW");
+    LeadEntity secondLead = new LeadEntity(secondId, secondContact, "Another Company", "NEW");
 
     repository.add(testLead);
     repository.add(secondLead);
 
     boolean firstRemove = repository.remove(testId);
-    Optional<Lead> foundAfterRemove = repository.findById(testId);
+    Optional<LeadEntity> foundAfterRemove = repository.findById(testId);
     boolean secondAdd = repository.add(testLead);
-    List<Lead> allAfterSequence = repository.findAll();
+    List<LeadEntity> allAfterSequence = repository.findAll();
 
     assertThat(firstRemove).isTrue();
     assertThat(foundAfterRemove).isEmpty();
@@ -210,7 +210,7 @@ class InMemoryLeadRepositoryTest {
           "City " + i, "Street " + i, String.format("%05d", i)
       );
       Contact contact = new Contact("email" + i + "@test.com", "+123" + i, address);
-      Lead lead = new Lead(id, contact, "Company " + i, "NEW");
+      LeadEntity lead = new LeadEntity(id, contact, "Company " + i, "NEW");
       repository.add(lead);
     }
 
@@ -224,7 +224,7 @@ class InMemoryLeadRepositoryTest {
     UUID newId = UUID.randomUUID();
     Address newAddress = new Address("New City", "New Street", "99999");
     Contact newContact = new Contact("new@test.com", "+999", newAddress);
-    Lead newLead = new Lead(newId, newContact, "New Company", "NEW");
+    LeadEntity newLead = new LeadEntity(newId, newContact, "New Company", "NEW");
     boolean added = repository.add(newLead);
 
     assertThat(removed).isTrue();
@@ -241,15 +241,15 @@ class InMemoryLeadRepositoryTest {
 
     Address addressFirst = new Address("City1", "Street1", "11111");
     Contact contactFirst = new Contact("one@test.com", "+111", addressFirst);
-    Lead leadFirst = new Lead(idFirst, contactFirst, "Company1", "NEW");
+    LeadEntity leadFirst = new LeadEntity(idFirst, contactFirst, "Company1", "NEW");
 
     Address addressSecond = new Address("City2", "Street2", "22222");
     Contact contactSecond = new Contact("two@test.com", "+222", addressSecond);
-    Lead leadSecond = new Lead(idSecond, contactSecond, "Company2", "NEW");
+    LeadEntity leadSecond = new LeadEntity(idSecond, contactSecond, "Company2", "NEW");
 
     Address addressThird = new Address("City3", "Street3", "33333");
     Contact contactThird = new Contact("three@test.com", "+333", addressThird);
-    Lead leadThird = new Lead(idThird, contactThird, "Company3", "NEW");
+    LeadEntity leadThird = new LeadEntity(idThird, contactThird, "Company3", "NEW");
 
     repository.add(leadFirst);
     repository.add(leadSecond);
@@ -257,8 +257,8 @@ class InMemoryLeadRepositoryTest {
 
     boolean removeFirst = repository.remove(idFirst);
     boolean addFirstAgain = repository.add(leadFirst);
-    Optional<Lead> findSecond = repository.findById(idSecond);
-    List<Lead> all = repository.findAll();
+    Optional<LeadEntity> findSecond = repository.findById(idSecond);
+    List<LeadEntity> all = repository.findAll();
 
     assertThat(removeFirst).isTrue();
     assertThat(addFirstAgain).isTrue();
@@ -272,11 +272,11 @@ class InMemoryLeadRepositoryTest {
   void shouldCorrectlyHandleEdgeCaseWithSingleElement() {
     repository.add(testLead);
 
-    Optional<Lead> found = repository.findById(testId);
+    Optional<LeadEntity> found = repository.findById(testId);
     boolean removed = repository.remove(testId);
-    List<Lead> allAfterRemove = repository.findAll();
+    List<LeadEntity> allAfterRemove = repository.findAll();
     boolean readded = repository.add(testLead);
-    List<Lead> allAfterReadd = repository.findAll();
+    List<LeadEntity> allAfterReadd = repository.findAll();
 
     assertThat(found).contains(testLead);
     assertThat(removed).isTrue();
@@ -295,25 +295,25 @@ class InMemoryLeadRepositoryTest {
 
     Address addressFirst = new Address("First City", "First Street", "11111");
     Contact contactFirst = new Contact("first@test.com", "+111", addressFirst);
-    Lead leadFirst = new Lead(idFirst, contactFirst, "First Company", "NEW");
+    LeadEntity leadFirst = new LeadEntity(idFirst, contactFirst, "First Company", "NEW");
 
     Address addressSecond = new Address("Second City", "Second Street", "22222");
     Contact contactSecond = new Contact("second@test.com", "+222", addressSecond);
-    Lead leadSecond = new Lead(idSecond, contactSecond, "Second Company", "NEW");
+    LeadEntity leadSecond = new LeadEntity(idSecond, contactSecond, "Second Company", "NEW");
 
     Address addressThird = new Address("Third City", "Third Street", "33333");
     Contact contactThird = new Contact("third@test.com", "+333", addressThird);
-    Lead lead3 = new Lead(idThird, contactThird, "Third Company", "NEW");
+    LeadEntity leadThird = new LeadEntity(idThird, contactThird, "Third Company", "NEW");
 
     repository.add(leadFirst);
     repository.add(leadSecond);
-    repository.add(lead3);
+    repository.add(leadThird);
 
-    List<Lead> allLeads = repository.findAll();
+    List<LeadEntity> allLeads = repository.findAll();
 
     assertThat(allLeads).hasSize(3);
     assertThat(allLeads.get(0)).isEqualTo(leadFirst);
     assertThat(allLeads.get(1)).isEqualTo(leadSecond);
-    assertThat(allLeads.get(2)).isEqualTo(lead3);
+    assertThat(allLeads.get(2)).isEqualTo(leadThird);
   }
 }

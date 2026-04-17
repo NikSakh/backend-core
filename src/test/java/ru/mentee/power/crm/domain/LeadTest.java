@@ -15,7 +15,7 @@ class LeadTest {
     Address address = new Address("San Francisco", "123 Main St", "94105");
     Contact contact = new Contact("john@example.com", "+123456789", address);
     UUID id = UUID.randomUUID();
-    Lead lead = new Lead(id, contact, "Acme Corp", "NEW");
+    LeadEntity lead = new LeadEntity(id, contact, "Acme Corp", "NEW");
 
     // Then
     assertThat(lead.contact()).isEqualTo(contact);
@@ -26,7 +26,7 @@ class LeadTest {
     // Given
     Address address = new Address("New York", "Broadway", "10001");
     Contact contact = new Contact("alice@example.com", "+987654321", address);
-    Lead lead = new Lead(UUID.randomUUID(), contact, "Tech Inc", "QUALIFIED");
+    LeadEntity lead = new LeadEntity(UUID.randomUUID(), contact, "Tech Inc", "QUALIFIED");
 
     // When & Then
     assertThat(lead.contact().email()).isEqualTo("alice@example.com");
@@ -42,8 +42,8 @@ class LeadTest {
     Contact contactSecond = new Contact("email2@example.com", "+222", addressSecond);
 
     UUID sameId = UUID.randomUUID();
-    Lead leadFist = new Lead(sameId, contactFirst, "CompanyA", "NEW");
-    Lead leadSecond = new Lead(sameId, contactSecond, "CompanyB", "NEW");
+    LeadEntity leadFist = new LeadEntity(sameId, contactFirst, "CompanyA", "NEW");
+    LeadEntity leadSecond = new LeadEntity(sameId, contactSecond, "CompanyB", "NEW");
 
     // Then
     assertThat(leadFist).isNotEqualTo(leadSecond);
@@ -53,7 +53,7 @@ class LeadTest {
   @Test
   void shouldThrowExceptionWhenContactIsNull() {
     // When & Then
-    assertThatThrownBy(() -> new Lead(
+    assertThatThrownBy(() -> new LeadEntity(
         UUID.randomUUID(),
         null,
         "Acme Corp",
@@ -70,7 +70,7 @@ class LeadTest {
     Contact contact = new Contact("test@example.com", "+123", address);
 
     // When & Then
-    assertThatThrownBy(() -> new Lead(
+    assertThatThrownBy(() -> new LeadEntity(
         UUID.randomUUID(),
         contact,
         "Test Company",
@@ -89,7 +89,7 @@ class LeadTest {
     // Given
     Address expectedAddress = new Address("Seattle", "Pike St", "98101");
     Contact expectedContact = new Contact("bob@example.com", "+555", expectedAddress);
-    Lead lead = new Lead(UUID.randomUUID(), expectedContact, "Cloud Corp", "CONVERTED");
+    LeadEntity lead = new LeadEntity(UUID.randomUUID(), expectedContact, "Cloud Corp", "CONVERTED");
 
     // When
     Contact contact = lead.contact();

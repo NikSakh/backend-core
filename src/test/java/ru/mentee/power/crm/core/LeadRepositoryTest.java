@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
-import ru.mentee.power.crm.domain.Lead;
+import ru.mentee.power.crm.domain.LeadEntity;
 
 class LeadRepositoryTest {
 
@@ -24,7 +24,7 @@ class LeadRepositoryTest {
     UUID leadId = UUID.randomUUID();
     Address address = new Address("123 Main St", "City", "12345");
     Contact contact = new Contact("John Doe", "john@example.com", address);
-    Lead lead = new Lead(leadId, contact, "Acme Corp", "NEW");
+    LeadEntity lead = new LeadEntity(leadId, contact, "Acme Corp", "NEW");
 
     boolean firstAddResult = repository.add(lead);
     boolean secondAddResult = repository.add(lead);
@@ -43,11 +43,11 @@ class LeadRepositoryTest {
 
     Address firstAddress = new Address("456 Oak Ave", "Town", "67890");
     Contact firstContact = new Contact("Alice Smith", "alice@example.com", firstAddress);
-    Lead firstLead = new Lead(firstLeadId, firstContact, "Evil corp", "NEW");
+    LeadEntity firstLead = new LeadEntity(firstLeadId, firstContact, "Evil corp", "NEW");
 
     Address secondAddress = new Address("789 Pine Rd", "Village", "54321");
     Contact secondContact = new Contact("Bob Johnson", "bob@example.com", secondAddress);
-    Lead secondLead = new Lead(secondLeadId, secondContact, "Lol corp", "NEW");
+    LeadEntity secondLead = new LeadEntity(secondLeadId, secondContact, "Lol corp", "NEW");
 
     boolean firstAddResult = repository.add(firstLead);
     boolean secondAddResult = repository.add(secondLead);
@@ -64,7 +64,7 @@ class LeadRepositoryTest {
     UUID leadId = UUID.randomUUID();
     Address address = new Address("321 Elm St", "Metropolis", "11223");
     Contact contact = new Contact("Charlie Brown", "charlie@example.com", address);
-    Lead lead = new Lead(leadId, contact, "Company corp", "NEW");
+    LeadEntity lead = new LeadEntity(leadId, contact, "Company corp", "NEW");
     repository.add(lead);
 
     boolean containsResult = repository.contains(lead);
@@ -79,12 +79,12 @@ class LeadRepositoryTest {
     UUID leadId = UUID.randomUUID();
     Address address = new Address("999 Maple Dr", "Gotham", "99999");
     Contact contact = new Contact("Diana Prince", "diana@example.com", address);
-    Lead lead = new Lead(leadId, contact, "Aboba corp", "NEW");
+    LeadEntity lead = new LeadEntity(leadId, contact, "Aboba corp", "NEW");
     repository.add(lead);
 
-    Set<Lead> resultSet = repository.findAll();
+    Set<LeadEntity> resultSet = repository.findAll();
 
-    assertThatThrownBy(() -> resultSet.add(new Lead(
+    assertThatThrownBy(() -> resultSet.add(new LeadEntity(
         UUID.randomUUID(),
         new Contact("Test", "test@example.com", new Address("Test", "Test", "00000")),
         "Test Company",
@@ -99,20 +99,20 @@ class LeadRepositoryTest {
     int numberOfLeads = 50_000;
     int numberOfChecks = 5_000;
 
-    Set<Lead> hashSet = new HashSet<>();
-    List<Lead> arrayList = new ArrayList<>();
+    Set<LeadEntity> hashSet = new HashSet<>();
+    List<LeadEntity> arrayList = new ArrayList<>();
 
     for (int i = 0; i < numberOfLeads; i++) {
       UUID leadId = UUID.randomUUID();
       Address address = new Address("Street " + i, "City " + i, String.format("%05d", i));
       Contact contact = new Contact("Name " + i, "email" + i + "@test.com", address);
-      Lead lead = new Lead(leadId, contact, "Company " + i, "NEW");
+      LeadEntity lead = new LeadEntity(leadId, contact, "Company " + i, "NEW");
 
       hashSet.add(lead);
       arrayList.add(lead);
     }
 
-    Lead targetLead = arrayList.get(numberOfLeads / 2);
+    LeadEntity targetLead = arrayList.get(numberOfLeads / 2);
 
     for (int i = 0; i < 100; i++) {
       hashSet.contains(targetLead);

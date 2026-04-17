@@ -1,18 +1,16 @@
 package ru.mentee.power.crm.servlet;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ru.mentee.power.crm.domain.Lead;
+import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.service.LeadService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet("/leads")
 public class LeadListServlet extends HttpServlet {
 
   @Override
@@ -27,7 +25,7 @@ public class LeadListServlet extends HttpServlet {
       return;
     }
 
-    List<Lead> leads = leadService.findAll();
+    List<LeadDto> leads = leadService.findAll();
 
     response.setContentType("text/html; charset=UTF-8");
     PrintWriter writer = response.getWriter();
@@ -47,11 +45,11 @@ public class LeadListServlet extends HttpServlet {
     writer.println("</thead>");
     writer.println("<tbody>");
 
-    for (Lead lead : leads) {
+    for (LeadDto lead : leads) {
       writer.println("<tr>");
-      writer.println("<td>" + (lead.getEmail() != null ? lead.getEmail() : "") + "</td>");
-      writer.println("<td>" + (lead.getCompany() != null ? lead.getCompany() : "") + "</td>");
-      writer.println("<td>" + (lead.getStatus() != null ? lead.getStatus() : "") + "</td>");
+      writer.println("<td>" + (lead.email() != null ? lead.email() : "") + "</td>");
+      writer.println("<td>" + (lead.company() != null ? lead.company() : "") + "</td>");
+      writer.println("<td>" + (lead.status() != null ? lead.status() : "") + "</td>");
       writer.println("</tr>");
     }
 
