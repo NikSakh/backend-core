@@ -62,7 +62,7 @@ class LeadServiceTest {
     UUID existingId = UUID.randomUUID();
     Address address = new Address("City", "Street", "12345");
     Contact contact = new Contact("existing@example.com", "+123456789", address);
-    LeadEntity existingLead = new LeadEntity(existingId, contact, "Existing Company", "CONTACTED");
+    LeadEntity existingLead = new LeadEntity(existingId, contact, "Existing Company", "QUALIFIED");
 
     when(mockRepository.findByEmail("existing@example.com"))
         .thenReturn(Optional.of(existingLead));
@@ -141,11 +141,13 @@ class LeadServiceTest {
   void findAllShouldDelegateToRepository() {
     Address addressFirst = new Address("CityFirst", "StreetFirst", "11111");
     Contact contactFirst = new Contact("leadFirst@example.com", "+111111111", addressFirst);
-    LeadEntity entityFirst = new LeadEntity(UUID.randomUUID(), contactFirst, "Company First", "NEW");
+    LeadEntity entityFirst = new LeadEntity(UUID.randomUUID(), contactFirst,
+        "Company First", "NEW");
 
     Address addressSecond = new Address("CitySecond", "StreetSecond", "22222");
     Contact contactSecond = new Contact("leadSecond@example.com", "+222222222", addressSecond);
-    LeadEntity entitySecond = new LeadEntity(UUID.randomUUID(), contactSecond, "Company Second", "CONTACTED");
+    LeadEntity entitySecond = new LeadEntity(UUID.randomUUID(), contactSecond,
+        "Company Second", "QUALIFIED");
 
     List<LeadEntity> entities = List.of(entityFirst, entitySecond);
     when(mockRepository.findAll()).thenReturn(entities);
@@ -153,12 +155,19 @@ class LeadServiceTest {
     List<LeadDto> result = service.findAll();
 
     assertThat(result).hasSize(2);
-    assertThat(result.get(0).email()).isEqualTo("leadFirst@example.com");
-    assertThat(result.get(0).company()).isEqualTo("Company First");
-    assertThat(result.get(0).status()).isEqualTo(LeadStatus.NEW);
-    assertThat(result.get(1).email()).isEqualTo("leadSecond@example.com");
-    assertThat(result.get(1).company()).isEqualTo("Company Second");
-    assertThat(result.get(1).status()).isEqualTo(LeadStatus.CONTACTED);
+
+    assertThat(result).anySatisfy(lead -> {
+      assertThat(lead.email()).isEqualTo("leadFirst@example.com");
+      assertThat(lead.company()).isEqualTo("Company First");
+      assertThat(lead.status()).isEqualTo(LeadStatus.NEW);
+    });
+
+    assertThat(result).anySatisfy(lead -> {
+      assertThat(lead.email()).isEqualTo("leadSecond@example.com");
+      assertThat(lead.company()).isEqualTo("Company Second");
+      assertThat(lead.status()).isEqualTo(LeadStatus.QUALIFIED);
+    });
+
     verify(mockRepository, times(1)).findAll();
   }
 
