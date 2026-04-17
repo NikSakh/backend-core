@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class InMemoryLeadRepository implements Repository<Lead> {
+public class InMemoryLeadRepository implements Repository<LeadEntity> {
 
-  private final List<Lead> internalStorage = new ArrayList<>();
+  private final List<LeadEntity> internalStorage = new ArrayList<>();
 
   @Override
-  public boolean add(Lead lead) {
+  public boolean add(LeadEntity lead) {
     if (lead == null) {
       throw new IllegalArgumentException("Lead cannot be null");
     }
@@ -30,7 +30,7 @@ public class InMemoryLeadRepository implements Repository<Lead> {
   }
 
   @Override
-  public Optional<Lead> findById(UUID id) {
+  public Optional<LeadEntity> findById(UUID id) {
     if (id == null) {
       throw new IllegalArgumentException("ID cannot be null");
     }
@@ -40,11 +40,11 @@ public class InMemoryLeadRepository implements Repository<Lead> {
   }
 
   @Override
-  public List<Lead> findAll() {
+  public List<LeadEntity> findAll() {
     return new ArrayList<>(internalStorage);
   }
 
-  private boolean contains(Lead lead) {
+  private boolean contains(LeadEntity lead) {
     return internalStorage.contains(lead);
   }
 }

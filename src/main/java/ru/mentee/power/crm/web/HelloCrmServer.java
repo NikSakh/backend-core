@@ -1,13 +1,13 @@
 package ru.mentee.power.crm.web;
 
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 
 public class HelloCrmServer {
 
@@ -25,7 +25,6 @@ public class HelloCrmServer {
     System.out.println("Server started on http://localhost:" + port);
   }
 
-  @SuppressWarnings("deprecation")
   public void stop() {
     server.stop(0);
   }

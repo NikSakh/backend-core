@@ -10,7 +10,6 @@ class CustomerTest {
 
   @Test
   void shouldReuseContactWhenCreatingCustomer() {
-    // Given
     Address contactAddress = new Address("San Francisco", "123 Main St", "94105");
     Address billingAddress = new Address("Los Angeles", "456 Oak Ave", "90210");
 
@@ -23,7 +22,6 @@ class CustomerTest {
         "GOLD"
     );
 
-    // Then
     assertThat(customer.contact().address())
         .isNotEqualTo(customer.billingAddress());
 
@@ -35,13 +33,12 @@ class CustomerTest {
 
   @Test
   void shouldDemonstrateContactReuseAcrossLeadAndCustomer() {
-    // Given
     Address sharedAddress = new Address("New York", "Broadway", "10001");
     Contact sharedContact = new Contact("shared@example.com", "+987654321", sharedAddress);
 
     UUID id = UUID.randomUUID();
 
-    Lead lead = new Lead(
+    LeadEntity lead = new LeadEntity(
         id,
         sharedContact,
         "Acme Corp",

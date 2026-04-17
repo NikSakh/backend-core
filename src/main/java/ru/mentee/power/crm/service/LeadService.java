@@ -3,8 +3,12 @@ package ru.mentee.power.crm.service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import ru.mentee.power.crm.model.Lead;
+import ru.mentee.power.crm.domain.Address;
+import ru.mentee.power.crm.domain.Contact;
+import ru.mentee.power.crm.domain.LeadEntity;
+import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
 
@@ -16,7 +20,7 @@ public class LeadService {
     this.repository = repository;
   }
 
-  public Lead addLead(String email, String company, LeadStatus status) {
+  public LeadDto addLead(String email, String company, LeadStatus status) {
     if (email == null || email.trim().isEmpty()) {
       throw new IllegalArgumentException("Email cannot be null or empty");
     }
@@ -29,34 +33,54 @@ public class LeadService {
 
     String normalizedEmail = email.trim().toLowerCase();
 
-    Optional<Lead> existing = repository.findByEmail(normalizedEmail);
+    Optional<LeadEntity> existing = repository.findByEmail(normalizedEmail);
     if (existing.isPresent()) {
       throw new IllegalStateException(
           String.format("Lead with email '%s' already exists (ID: %s)",
-              normalizedEmail, existing.get().id())
+              normalizedEmail, existing.get().id().toString())
       );
     }
 
-    Lead lead = new Lead(
-        UUID.randomUUID().toString(),
-        normalizedEmail,
-        null,
+    Address address = new Address("Unknown", "Unknown", "00000");
+    Contact contact = new Contact(normalizedEmail, "Unknown", address);
+
+    LeadEntity leadEntity = new LeadEntity(
+        UUID.randomUUID(),
+        contact,
         company.trim(),
-        status
+        status.name()
     );
 
-    return repository.save(lead);
+    LeadEntity savedEntity = repository.save(leadEntity);
+
+    return convertToDto(savedEntity);
   }
 
-  public List<Lead> findAll() {
-    return repository.findAll();
+  public List<LeadDto> findAll() {
+    List<LeadEntity> entities = repository.findAll();
+    return entities.stream()
+        .map(this::convertToDto)
+        .collect(Collectors.toList());  // ← используй collect, не toList() если Java 16+
   }
 
-  public Optional<Lead> findById(UUID id) {
-    return repository.findById(id.toString());
+  public Optional<LeadDto> findById(UUID id) {
+    Optional<LeadEntity> entity = repository.findById(id.toString());  // ← .toString()
+    return entity.map(this::convertToDto);
   }
 
-  public Optional<Lead> findByEmail(String email) {
-    return repository.findByEmail(email);
+  public Optional<LeadDto> findByEmail(String email) {
+    Optional<LeadEntity> entity = repository.findByEmail(email.trim().toLowerCase());
+    return entity.map(this::convertToDto);
+  }
+
+  private LeadDto convertToDto(LeadEntity entity) {
+    Contact contact = entity.contact();
+    return new LeadDto(
+        entity.id().toString(),
+        contact.email(),
+        contact.phone(),
+        entity.company(),
+        LeadStatus.valueOf(entity.status())
+    );
   }
 }
