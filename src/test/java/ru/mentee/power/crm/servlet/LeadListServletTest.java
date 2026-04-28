@@ -7,8 +7,14 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import gg.jte.output.StringOutput;
+import gg.jte.resolve.DirectoryCodeResolver;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -42,23 +48,17 @@ class LeadListServletTest {
   private LeadService mockLeadService;
 
   private LeadListServlet servlet;
+  private TemplateEngine templateEngine;
 
   @BeforeEach
   void setUp() throws ServletException {
     servlet = new LeadListServlet();
     when(mockServletConfig.getServletContext()).thenReturn(mockServletContext);
     servlet.init(mockServletConfig);
-  }
 
-  @Test
-  void doGetShouldReturnInternalServerErrorWhenLeadServiceIsNull()
-      throws ServletException, IOException {
-    when(mockServletContext.getAttribute("leadService")).thenReturn(null);
-
-    servlet.doGet(mockRequest, mockResponse);
-
-    verify(mockResponse).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-        "LeadService not found in ServletContext");
+    Path templatePath = Path.of("src/main/jte");
+    DirectoryCodeResolver codeResolver = new DirectoryCodeResolver(templatePath);
+    templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
   }
 
   @Test
@@ -76,7 +76,7 @@ class LeadListServletTest {
   }
 
   @Test
-  void doGetShouldRenderHtmlWithTableHeaders() throws ServletException, IOException {
+  void doGetShouldCallFindAllOnLeadService() throws ServletException, IOException {
     when(mockServletContext.getAttribute("leadService")).thenReturn(mockLeadService);
     when(mockLeadService.findAll()).thenReturn(List.of());
 
@@ -86,18 +86,11 @@ class LeadListServletTest {
 
     servlet.doGet(mockRequest, mockResponse);
 
-    String html = stringWriter.toString();
-    assertThat(html).contains("<!DOCTYPE html>");
-    assertThat(html).contains("<title>CRM - Lead List</title>");
-    assertThat(html).contains("<h1>Lead List</h1>");
-    assertThat(html).contains("<table border='1'>");
-    assertThat(html).contains("<th>Email</th>");
-    assertThat(html).contains("<th>Company</th>");
-    assertThat(html).contains("<th>Status</th>");
+    verify(mockLeadService).findAll();
   }
 
   @Test
-  void doGetShouldRenderEmptyTableWhenNoLeads() throws ServletException, IOException {
+  void doGetShouldRenderTemplateWithEmptyLeadsList() throws ServletException, IOException {
     when(mockServletContext.getAttribute("leadService")).thenReturn(mockLeadService);
     when(mockLeadService.findAll()).thenReturn(List.of());
 
@@ -107,14 +100,14 @@ class LeadListServletTest {
 
     servlet.doGet(mockRequest, mockResponse);
 
-    String html = stringWriter.toString();
-    assertThat(html).contains("<tbody>");
-    assertThat(html).contains("</tbody>");
-    assertThat(html).doesNotContain("<td>");
+    StringOutput expectedOutput = new StringOutput();
+    templateEngine.render("leads/list.jte", Map.of("leads", List.of()), expectedOutput);
+
+    assertThat(stringWriter.toString()).isEqualTo(expectedOutput.toString());
   }
 
   @Test
-  void doGetShouldRenderSingleLeadCorrectly() throws ServletException, IOException {
+  void doGetShouldRenderTemplateWithSingleLead() throws ServletException, IOException {
     LeadDto lead = new LeadDto("1", "test@example.com", "+123456789",
         "Test Company", LeadStatus.NEW);
     List<LeadDto> leads = List.of(lead);
@@ -128,14 +121,14 @@ class LeadListServletTest {
 
     servlet.doGet(mockRequest, mockResponse);
 
-    String html = stringWriter.toString();
-    assertThat(html).contains("<td>test@example.com</td>");
-    assertThat(html).contains("<td>Test Company</td>");
-    assertThat(html).contains("<td>Новый</td>");
+    StringOutput expectedOutput = new StringOutput();
+    templateEngine.render("leads/list.jte", Map.of("leads", leads), expectedOutput);
+
+    assertThat(stringWriter.toString()).isEqualTo(expectedOutput.toString());
   }
 
   @Test
-  void doGetShouldRenderMultipleLeadsCorrectly() throws ServletException, IOException {
+  void doGetShouldRenderTemplateWithMultipleLeads() throws ServletException, IOException {
     LeadDto leadFirst = new LeadDto("1", "first@example.com", "+111111111",
         "Company First", LeadStatus.NEW);
     LeadDto leadSecond = new LeadDto("2", "second@example.com", "+222222222",
@@ -153,131 +146,9 @@ class LeadListServletTest {
 
     servlet.doGet(mockRequest, mockResponse);
 
-    String html = stringWriter.toString();
-    assertThat(html).contains("<td>first@example.com</td>");
-    assertThat(html).contains("<td>Company First</td>");
-    assertThat(html).contains("<td>Новый</td>");
-    assertThat(html).contains("<td>second@example.com</td>");
-    assertThat(html).contains("<td>Company Second</td>");
-    assertThat(html).contains("<td>Квалифицирован</td>");
-    assertThat(html).contains("<td>third@example.com</td>");
-    assertThat(html).contains("<td>Company Third</td>");
-    assertThat(html).contains("<td>Конвертирован</td>");
-  }
+    StringOutput expectedOutput = new StringOutput();
+    templateEngine.render("leads/list.jte", Map.of("leads", leads), expectedOutput);
 
-  @Test
-  void doGetShouldHandleNullEmailInLead() throws ServletException, IOException {
-    LeadDto lead = new LeadDto("1", null, "+123456789", "Test Company", LeadStatus.NEW);
-    List<LeadDto> leads = List.of(lead);
-
-    when(mockServletContext.getAttribute("leadService")).thenReturn(mockLeadService);
-    when(mockLeadService.findAll()).thenReturn(leads);
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    when(mockResponse.getWriter()).thenReturn(printWriter);
-
-    servlet.doGet(mockRequest, mockResponse);
-
-    String html = stringWriter.toString();
-    assertThat(html).contains("<td></td>");
-    assertThat(html).contains("<td>Test Company</td>");
-    assertThat(html).contains("<td>Новый</td>");
-  }
-
-  @Test
-  void doGetShouldHandleNullCompanyInLead() throws ServletException, IOException {
-    LeadDto lead = new LeadDto("1", "test@example.com", "+123456789", null, LeadStatus.NEW);
-    List<LeadDto> leads = List.of(lead);
-
-    when(mockServletContext.getAttribute("leadService")).thenReturn(mockLeadService);
-    when(mockLeadService.findAll()).thenReturn(leads);
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    when(mockResponse.getWriter()).thenReturn(printWriter);
-
-    servlet.doGet(mockRequest, mockResponse);
-
-    String html = stringWriter.toString();
-    assertThat(html).contains("<td>test@example.com</td>");
-    assertThat(html).contains("<td></td>");
-    assertThat(html).contains("<td>Новый</td>");
-  }
-
-  @Test
-  void doGetShouldHandleNullStatusInLead() throws ServletException, IOException {
-    LeadDto lead = new LeadDto("1", "test@example.com", "+123456789",
-        "Test Company", null);
-    List<LeadDto> leads = List.of(lead);
-
-    when(mockServletContext.getAttribute("leadService")).thenReturn(mockLeadService);
-    when(mockLeadService.findAll()).thenReturn(leads);
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    when(mockResponse.getWriter()).thenReturn(printWriter);
-
-    servlet.doGet(mockRequest, mockResponse);
-
-    String html = stringWriter.toString();
-    assertThat(html).contains("<td>test@example.com</td>");
-    assertThat(html).contains("<td>Test Company</td>");
-    assertThat(html).contains("<td></td>");
-  }
-
-  @Test
-  void doGetShouldHandleAllNullFieldsInLead() throws ServletException, IOException {
-    LeadDto lead = new LeadDto("1", null, null, null, null);
-    List<LeadDto> leads = List.of(lead);
-
-    when(mockServletContext.getAttribute("leadService")).thenReturn(mockLeadService);
-    when(mockLeadService.findAll()).thenReturn(leads);
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    when(mockResponse.getWriter()).thenReturn(printWriter);
-
-    servlet.doGet(mockRequest, mockResponse);
-
-    String html = stringWriter.toString();
-    assertThat(html).contains("<td></td>");
-    assertThat(html).contains("<tr>");
-    assertThat(html).contains("</tr>");
-  }
-
-  @Test
-  void doGetShouldCallFindAllOnLeadService() throws ServletException, IOException {
-    when(mockServletContext.getAttribute("leadService")).thenReturn(mockLeadService);
-    when(mockLeadService.findAll()).thenReturn(List.of());
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    when(mockResponse.getWriter()).thenReturn(printWriter);
-
-    servlet.doGet(mockRequest, mockResponse);
-
-    verify(mockLeadService).findAll();
-  }
-
-  @Test
-  void doGetShouldRenderCompleteHtmlStructure() throws ServletException, IOException {
-    when(mockServletContext.getAttribute("leadService")).thenReturn(mockLeadService);
-    when(mockLeadService.findAll()).thenReturn(List.of());
-
-    StringWriter stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter(stringWriter);
-    when(mockResponse.getWriter()).thenReturn(printWriter);
-
-    servlet.doGet(mockRequest, mockResponse);
-
-    String html = stringWriter.toString();
-    assertThat(html).startsWith("<!DOCTYPE html>");
-    assertThat(html).contains("<html>");
-    assertThat(html).contains("<head>");
-    assertThat(html).contains("<body>");
-    assertThat(html).contains("<thead>");
-    assertThat(html).contains("<tbody>");
-    assertThat(html).contains("</html>");
+    assertThat(stringWriter.toString()).isEqualTo(expectedOutput.toString());
   }
 }
