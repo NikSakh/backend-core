@@ -25,7 +25,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-          cache: 'gradle'
 
       - name: Run Checkstyle analysis
         run: ./gradlew --no-daemon checkstyleMain
@@ -37,7 +36,7 @@ jobs:
         run: ./gradlew --no-daemon jacocoTestReport
 
       - name: Verify coverage threshold (minimum 80 %)
-        run: ./gradlew --no-daemon jacocoTestCoverageVerification
+        run: ./gradlew --no-daemon clean jacocoTestCoverageVerification
 
       - name: Build project
         run: ./gradlew --no-daemon build
