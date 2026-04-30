@@ -7,22 +7,28 @@ import org.junit.jupiter.api.Test;
 class LeadStatusTest {
 
   @Test
-  void shouldHaveThreeStatuses() {
-    assertThat(LeadStatus.values()).hasSize(3);
+  void shouldHaveFiveStatuses() {
+    assertThat(LeadStatus.values()).hasSize(5);
   }
 
   @Test
-  void shouldContainNew() {
-    assertThat(LeadStatus.valueOf("NEW")).isEqualTo(LeadStatus.NEW);
+  void shouldHaveCorrectDisplayNames() {
+    assertThat(LeadStatus.NEW.getDisplayName()).isEqualTo("Новый");
+    assertThat(LeadStatus.CONTACTED.getDisplayName()).isEqualTo("В контакте");
+    assertThat(LeadStatus.QUALIFIED.getDisplayName()).isEqualTo("Квалифицирован");
+    assertThat(LeadStatus.CONVERTED.getDisplayName()).isEqualTo("Конвертирован");
+    assertThat(LeadStatus.LOST.getDisplayName()).isEqualTo("Потерян");
   }
 
   @Test
-  void shouldContainQualified() {
-    assertThat(LeadStatus.valueOf("QUALIFIED")).isEqualTo(LeadStatus.QUALIFIED);
-  }
-
-  @Test
-  void shouldContainConverted() {
-    assertThat(LeadStatus.valueOf("CONVERTED")).isEqualTo(LeadStatus.CONVERTED);
+  void shouldContainAllStatuses() {
+    assertThat(LeadStatus.values())
+        .containsExactlyInAnyOrder(
+            LeadStatus.NEW,
+            LeadStatus.CONTACTED,
+            LeadStatus.QUALIFIED,
+            LeadStatus.CONVERTED,
+            LeadStatus.LOST
+        );
   }
 }
