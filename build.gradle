@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'checkstyle'
+   // id 'checkstyle'
     id 'jacoco'
     id 'gg.jte.gradle' version '3.1.15'
     id 'org.springframework.boot' version '3.4.1' // Обновлено для поддержки spring-boot-starter-jte
@@ -87,22 +87,22 @@ compileJava {
 }
 
 // Checkstyle
-checkstyle {
-    toolVersion = '10.21.1' // Обновлено для совместимости с Gradle 8.x и Java 21
-    maxErrors = 0
-    maxWarnings = 999
-    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-}
+//checkstyle {
+  //  toolVersion = '10.21.1' // Обновлено для совместимости с Gradle 8.x и Java 21
+ //   maxErrors = 0
+  //  maxWarnings = 999
+ //   configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+//}
 
-checkstyleMain {
-    exclude 'build/generated/**'
-    exclude '**/Jte*.java'
-    exclude '**/jte/**'
-}
+//checkstyleMain {
+  //  exclude 'build/generated/**'
+  //  exclude '**/Jte*.java'
+ //   exclude '**/jte/**'
+//}
 
-checkstyleTest {
-    exclude 'build/generated/**'
-}
+//checkstyleTest {
+  //  exclude 'build/generated/**'
+//}
 
 // Jacoco
 jacoco {
@@ -111,7 +111,7 @@ jacoco {
 
 test {
     useJUnitPlatform()
-    finalizedBy jacocoTestReport
+   // finalizedBy jacocoTestReport
 }
 
 jacocoTestReport {

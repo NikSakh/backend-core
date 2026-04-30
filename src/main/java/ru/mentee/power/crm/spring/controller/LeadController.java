@@ -1,14 +1,13 @@
 package ru.mentee.power.crm.spring.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.service.LeadService;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class LeadController {
 
   private final LeadService leadService;
@@ -18,9 +17,7 @@ public class LeadController {
   }
 
   @GetMapping("/leads")
-  public String showLeads(Model model) {
-    List<LeadDto> leads = leadService.findAll();
-    model.addAttribute("leads", leads);
-    return "leads/list";
+  public List<LeadDto> showLeads() {
+    return leadService.findAll();
   }
 }

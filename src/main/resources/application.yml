@@ -9,3 +9,8 @@ gg:
   jte:
     templateLocation: classpath:/jte/
     developmentMode: true
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    ru.mentee.power.crm: DEBUG
