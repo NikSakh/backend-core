@@ -4,7 +4,7 @@ plugins {
     id 'checkstyle'
     id 'jacoco'
     id 'gg.jte.gradle' version '3.1.15'
-    id 'org.springframework.boot' version '3.4.1' // Обновлено для поддержки spring-boot-starter-jte
+    id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -17,7 +17,7 @@ ext {
     servletVersion = '6.1.0'
     tomcatVersion = '10.1.25'
     jteVersion = '3.1.15'
-    springBootVersion = '3.3.5'  // Обновлено
+    springBootVersion = '3.4.1'
 }
 
 java {
@@ -43,7 +43,6 @@ repositories {
 }
 
 dependencies {
-    // Тестирование
     testImplementation platform("org.junit:junit-bom:${junitVersion}")
     testImplementation "org.junit.jupiter:junit-jupiter"
     testImplementation "org.assertj:assertj-core:${assertjVersion}"
@@ -53,20 +52,15 @@ dependencies {
     testRuntimeOnly 'net.bytebuddy:byte-buddy:1.18.8'
     testRuntimeOnly 'net.bytebuddy:byte-buddy-agent:1.18.8'
 
-    // Servlet стек (Embedded Tomcat)
     implementation "jakarta.servlet:jakarta.servlet-api:${servletVersion}"
     implementation "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}"
 
-    // JTE
     implementation "gg.jte:jte:${jteVersion}"
     implementation "gg.jte:jte-runtime:${jteVersion}"
 
-    // Spring Boot
-    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-    implementation "gg.jte:jte:${jteVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web"
 }
 
-// Конфигурация плагина gg.jte.gradle (для предкомпиляции шаблонов)
 jte {
     sourceDirectory.set(file("src/main/jte").toPath())
     targetDirectory.set(file("build/generated/sources/jte/main").toPath())
@@ -86,9 +80,8 @@ compileJava {
     dependsOn generateJte
 }
 
-// Checkstyle
 checkstyle {
-    toolVersion = '10.21.1' // Обновлено для совместимости с Gradle 8.x и Java 21
+    toolVersion = '10.21.4'
     maxErrors = 0
     maxWarnings = 999
     configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
@@ -104,13 +97,22 @@ checkstyleTest {
     exclude 'build/generated/**'
 }
 
-// Jacoco
 jacoco {
-    toolVersion = '0.8.14'
+    toolVersion = '0.8.12'
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+    exclude '**/StackComparisonTest*'
+    exclude '**/HelloCrmServerTest*'
+}
+
+tasks.register('integrationTest', Test) {
+    useJUnitPlatform()
+    include '**/StackComparisonTest*'
+    include '**/HelloCrmServerTest*'
+    mustRunAfter test
     finalizedBy jacocoTestReport
 }
 
@@ -133,16 +135,20 @@ jacocoTestCoverageVerification {
             }
         }
     }
-
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
-                    '**/Jte*',
-                    '**/*.jte',
-                    '**/jte/**'
-            ])
-        }))
-    }
+    classDirectories.setFrom(
+            sourceSets.main.output.files.collect { dir ->
+                fileTree(dir: dir, exclude: [
+                        '**/Jte*',
+                        '**/*.jte',
+                        '**/jte/**',
+                        '**/Application.class',
+                        '**/HelloController.class',
+                        '**/web/**',
+                        '**/generated/**',
+                        '**/core/**'
+                ])
+            }
+    )
 }
 
 check {

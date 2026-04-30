@@ -20,12 +20,11 @@ jobs:
       - name: Set executable permissions for Gradle Wrapper
         run: chmod +x gradlew
 
-      - name: Setup Java 25 (Temurin)
+      - name: Setup Java 21 (Temurin)
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '25'
-          cache: 'gradle'
+          java-version: '21'
 
       - name: Run Checkstyle analysis
         run: ./gradlew --no-daemon checkstyleMain
@@ -37,7 +36,7 @@ jobs:
         run: ./gradlew --no-daemon jacocoTestReport
 
       - name: Verify coverage threshold (minimum 80 %)
-        run: ./gradlew --no-daemon jacocoTestCoverageVerification
+        run: ./gradlew --no-daemon clean jacocoTestCoverageVerification
 
       - name: Build project
         run: ./gradlew --no-daemon build

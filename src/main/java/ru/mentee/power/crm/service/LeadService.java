@@ -1,11 +1,11 @@
 package ru.mentee.power.crm.service;
 
-import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
 import ru.mentee.power.crm.domain.LeadEntity;
@@ -62,11 +62,11 @@ public class LeadService {
     List<LeadEntity> entities = repository.findAll();
     return entities.stream()
         .map(this::convertToDto)
-        .collect(Collectors.toList());  // ← используй collect, не toList() если Java 16+
+        .collect(Collectors.toList());
   }
 
   public Optional<LeadDto> findById(UUID id) {
-    Optional<LeadEntity> entity = repository.findById(id.toString());  // ← .toString()
+    Optional<LeadEntity> entity = repository.findById(id.toString());
     return entity.map(this::convertToDto);
   }
 
