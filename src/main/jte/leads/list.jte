@@ -1,11 +1,36 @@
 @import ru.mentee.power.crm.model.LeadDto
+@import ru.mentee.power.crm.model.LeadStatus
 @import gg.jte.Content
 
 @param java.util.List<ru.mentee.power.crm.model.LeadDto> leads
+@param ru.mentee.power.crm.model.LeadStatus currentFilter
 
 @template.layout.main(content = @`
     <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-2xl font-bold mb-4">Lead List</h2>
+
+        <div class="mb-4 flex gap-2">
+            <a href="/leads"
+               class="${currentFilter == null ? "bg-blue-500 text-white" : "bg-gray-200"} px-4 py-2 rounded">
+                Все
+            </a>
+            <a href="/leads?status=NEW"
+               class="${currentFilter == LeadStatus.NEW ? "bg-blue-500 text-white" : "bg-gray-200"} px-4 py-2 rounded">
+                NEW
+            </a>
+            <a href="/leads?status=CONTACTED"
+               class="${currentFilter == LeadStatus.CONTACTED ? "bg-blue-500 text-white" : "bg-gray-200"} px-4 py-2 rounded">
+                CONTACTED
+            </a>
+            <a href="/leads?status=QUALIFIED"
+               class="${currentFilter == LeadStatus.QUALIFIED ? "bg-blue-500 text-white" : "bg-gray-200"} px-4 py-2 rounded">
+                QUALIFIED
+            </a>
+        </div>
+
+        @if(currentFilter != null)
+            <p class="text-sm text-gray-600 mb-2">Показаны лиды со статусом: ${currentFilter}</p>
+        @endif
 
         <table class="min-w-full bg-white border border-gray-200">
             <thead class="bg-gray-100">

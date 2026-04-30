@@ -65,6 +65,14 @@ public class LeadService {
         .collect(Collectors.toList());
   }
 
+  public List<LeadDto> findByStatus(LeadStatus status) {
+    List<LeadEntity> entities = repository.findAll();
+    return entities.stream()
+        .filter(lead -> lead.status().equals(status.name()))
+        .map(this::convertToDto)
+        .collect(Collectors.toList());
+  }
+
   public Optional<LeadDto> findById(UUID id) {
     Optional<LeadEntity> entity = repository.findById(id.toString());
     return entity.map(this::convertToDto);

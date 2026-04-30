@@ -249,4 +249,71 @@ class LeadServiceTest {
     assertThat(result.company()).isEqualTo("Company");
     assertThat(result.status()).isEqualTo(LeadStatus.QUALIFIED);
   }
+
+  @Test
+  void shouldReturnOnlyNewLeadsWhenFindByStatusNew() {
+    LeadRepository repository = new LeadRepository();
+    LeadService leadService = new LeadService(repository);
+
+    leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
+    leadService.addLead("new2@example.com", "Corp2", LeadStatus.NEW);
+    leadService.addLead("new3@example.com", "Corp3", LeadStatus.NEW);
+    leadService.addLead("contacted1@example.com", "Corp4", LeadStatus.CONTACTED);
+    leadService.addLead("contacted2@example.com", "Corp5", LeadStatus.CONTACTED);
+    leadService.addLead("contacted3@example.com", "Corp6", LeadStatus.CONTACTED);
+    leadService.addLead("contacted4@example.com", "Corp7", LeadStatus.CONTACTED);
+    leadService.addLead("contacted5@example.com", "Corp8", LeadStatus.CONTACTED);
+    leadService.addLead("qualified1@example.com", "Corp9", LeadStatus.QUALIFIED);
+    leadService.addLead("qualified2@example.com", "Corp10", LeadStatus.QUALIFIED);
+
+    List<LeadDto> result = leadService.findByStatus(LeadStatus.NEW);
+
+    assertThat(result).hasSize(3);
+    assertThat(result).allMatch(lead -> lead.status().equals(LeadStatus.NEW));
+  }
+
+  @Test
+  void shouldReturnEmptyListWhenNoLeadsWithStatus() {
+    LeadRepository repository = new LeadRepository();
+    LeadService leadService = new LeadService(repository);
+
+    leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
+    leadService.addLead("contacted1@example.com", "Corp2", LeadStatus.CONTACTED);
+
+    List<LeadDto> result = leadService.findByStatus(LeadStatus.QUALIFIED);
+
+    assertThat(result).isEmpty();
+  }
+
+  @Test
+  void shouldReturnOnlyContactedLeadsWhenFindByStatusContacted() {
+    LeadRepository repository = new LeadRepository();
+    LeadService leadService = new LeadService(repository);
+
+    leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
+    leadService.addLead("contacted1@example.com", "Corp2", LeadStatus.CONTACTED);
+    leadService.addLead("contacted2@example.com", "Corp3", LeadStatus.CONTACTED);
+    leadService.addLead("qualified1@example.com", "Corp4", LeadStatus.QUALIFIED);
+
+    List<LeadDto> result = leadService.findByStatus(LeadStatus.CONTACTED);
+
+    assertThat(result).hasSize(2);
+    assertThat(result).allMatch(lead -> lead.status().equals(LeadStatus.CONTACTED));
+  }
+
+  @Test
+  void shouldReturnOnlyQualifiedLeadsWhenFindByStatusQualified() {
+    LeadRepository repository = new LeadRepository();
+    LeadService leadService = new LeadService(repository);
+
+    leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
+    leadService.addLead("qualified1@example.com", "Corp2", LeadStatus.QUALIFIED);
+    leadService.addLead("qualified2@example.com", "Corp3", LeadStatus.QUALIFIED);
+    leadService.addLead("qualified3@example.com", "Corp4", LeadStatus.QUALIFIED);
+
+    List<LeadDto> result = leadService.findByStatus(LeadStatus.QUALIFIED);
+
+    assertThat(result).hasSize(3);
+    assertThat(result).allMatch(lead -> lead.status().equals(LeadStatus.QUALIFIED));
+  }
 }

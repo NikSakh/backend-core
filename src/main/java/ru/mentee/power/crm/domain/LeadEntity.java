@@ -6,7 +6,7 @@ import java.util.UUID;
 public record LeadEntity(UUID id, Contact contact, String company, String status) {
 
   private static final Set<String> ALLOWED_STATUSES = Set.of(
-      "NEW", "QUALIFIED", "CONVERTED"
+      "NEW", "CONTACTED", "QUALIFIED", "CONVERTED", "LOST"
   );
 
   public LeadEntity {
