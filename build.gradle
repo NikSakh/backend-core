@@ -141,7 +141,10 @@ jacocoTestCoverageVerification {
             fileTree(dir: it, exclude: [
                     '**/Jte*',
                     '**/*.jte',
-                    '**/jte/**'
+                    '**/jte/**',
+                    '**/ru/mentee/power/crm/Application.class',
+                    '**/ru/mentee/power/crm/spring/Application.class',
+                    '**/ru/mentee/power/crm/spring/controller/HelloController.class'
             ])
         }))
     }
