@@ -135,19 +135,17 @@ jacocoTestCoverageVerification {
             }
         }
     }
-
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
-                    '**/Jte*',
-                    '**/*.jte',
-                    '**/jte/**',
-                    '**/ru/mentee/power/crm/Application.class',
-                    '**/ru/mentee/power/crm/spring/Application.class',
-                    '**/ru/mentee/power/crm/spring/controller/HelloController.class'
-            ])
-        }))
-    }
+    classDirectories.setFrom(
+            sourceSets.main.output.files.collect { dir ->
+                fileTree(dir: dir, exclude: [
+                        '**/Jte*',
+                        '**/*.jte',
+                        '**/jte/**',
+                        '**/Application.class',
+                        '**/HelloController.class'
+                ])
+            }
+    )
 }
 
 check {
