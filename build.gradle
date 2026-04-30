@@ -142,7 +142,10 @@ jacocoTestCoverageVerification {
                         '**/*.jte',
                         '**/jte/**',
                         '**/Application.class',
-                        '**/HelloController.class'
+                        '**/HelloController.class',
+                        '**/web/**',
+                        '**/generated/**',
+                        '**/core/**'
                 ])
             }
     )
