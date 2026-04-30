@@ -1,5 +1,6 @@
 package ru.mentee.power.crm.service;
 
+import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
 
+@Service
 public class LeadService {
 
   private final LeadRepository repository;

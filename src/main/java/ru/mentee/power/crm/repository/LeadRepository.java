@@ -1,5 +1,6 @@
 package ru.mentee.power.crm.repository;
 
+import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import ru.mentee.power.crm.domain.LeadEntity;
 
+@Repository
 public class LeadRepository {
   private final ConcurrentHashMap<String, LeadEntity> storage = new ConcurrentHashMap<>();
 
