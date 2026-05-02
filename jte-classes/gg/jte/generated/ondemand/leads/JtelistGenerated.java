@@ -5,28 +5,29 @@ import gg.jte.Content;
 @SuppressWarnings("unchecked")
 public final class JtelistGenerated {
 	public static final String JTE_NAME = "leads/list.jte";
-	public static final int[] JTE_LINE_INFO = {0,0,1,2,4,4,4,4,7,7,7,7,13,13,13,13,17,17,17,17,21,21,21,21,25,25,25,25,30,30,31,31,31,32,32,43,43,45,45,45,46,46,46,49,49,49,53,53,57,57,57,57,57,4,5,5,5,5};
+	public static final int[] JTE_LINE_INFO = {0,0,1,2,4,4,4,4,7,7,7,7,11,15,15,15,15,19,19,19,19,23,23,23,23,27,27,27,27,38,38,39,39,39,40,40,51,51,53,53,53,54,54,54,57,57,57,61,61,65,65,65,65,65,4,5,5,5,5};
 	public static void render(gg.jte.html.HtmlTemplateOutput jteOutput, gg.jte.html.HtmlInterceptor jteHtmlInterceptor, java.util.List<ru.mentee.power.crm.model.LeadDto> leads, ru.mentee.power.crm.model.LeadStatus currentFilter) {
 		jteOutput.writeContent("\r\n");
 		gg.jte.generated.ondemand.layout.JtemainGenerated.render(jteOutput, jteHtmlInterceptor, new gg.jte.html.HtmlContent() {
 			public void writeTo(gg.jte.html.HtmlTemplateOutput jteOutput) {
-				jteOutput.writeContent("\r\n    <div class=\"bg-white rounded-lg shadow-md p-6\">\r\n        <h2 class=\"text-2xl font-bold mb-4\">Lead List</h2>\r\n\r\n        <div class=\"mb-4 flex gap-2\">\r\n            <a href=\"/leads\"\r\n               class=\"");
+				jteOutput.writeContent("\r\n    <div class=\"bg-white rounded-lg shadow-md p-6\">\r\n        <h2 class=\"text-2xl font-bold mb-4\">Lead List</h2>\r\n\r\n        ");
+				jteOutput.writeContent("\r\n        <div class=\"mb-4 flex justify-between items-center\">\r\n            <div class=\"flex gap-2\">\r\n                <a href=\"/leads\"\r\n                   class=\"");
 				jteOutput.setContext("a", "class");
 				jteOutput.writeUserContent(currentFilter == null ? "bg-blue-500 text-white" : "bg-gray-200");
 				jteOutput.setContext("a", null);
-				jteOutput.writeContent(" px-4 py-2 rounded\">\r\n                Все\r\n            </a>\r\n            <a href=\"/leads?status=NEW\"\r\n               class=\"");
+				jteOutput.writeContent(" px-4 py-2 rounded\">\r\n                    Все\r\n                </a>\r\n                <a href=\"/leads?status=NEW\"\r\n                   class=\"");
 				jteOutput.setContext("a", "class");
 				jteOutput.writeUserContent(currentFilter == LeadStatus.NEW ? "bg-blue-500 text-white" : "bg-gray-200");
 				jteOutput.setContext("a", null);
-				jteOutput.writeContent(" px-4 py-2 rounded\">\r\n                NEW\r\n            </a>\r\n            <a href=\"/leads?status=CONTACTED\"\r\n               class=\"");
+				jteOutput.writeContent(" px-4 py-2 rounded\">\r\n                    NEW\r\n                </a>\r\n                <a href=\"/leads?status=CONTACTED\"\r\n                   class=\"");
 				jteOutput.setContext("a", "class");
 				jteOutput.writeUserContent(currentFilter == LeadStatus.CONTACTED ? "bg-blue-500 text-white" : "bg-gray-200");
 				jteOutput.setContext("a", null);
-				jteOutput.writeContent(" px-4 py-2 rounded\">\r\n                CONTACTED\r\n            </a>\r\n            <a href=\"/leads?status=QUALIFIED\"\r\n               class=\"");
+				jteOutput.writeContent(" px-4 py-2 rounded\">\r\n                    CONTACTED\r\n                </a>\r\n                <a href=\"/leads?status=QUALIFIED\"\r\n                   class=\"");
 				jteOutput.setContext("a", "class");
 				jteOutput.writeUserContent(currentFilter == LeadStatus.QUALIFIED ? "bg-blue-500 text-white" : "bg-gray-200");
 				jteOutput.setContext("a", null);
-				jteOutput.writeContent(" px-4 py-2 rounded\">\r\n                QUALIFIED\r\n            </a>\r\n        </div>\r\n\r\n        ");
+				jteOutput.writeContent(" px-4 py-2 rounded\">\r\n                    QUALIFIED\r\n                </a>\r\n            </div>\r\n\r\n            <a href=\"/leads/new\"\r\n               class=\"bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors\">\r\n                + Добавить лида\r\n            </a>\r\n        </div>\r\n\r\n        ");
 				if (currentFilter != null) {
 					jteOutput.writeContent("\r\n            <p class=\"text-sm text-gray-600 mb-2\">Показаны лиды со статусом: ");
 					jteOutput.setContext("p", null);
