@@ -5,6 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
@@ -16,10 +19,18 @@ import ru.mentee.power.crm.repository.LeadRepository;
 @Service
 public class LeadService {
 
+  private static final Logger LOG = LoggerFactory.getLogger(LeadService.class);
+
   private final LeadRepository repository;
 
   public LeadService(LeadRepository repository) {
     this.repository = repository;
+    LOG.info("LeadService constructor called");
+  }
+
+  @PostConstruct
+  void init() {
+    LOG.info("LeadService @PostConstruct init() called - Bean lifecycle phase");
   }
 
   public LeadDto addLead(String email, String company, LeadStatus status) {
