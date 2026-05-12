@@ -2,19 +2,30 @@ package ru.mentee.power.crm.spring.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
+import org.springframework.web.server.ResponseStatusException;
+import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.spring.MockLeadService;
 
 class LeadControllerUnitTest {
 
+  private MockLeadService mockService;
+  private LeadController controller;
+
+  @BeforeEach
+  void setUp() {
+    mockService = new MockLeadService();
+    controller = new LeadController(mockService);
+  }
+
   @Test
   void shouldCreateControllerWithoutSpring() {
-    MockLeadService mockService = new MockLeadService();
-    LeadController controller = new LeadController(mockService);
-
     Model model = new ExtendedModelMap();
     String viewName = controller.showLeads(null, model);
 
@@ -24,9 +35,6 @@ class LeadControllerUnitTest {
 
   @Test
   void shouldFilterByStatus() {
-    MockLeadService mockService = new MockLeadService();
-    LeadController controller = new LeadController(mockService);
-
     Model model = new ExtendedModelMap();
     controller.showLeads(LeadStatus.NEW, model);
 
@@ -40,5 +48,53 @@ class LeadControllerUnitTest {
   void shouldNotRequireSpringContext() {
     LeadController controller = new LeadController(new MockLeadService());
     assertThat(controller).isNotNull();
+  }
+
+  @Test
+  void shouldShowCreateForm() {
+    Model model = new ExtendedModelMap();
+    String viewName = controller.showCreateForm(model);
+
+    assertThat(viewName).isEqualTo("leads/create");
+    assertThat(model.getAttribute("lead")).isNotNull();
+  }
+
+  @Test
+  void shouldShowEditFormForExistingLead() {
+    Model model = new ExtendedModelMap();
+    String viewName = controller.showEditForm(UUID.fromString(
+        "11111111-1111-1111-1111-111111111111"), model);
+
+    assertThat(viewName).isEqualTo("leads/edit");
+    assertThat(model.getAttribute("lead")).isNotNull();
+  }
+
+  @Test
+  void shouldThrowExceptionWhenEditingNonexistentLead() {
+    Model model = new ExtendedModelMap();
+    try {
+      controller.showEditForm(UUID.fromString("22222222-2222-2222-2222-222222222222"), model);
+    } catch (ResponseStatusException e) {
+      assertThat(e.getStatusCode().value()).isEqualTo(404);
+      assertThat(e.getReason()).contains("not found");
+    }
+  }
+
+  @Test
+  void shouldUpdateLeadAndRedirect() {
+    LeadDto leadDto = new LeadDto(
+        "11111111-1111-1111-1111-111111111111",
+        "updated@example.com",
+        "+123",
+        "Updated Corp",
+        LeadStatus.QUALIFIED
+    );
+
+    String viewName = controller.updateLead(
+        UUID.fromString("11111111-1111-1111-1111-111111111111"),
+        leadDto
+    );
+
+    assertThat(viewName).isEqualTo("redirect:/leads");
   }
 }

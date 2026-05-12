@@ -316,4 +316,78 @@ class LeadServiceTest {
     assertThat(result).hasSize(3);
     assertThat(result).allMatch(lead -> lead.status().equals(LeadStatus.QUALIFIED));
   }
+
+  @Test
+  void shouldUpdateExistingLeadSuccessfully() {
+    UUID existingId = UUID.randomUUID();
+    Address address = new Address("Unknown", "Unknown", "00000");
+    Contact contact = new Contact("old@example.com", "Unknown", address);
+    LeadEntity existingEntity = new LeadEntity(existingId, contact, "Old Company", "NEW");
+
+    when(mockRepository.findById(existingId.toString()))
+        .thenReturn(Optional.of(existingEntity));
+    when(mockRepository.save(any(LeadEntity.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    LeadDto updated = service.update(
+        existingId,
+        "new@example.com",
+        "+123456789",
+        "New Company",
+        LeadStatus.QUALIFIED
+    );
+
+    assertThat(updated.id()).isEqualTo(existingId.toString());
+    assertThat(updated.email()).isEqualTo("new@example.com");
+    assertThat(updated.phone()).isEqualTo("+123456789");
+    assertThat(updated.company()).isEqualTo("New Company");
+    assertThat(updated.status()).isEqualTo(LeadStatus.QUALIFIED);
+
+    verify(mockRepository, times(1)).findById(existingId.toString());
+    verify(mockRepository, times(1)).save(any(LeadEntity.class));
+  }
+
+  @Test
+  void shouldThrowExceptionWhenUpdatingNonexistentLead() {
+    UUID nonExistentId = UUID.randomUUID();
+    when(mockRepository.findById(nonExistentId.toString()))
+        .thenReturn(Optional.empty());
+
+    assertThatThrownBy(() ->
+        service.update(nonExistentId, "new@example.com", "+123", "Company", LeadStatus.NEW)
+    )
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("not found");
+
+    verify(mockRepository, never()).save(any(LeadEntity.class));
+  }
+
+  @Test
+  void shouldUpdateLeadPreservingExistingAddress() {
+    UUID existingId = UUID.randomUUID();
+    Address originalAddress = new Address("Moscow", "Tverskaya", "123456");
+    Contact contact = new Contact("old@example.com", "Unknown", originalAddress);
+    LeadEntity existingEntity = new LeadEntity(existingId, contact, "Old Company", "NEW");
+
+    when(mockRepository.findById(existingId.toString()))
+        .thenReturn(Optional.of(existingEntity));
+
+    ArgumentCaptor<LeadEntity> entityCaptor = ArgumentCaptor.forClass(LeadEntity.class);
+    when(mockRepository.save(entityCaptor.capture()))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    LeadDto updated = service.update(
+        existingId,
+        "new@example.com",
+        "+79991234567",
+        "New Company",
+        LeadStatus.CONTACTED
+    );
+
+    LeadEntity savedEntity = entityCaptor.getValue();
+    assertThat(savedEntity.contact().address().city()).isEqualTo("Moscow");
+    assertThat(savedEntity.contact().address().street()).isEqualTo("Tverskaya");
+    assertThat(savedEntity.contact().address().zip()).isEqualTo("123456");
+    assertThat(savedEntity.contact().phone()).isEqualTo("+79991234567");
+  }
 }

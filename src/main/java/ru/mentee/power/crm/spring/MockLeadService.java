@@ -1,6 +1,10 @@
 package ru.mentee.power.crm.spring;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
@@ -11,16 +15,18 @@ public class MockLeadService extends LeadService {
   private final List<LeadDto> mockLeads;
 
   public MockLeadService() {
-    super(new LeadRepository()); // пустой репозиторий, не используется
-    this.mockLeads = List.of(
-        new LeadDto("1", "test1@example.com", "+1234567890", "TestCorp1", LeadStatus.NEW),
-        new LeadDto("2", "test2@example.com", "+0987654321", "TestCorp2", LeadStatus.QUALIFIED)
-    );
+    super(new LeadRepository());
+    this.mockLeads = new ArrayList<>(List.of(
+        new LeadDto("11111111-1111-1111-1111-111111111111",
+            "test1@example.com", "+1234567890", "TestCorp1", LeadStatus.NEW),
+        new LeadDto("22222222-2222-2222-2222-222222222222",
+            "test2@example.com", "+0987654321", "TestCorp2", LeadStatus.QUALIFIED)
+    ));
   }
 
   @Override
   public List<LeadDto> findAll() {
-    return mockLeads;
+    return new ArrayList<>(mockLeads);
   }
 
   @Override
@@ -28,5 +34,24 @@ public class MockLeadService extends LeadService {
     return mockLeads.stream()
         .filter(lead -> lead.status() == status)
         .toList();
+  }
+
+  @Override
+  public Optional<LeadDto> findById(UUID id) {
+    return mockLeads.stream()
+        .filter(lead -> lead.id().equals(id.toString()))
+        .findFirst();
+  }
+
+  @Override
+  public LeadDto update(UUID id, String email, String phone, String company, LeadStatus status) {
+    for (int i = 0; i < mockLeads.size(); i++) {
+      if (mockLeads.get(i).id().equals(id.toString())) {
+        LeadDto updated = new LeadDto(id.toString(), email, phone, company, status);
+        mockLeads.set(i, updated);
+        return updated;
+      }
+    }
+    throw new RuntimeException("Lead not found");
   }
 }
