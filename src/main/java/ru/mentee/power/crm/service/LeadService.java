@@ -8,7 +8,9 @@ import java.util.stream.Collectors;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
 import ru.mentee.power.crm.domain.LeadEntity;
@@ -103,5 +105,23 @@ public class LeadService {
         entity.company(),
         LeadStatus.valueOf(entity.status())
     );
+  }
+
+  public LeadDto update(UUID id, String email, String phone, String company, LeadStatus status) {
+    Optional<LeadEntity> existing = repository.findById(id.toString());
+    if (existing.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
+    }
+
+    LeadEntity updatedEntity = new LeadEntity(
+        id,
+        new Contact(email.trim().toLowerCase(), phone, existing.get().contact().address()),
+        company.trim(),
+        status.name()
+    );
+
+    repository.save(updatedEntity);
+
+    return convertToDto(updatedEntity);
   }
 }

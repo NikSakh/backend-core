@@ -1,13 +1,18 @@
 package ru.mentee.power.crm.spring.controller;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.service.LeadService;
@@ -43,6 +48,22 @@ public class LeadController {
   @PostMapping("/leads")
   public String createLead(@ModelAttribute LeadDto lead) {
     leadService.addLead(lead.email(), lead.company(), lead.status());
+    return "redirect:/leads";
+  }
+
+  @GetMapping("/leads/{id}/edit")
+  public String showEditForm(@PathVariable UUID id, Model model) {
+    Optional<LeadDto> leadOpt = leadService.findById(id);
+    if (leadOpt.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found");
+    }
+    model.addAttribute("lead", leadOpt.get());
+    return "leads/edit"; // Имя нового шаблона
+  }
+
+  @PostMapping("/leads/{id}")
+  public String updateLead(@PathVariable UUID id, @ModelAttribute LeadDto lead) {
+    leadService.update(id, lead.email(), lead.phone(), lead.company(), lead.status());
     return "redirect:/leads";
   }
 }

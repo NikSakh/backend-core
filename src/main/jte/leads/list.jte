@@ -46,6 +46,7 @@
                 <th class="px-4 py-2 text-left">Email</th>
                 <th class="px-4 py-2 text-left">Company</th>
                 <th class="px-4 py-2 text-left">Status</th>
+                <th class="px-4 py-2 text-left">Действия</th>  <!-- НОВАЯ КОЛОНКА -->
             </tr>
             </thead>
             <tbody>
@@ -57,6 +58,13 @@
                             <span class="px-2 py-1 rounded text-sm bg-green-100 text-green-800">
                                 ${lead.status()}
                             </span>
+                    </td>
+                    <!-- НОВАЯ ЯЧЕЙКА С ССЫЛКОЙ -->
+                    <td class="px-4 py-2">
+                        <a href="/leads/${lead.id()}/edit"
+                           class="text-blue-600 hover:underline">
+                            Редактировать
+                        </a>
                     </td>
                 </tr>
             @endfor
