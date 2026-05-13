@@ -27,15 +27,24 @@ public class LeadController {
   }
 
   @GetMapping("/leads")
-  public String showLeads(@RequestParam(required = false) LeadStatus status, Model model) {
+  public String showLeads(@RequestParam(required = false) LeadStatus status,
+                          @RequestParam(required = false) String search,
+                          @RequestParam(required = false) String statusFilter,
+                          Model model) {
     List<LeadDto> leads;
-    if (status == null) {
-      leads = leadService.findAll();
-    } else {
+
+    if (search != null && !search.isEmpty() || statusFilter != null && !statusFilter.isEmpty()) {
+      leads = leadService.findLeads(search, statusFilter);
+    } else if (status != null) {
       leads = leadService.findByStatus(status);
+    } else {
+      leads = leadService.findAll();
     }
+
     model.addAttribute("leads", leads);
     model.addAttribute("currentFilter", status);
+    model.addAttribute("search", search != null ? search : "");
+    model.addAttribute("statusFilter", statusFilter != null ? statusFilter : "");
     return "leads/list";
   }
 
@@ -58,7 +67,7 @@ public class LeadController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found");
     }
     model.addAttribute("lead", leadOpt.get());
-    return "leads/edit"; // Имя нового шаблона
+    return "leads/edit";
   }
 
   @PostMapping("/leads/{id}")

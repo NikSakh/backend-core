@@ -39,6 +39,9 @@ public class LeadListServlet extends HttpServlet {
 
     Map<String, Object> params = new HashMap<>();
     params.put("leads", leads);
+    params.put("currentFilter", null);
+    params.put("search", "");
+    params.put("statusFilter", "");
 
     StringOutput output = new StringOutput();
     templateEngine.render("leads/list.jte", params, output);

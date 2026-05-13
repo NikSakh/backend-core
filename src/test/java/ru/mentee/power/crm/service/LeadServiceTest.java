@@ -420,4 +420,60 @@ class LeadServiceTest {
 
     verify(mockRepository, never()).delete(any());
   }
+
+  @Test
+  void shouldFilterLeadsBySearch() {
+    LeadRepository repository = new LeadRepository();
+    LeadService leadService = new LeadService(repository);
+
+    leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
+    leadService.addLead("petr@example.com", "Petr Ltd", LeadStatus.NEW);
+    leadService.addLead("sergey@example.com", "Sergey Inc", LeadStatus.QUALIFIED);
+
+    List<LeadDto> result = leadService.findLeads("ivan", null);
+
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).email()).isEqualTo("ivan@example.com");
+  }
+
+  @Test
+  void shouldFilterLeadsByStatus() {
+    LeadRepository repository = new LeadRepository();
+    LeadService leadService = new LeadService(repository);
+
+    leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
+    leadService.addLead("petr@example.com", "Petr Ltd", LeadStatus.QUALIFIED);
+
+    List<LeadDto> result = leadService.findLeads(null, "NEW");
+
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).status()).isEqualTo(LeadStatus.NEW);
+  }
+
+  @Test
+  void shouldCombineSearchAndStatusFilters() {
+    LeadRepository repository = new LeadRepository();
+    LeadService leadService = new LeadService(repository);
+
+    leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
+    leadService.addLead("ivan2@example.com", "Ivan Ltd", LeadStatus.QUALIFIED);
+
+    List<LeadDto> result = leadService.findLeads("ivan", "NEW");
+
+    assertThat(result).hasSize(1);
+    assertThat(result.get(0).email()).isEqualTo("ivan@example.com");
+  }
+
+  @Test
+  void shouldReturnAllWhenNoFilters() {
+    LeadRepository repository = new LeadRepository();
+    LeadService leadService = new LeadService(repository);
+
+    leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
+    leadService.addLead("petr@example.com", "Petr Ltd", LeadStatus.QUALIFIED);
+
+    List<LeadDto> result = leadService.findLeads(null, null);
+
+    assertThat(result).hasSize(2);
+  }
 }

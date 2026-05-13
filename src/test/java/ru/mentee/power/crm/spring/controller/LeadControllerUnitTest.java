@@ -27,7 +27,7 @@ class LeadControllerUnitTest {
   @Test
   void shouldCreateControllerWithoutSpring() {
     Model model = new ExtendedModelMap();
-    String viewName = controller.showLeads(null, model);
+    String viewName = controller.showLeads(null, null, null, model);
 
     assertThat(viewName).isEqualTo("leads/list");
     assertThat(model.getAttribute("leads")).asList().hasSize(2);
@@ -36,7 +36,7 @@ class LeadControllerUnitTest {
   @Test
   void shouldFilterByStatus() {
     Model model = new ExtendedModelMap();
-    controller.showLeads(LeadStatus.NEW, model);
+    controller.showLeads(LeadStatus.NEW, null, null, model);
 
     @SuppressWarnings("unchecked")
     var leads = (java.util.List<?>) model.getAttribute("leads");
@@ -116,4 +116,25 @@ class LeadControllerUnitTest {
     }
   }
 
+  @Test
+  void shouldFilterBySearchQuery() {
+    Model model = new ExtendedModelMap();
+    controller.showLeads(null, "test1", null, model);
+
+    @SuppressWarnings("unchecked")
+    var leads = (java.util.List<?>) model.getAttribute("leads");
+    assertThat(leads).hasSize(1);
+    assertThat(model.getAttribute("search")).isEqualTo("test1");
+  }
+
+  @Test
+  void shouldCombineSearchAndStatusFilter() {
+    Model model = new ExtendedModelMap();
+    controller.showLeads(null, "test", "NEW", model);
+
+    @SuppressWarnings("unchecked")
+    var leads = (java.util.List<?>) model.getAttribute("leads");
+    assertThat(model.getAttribute("search")).isEqualTo("test");
+    assertThat(model.getAttribute("statusFilter")).isEqualTo("NEW");
+  }
 }

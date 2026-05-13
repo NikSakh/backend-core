@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -131,5 +132,25 @@ public class LeadService {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
     }
     repository.delete(id.toString());
+  }
+
+  public List<LeadDto> findLeads(String search, String status) {
+    List<LeadEntity> entities = repository.findAll();
+
+    Stream<LeadEntity> stream = entities.stream();
+
+    if (search != null && !search.isEmpty()) {
+      String lowerSearch = search.toLowerCase();
+      stream = stream.filter(lead ->
+          lead.contact().email().toLowerCase().contains(lowerSearch)
+              || lead.company().toLowerCase().contains(lowerSearch)
+      );
+    }
+
+    if (status != null && !status.isEmpty()) {
+      stream = stream.filter(lead -> lead.status().equalsIgnoreCase(status));
+    }
+
+    return stream.map(this::convertToDto).collect(Collectors.toList());
   }
 }
