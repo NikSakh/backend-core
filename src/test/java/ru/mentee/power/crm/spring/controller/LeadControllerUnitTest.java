@@ -97,4 +97,23 @@ class LeadControllerUnitTest {
 
     assertThat(viewName).isEqualTo("redirect:/leads");
   }
+
+  @Test
+  void shouldDeleteLeadAndRedirect() {
+    String viewName = controller.deleteLead(
+        UUID.fromString("11111111-1111-1111-1111-111111111111")
+    );
+    assertThat(viewName).isEqualTo("redirect:/leads");
+  }
+
+  @Test
+  void shouldThrowExceptionWhenDeletingNonexistentLead() {
+    try {
+      controller.deleteLead(UUID.fromString("22222222-2222-2222-2222-222222222222"));
+    } catch (ResponseStatusException e) {
+      assertThat(e.getStatusCode().value()).isEqualTo(404);
+      assertThat(e.getReason()).contains("not found");
+    }
+  }
+
 }

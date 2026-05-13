@@ -124,4 +124,12 @@ public class LeadService {
 
     return convertToDto(updatedEntity);
   }
+
+  public void delete(UUID id) {
+    Optional<LeadEntity> existing = repository.findById(id.toString());
+    if (existing.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
+    }
+    repository.delete(id.toString());
+  }
 }

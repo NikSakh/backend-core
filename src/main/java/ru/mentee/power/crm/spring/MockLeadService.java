@@ -54,4 +54,9 @@ public class MockLeadService extends LeadService {
     }
     throw new RuntimeException("Lead not found");
   }
+
+  @Override
+  public void delete(UUID id) {
+    mockLeads.removeIf(lead -> lead.id().equals(id.toString()));
+  }
 }
