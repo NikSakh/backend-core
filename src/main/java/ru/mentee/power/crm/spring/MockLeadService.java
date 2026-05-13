@@ -59,4 +59,18 @@ public class MockLeadService extends LeadService {
   public void delete(UUID id) {
     mockLeads.removeIf(lead -> lead.id().equals(id.toString()));
   }
+
+  @Override
+  public List<LeadDto> findLeads(String search, String status) {
+    return mockLeads.stream()
+        .filter(lead -> {
+          boolean matchesSearch = search == null || search.isEmpty()
+              || lead.email().toLowerCase().contains(search.toLowerCase())
+              || lead.company().toLowerCase().contains(search.toLowerCase());
+          boolean matchesStatus = status == null || status.isEmpty()
+              || lead.status().name().equalsIgnoreCase(status);
+          return matchesSearch && matchesStatus;
+        })
+        .toList();
+  }
 }

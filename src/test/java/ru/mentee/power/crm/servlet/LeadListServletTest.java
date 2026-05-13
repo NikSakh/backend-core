@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,8 +102,12 @@ class LeadListServletTest {
     servlet.doGet(mockRequest, mockResponse);
 
     StringOutput expectedOutput = new StringOutput();
-    templateEngine.render("leads/list.jte", Map.of("leads", List.of()), expectedOutput);
-
+    Map<String, Object> params = new HashMap<>();
+    params.put("leads", List.of());
+    params.put("currentFilter", null);
+    params.put("search", "");
+    params.put("statusFilter", "");
+    templateEngine.render("leads/list.jte", params, expectedOutput);
     assertThat(stringWriter.toString()).isEqualTo(expectedOutput.toString());
   }
 
@@ -122,8 +127,12 @@ class LeadListServletTest {
     servlet.doGet(mockRequest, mockResponse);
 
     StringOutput expectedOutput = new StringOutput();
-    templateEngine.render("leads/list.jte", Map.of("leads", leads), expectedOutput);
-
+    Map<String, Object> params = new HashMap<>();
+    params.put("leads", leads);
+    params.put("currentFilter", null);
+    params.put("search", "");
+    params.put("statusFilter", "");
+    templateEngine.render("leads/list.jte", params, expectedOutput);
     assertThat(stringWriter.toString()).isEqualTo(expectedOutput.toString());
   }
 
@@ -147,8 +156,12 @@ class LeadListServletTest {
     servlet.doGet(mockRequest, mockResponse);
 
     StringOutput expectedOutput = new StringOutput();
-    templateEngine.render("leads/list.jte", Map.of("leads", leads), expectedOutput);
-
+    Map<String, Object> params = new HashMap<>();
+    params.put("leads", leads);
+    params.put("currentFilter", null);
+    params.put("search", "");
+    params.put("statusFilter", "");
+    templateEngine.render("leads/list.jte", params, expectedOutput);
     assertThat(stringWriter.toString()).isEqualTo(expectedOutput.toString());
   }
 }
