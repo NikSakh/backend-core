@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
@@ -90,9 +92,11 @@ class LeadControllerUnitTest {
         LeadStatus.QUALIFIED
     );
 
+    BindingResult errors = new BeanPropertyBindingResult(leadDto, "lead");
     String viewName = controller.updateLead(
         UUID.fromString("11111111-1111-1111-1111-111111111111"),
-        leadDto
+        leadDto,
+        errors
     );
 
     assertThat(viewName).isEqualTo("redirect:/leads");
@@ -136,5 +140,30 @@ class LeadControllerUnitTest {
     var leads = (java.util.List<?>) model.getAttribute("leads");
     assertThat(model.getAttribute("search")).isEqualTo("test");
     assertThat(model.getAttribute("statusFilter")).isEqualTo("NEW");
+  }
+
+  @Test
+  void shouldReturnFormWhenValidationFails() {
+    LeadDto invalidLead = new LeadDto(null, "", "", "", null);
+    Model model = new ExtendedModelMap();
+
+    BindingResult errors = new BeanPropertyBindingResult(invalidLead, "lead");
+    errors.rejectValue("email", "Email", "Email обязателен");
+
+    String viewName = controller.createLead(invalidLead, errors);
+
+    assertThat(viewName).isEqualTo("leads/create");
+  }
+
+  @Test
+  void shouldCreateLeadAndRedirectWhenValid() {
+    LeadDto validLead = new LeadDto(null, "test@example.com", "+123", "Corp", LeadStatus.NEW);
+    Model model = new ExtendedModelMap();
+
+    BindingResult errors = new BeanPropertyBindingResult(validLead, "lead");
+
+    String viewName = controller.createLead(validLead, errors);
+
+    assertThat(viewName).isEqualTo("redirect:/leads");
   }
 }
