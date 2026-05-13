@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,7 +57,10 @@ public class LeadController {
   }
 
   @PostMapping("/leads")
-  public String createLead(@ModelAttribute LeadDto lead) {
+  public String createLead(@Valid @ModelAttribute LeadDto lead, BindingResult result) {
+    if (result.hasErrors()) {
+      return "leads/create";
+    }
     leadService.addLead(lead.email(), lead.company(), lead.status());
     return "redirect:/leads";
   }
@@ -71,7 +76,11 @@ public class LeadController {
   }
 
   @PostMapping("/leads/{id}")
-  public String updateLead(@PathVariable UUID id, @ModelAttribute LeadDto lead) {
+  public String updateLead(@PathVariable UUID id,
+                           @Valid @ModelAttribute LeadDto lead, BindingResult result) {
+    if (result.hasErrors()) {
+      return "leads/edit";
+    }
     leadService.update(id, lead.email(), lead.phone(), lead.company(), lead.status());
     return "redirect:/leads";
   }
