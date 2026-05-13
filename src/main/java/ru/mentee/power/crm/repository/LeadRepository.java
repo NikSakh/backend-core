@@ -31,4 +31,8 @@ public class LeadRepository {
   public List<LeadEntity> findAll() {
     return new ArrayList<>(storage.values());
   }
+
+  public void delete(String id) {
+    storage.remove(id);
+  }
 }

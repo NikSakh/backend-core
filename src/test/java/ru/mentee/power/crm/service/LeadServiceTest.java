@@ -20,6 +20,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
 import ru.mentee.power.crm.domain.LeadEntity;
@@ -389,5 +390,34 @@ class LeadServiceTest {
     assertThat(savedEntity.contact().address().street()).isEqualTo("Tverskaya");
     assertThat(savedEntity.contact().address().zip()).isEqualTo("123456");
     assertThat(savedEntity.contact().phone()).isEqualTo("+79991234567");
+  }
+
+  @Test
+  void shouldDeleteExistingLead() {
+    UUID existingId = UUID.randomUUID();
+    Address address = new Address("City", "Street", "12345");
+    Contact contact = new Contact("delete@example.com", "+123456789", address);
+    LeadEntity existingEntity = new LeadEntity(existingId, contact, "Delete Corp", "NEW");
+
+    when(mockRepository.findById(existingId.toString()))
+        .thenReturn(Optional.of(existingEntity));
+
+    service.delete(existingId);
+
+    verify(mockRepository, times(1)).findById(existingId.toString());
+    verify(mockRepository, times(1)).delete(existingId.toString());
+  }
+
+  @Test
+  void shouldThrowExceptionWhenDeletingNonexistentLead() {
+    UUID nonExistentId = UUID.randomUUID();
+    when(mockRepository.findById(nonExistentId.toString()))
+        .thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> service.delete(nonExistentId))
+        .isInstanceOf(ResponseStatusException.class)
+        .hasMessageContaining("not found");
+
+    verify(mockRepository, never()).delete(any());
   }
 }
