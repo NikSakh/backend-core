@@ -151,7 +151,9 @@ jacocoTestCoverageVerification {
                         '**/HelloController.class',
                         '**/web/**',
                         '**/generated/**',
-                        '**/core/**'
+                        '**/core/**',
+                        '**/jparepository/**',
+                        '**/domain/jpa/**'
                 ])
             }
     )
