@@ -45,14 +45,12 @@ class LeadServiceTest {
   void shouldCallRepositorySaveWhenAddingNewLead() {
     when(mockRepository.findByEmail(any(String.class)))
         .thenReturn(Optional.empty());
-
     when(mockRepository.save(any(LeadEntity.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
 
     LeadDto result = service.addLead("new@example.com", "Company", LeadStatus.NEW);
 
     verify(mockRepository, times(1)).save(any(LeadEntity.class));
-
     assertThat(result.email()).isEqualTo("new@example.com");
     assertThat(result.company()).isEqualTo("Company");
     assertThat(result.status()).isEqualTo(LeadStatus.NEW);
@@ -156,13 +154,11 @@ class LeadServiceTest {
     List<LeadDto> result = service.findAll();
 
     assertThat(result).hasSize(2);
-
     assertThat(result).anySatisfy(lead -> {
       assertThat(lead.email()).isEqualTo("leadFirst@example.com");
       assertThat(lead.company()).isEqualTo("Company First");
       assertThat(lead.status()).isEqualTo(LeadStatus.NEW);
     });
-
     assertThat(result).anySatisfy(lead -> {
       assertThat(lead.email()).isEqualTo("leadSecond@example.com");
       assertThat(lead.company()).isEqualTo("Company Second");
@@ -192,6 +188,17 @@ class LeadServiceTest {
   }
 
   @Test
+  void shouldReturnEmptyOptionalWhenLeadNotFoundById() {
+    UUID id = UUID.randomUUID();
+    when(mockRepository.findById(id.toString())).thenReturn(Optional.empty());
+
+    Optional<LeadDto> result = service.findById(id);
+
+    assertThat(result).isEmpty();
+    verify(mockRepository, times(1)).findById(id.toString());
+  }
+
+  @Test
   void findByEmailShouldDelegateToRepository() {
     String email = "search@example.com";
     Address address = new Address("City", "Street", "12345");
@@ -207,6 +214,16 @@ class LeadServiceTest {
     assertThat(result.get().company()).isEqualTo("Search Company");
     assertThat(result.get().status()).isEqualTo(LeadStatus.NEW);
     verify(mockRepository, times(1)).findByEmail(email);
+  }
+
+  @Test
+  void shouldReturnEmptyOptionalWhenEmailNotFound() {
+    when(mockRepository.findByEmail("nonexistent@test.com")).thenReturn(Optional.empty());
+
+    Optional<LeadDto> result = service.findByEmail("nonexistent@test.com");
+
+    assertThat(result).isEmpty();
+    verify(mockRepository, times(1)).findByEmail("nonexistent@test.com");
   }
 
   @Test
