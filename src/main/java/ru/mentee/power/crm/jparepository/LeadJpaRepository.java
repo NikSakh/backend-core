@@ -36,8 +36,6 @@ public interface LeadJpaRepository extends JpaRepository<LeadJpaEntity, UUID> {
 
   List<LeadJpaEntity> findByStatusAndCompany(String status, String company);
 
-  List<LeadJpaEntity> findByStatusOrderByCreatedAtDesc(String status);
-
   @Query("SELECT l FROM LeadJpaEntity l WHERE l.status IN :statuses")
   List<LeadJpaEntity> findByStatusIn(@Param("statuses") List<String> statuses);
 
