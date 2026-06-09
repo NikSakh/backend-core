@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import java.util.UUID;
 
 @Entity
@@ -31,6 +32,10 @@ public class LeadJpaEntity {
   @Column(nullable = false)
   private String status;
 
+  @Version
+  @Column(nullable = false)
+  private Long version;
+
   protected LeadJpaEntity() {
   }
 
@@ -48,6 +53,7 @@ public class LeadJpaEntity {
   public String getPhone() { return phone; }
   public String getCompany() { return company; }
   public String getStatus() { return status; }
+  public Long getVersion() { return version; }
 
   public void setName(String name) { this.name = name; }
   public void setEmail(String email) { this.email = email; }
