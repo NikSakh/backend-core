@@ -1,5 +1,7 @@
 package ru.mentee.power.crm.domain.jpa;
 
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,7 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
-import java.util.UUID;
 
 @Entity
 @Table(name = "leads")
@@ -41,7 +42,7 @@ public class LeadJpaEntity {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "company_id")
-  private Company companyEntity;
+  private Company companyRef;
 
   protected LeadJpaEntity() {
   }
@@ -54,19 +55,59 @@ public class LeadJpaEntity {
     this.status = status;
   }
 
-  public UUID getId() { return id; }
-  public String getName() { return name; }
-  public String getEmail() { return email; }
-  public String getPhone() { return phone; }
-  public String getCompany() { return company; }
-  public String getStatus() { return status; }
-  public Long getVersion() { return version; }
-  public Company getCompanyEntity() { return companyEntity; }
+  public UUID getId() {
+    return id;
+  }
 
-  public void setName(String name) { this.name = name; }
-  public void setEmail(String email) { this.email = email; }
-  public void setPhone(String phone) { this.phone = phone; }
-  public void setCompany(String company) { this.company = company; }
-  public void setStatus(String status) { this.status = status; }
-  public void setCompanyEntity(Company companyEntity) { this.companyEntity = companyEntity; }
+  public String getName() {
+    return name;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public String getPhone() {
+    return phone;
+  }
+
+  public String getCompany() {
+    return company;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public Company getCompanyRef() {
+    return companyRef;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setPhone(String phone) {
+    this.phone = phone;
+  }
+
+  public void setCompany(String company) {
+    this.company = company;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public void setCompanyRef(Company companyRef) {
+    this.companyRef = companyRef;
+  }
 }
