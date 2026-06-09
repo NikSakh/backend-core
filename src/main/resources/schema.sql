@@ -1,3 +1,5 @@
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS version BIGINT DEFAULT 0 NOT NULL;
+
 CREATE TABLE IF NOT EXISTS leads (
                                      id UUID PRIMARY KEY,
                                      name VARCHAR(255) NOT NULL,
@@ -9,7 +11,8 @@ CREATE TABLE IF NOT EXISTS leads (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE,
                              created_by UUID,
-                             assigned_to UUID
+                             assigned_to UUID,
+                             version BIGINT DEFAULT 0 NOT NULL
                              );
 
 CREATE INDEX IF NOT EXISTS idx_leads_email ON leads(email);
