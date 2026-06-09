@@ -61,3 +61,11 @@ CREATE TABLE IF NOT EXISTS deals (
 
 CREATE INDEX IF NOT EXISTS idx_deals_lead_id ON deals(lead_id);
 CREATE INDEX IF NOT EXISTS idx_deals_stage ON deals(stage);
+
+CREATE TABLE IF NOT EXISTS products (
+                                        id UUID PRIMARY KEY,
+                                        name VARCHAR(255) NOT NULL,
+    sku VARCHAR(100) UNIQUE NOT NULL,
+    price DECIMAL(19, 2) NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE
+    );

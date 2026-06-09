@@ -26,7 +26,7 @@ public class Company {
   @Column
   private String industry;
 
-  @OneToMany(mappedBy = "company", cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "companyRef", cascade = CascadeType.PERSIST)
   private List<LeadJpaEntity> leads = new ArrayList<>();
 
   protected Company() {
@@ -37,21 +37,37 @@ public class Company {
     this.industry = industry;
   }
 
-  public UUID getId() { return id; }
-  public String getName() { return name; }
-  public String getIndustry() { return industry; }
-  public List<LeadJpaEntity> getLeads() { return leads; }
+  public UUID getId() {
+    return id;
+  }
 
-  public void setName(String name) { this.name = name; }
-  public void setIndustry(String industry) { this.industry = industry; }
+  public String getName() {
+    return name;
+  }
+
+  public String getIndustry() {
+    return industry;
+  }
+
+  public List<LeadJpaEntity> getLeads() {
+    return leads;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setIndustry(String industry) {
+    this.industry = industry;
+  }
 
   public void addLead(LeadJpaEntity lead) {
     leads.add(lead);
-    lead.setCompanyEntity(this);
+    lead.setCompanyRef(this);
   }
 
   public void removeLead(LeadJpaEntity lead) {
     leads.remove(lead);
-    lead.setCompanyEntity(null);
+    lead.setCompanyRef(null);
   }
 }
