@@ -28,7 +28,8 @@ class N1DemoTest {
 
     System.out.println("");
     System.out.println("=== РЕШЕНИЕ N+1: ОДИН ЗАПРОС С LEFT JOIN ===");
-    System.out.println("SQL: SELECT c.*, l.* FROM companies c LEFT JOIN leads l ON c.id = l.company_id WHERE c.id = ?");
+    System.out.println("SQL: SELECT c.*, "
+        + "l.* FROM companies c LEFT JOIN leads l ON c.id = l.company_id WHERE c.id = ?");
     System.out.println("");
 
     Optional<Company> found = companyRepository.findByIdWithLeads(saved.getId());

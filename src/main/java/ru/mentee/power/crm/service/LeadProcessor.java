@@ -1,12 +1,12 @@
 package ru.mentee.power.crm.service;
 
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.mentee.power.crm.domain.jpa.LeadJpaEntity;
 import ru.mentee.power.crm.jparepository.LeadJpaRepository;
-
-import java.util.UUID;
 
 @Service
 public class LeadProcessor {
