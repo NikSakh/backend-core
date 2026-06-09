@@ -1,5 +1,14 @@
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS version BIGINT DEFAULT 0 NOT NULL;
 
+CREATE TABLE IF NOT EXISTS companies (
+                                         id UUID PRIMARY KEY,
+                                         name VARCHAR(255) NOT NULL,
+    industry VARCHAR(100)
+    );
+
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS company_id UUID;
+ALTER TABLE leads ADD CONSTRAINT IF NOT EXISTS fk_leads_company FOREIGN KEY (company_id) REFERENCES companies(id);
+
 CREATE TABLE IF NOT EXISTS leads (
                                      id UUID PRIMARY KEY,
                                      name VARCHAR(255) NOT NULL,
@@ -12,11 +21,13 @@ CREATE TABLE IF NOT EXISTS leads (
     updated_at TIMESTAMP WITH TIME ZONE,
                              created_by UUID,
                              assigned_to UUID,
-                             version BIGINT DEFAULT 0 NOT NULL
-                             );
+                             version BIGINT DEFAULT 0 NOT NULL,
+                             company_id UUID REFERENCES companies(id)
+    );
 
 CREATE INDEX IF NOT EXISTS idx_leads_email ON leads(email);
 CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
+CREATE INDEX IF NOT EXISTS idx_leads_company_id ON leads(company_id);
 
 CREATE TABLE IF NOT EXISTS contacts (
                                         id UUID PRIMARY KEY,
