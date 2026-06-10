@@ -1,14 +1,18 @@
 package ru.mentee.power.crm.domain.jpa;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -30,6 +34,9 @@ public class Product {
 
   @Column(nullable = false)
   private Boolean active = true;
+
+  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+  private List<DealProduct> dealProducts = new ArrayList<>();
 
   protected Product() {
   }
@@ -59,6 +66,10 @@ public class Product {
 
   public Boolean getActive() {
     return active;
+  }
+
+  public List<DealProduct> getDealProducts() {
+    return dealProducts;
   }
 
   public void setName(String name) {
