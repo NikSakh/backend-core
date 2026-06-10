@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import ru.mentee.power.crm.domain.jpa.DealProduct;
 import ru.mentee.power.crm.domain.jpa.Product;
 import ru.mentee.power.crm.spring.Application;
 
+@Disabled("Requires PostgreSQL — run locally")
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("dev")
 class DealEntityGraphTest {
@@ -33,21 +35,13 @@ class DealEntityGraphTest {
     Product product1 = productRepository.save(new Product("Ноутбук", uniqueSku1, new BigDecimal("90000"), true));
     Product product2 = productRepository.save(new Product("Монитор", uniqueSku2, new BigDecimal("25000"), true));
 
-    DealJpaEntity deal = new DealJpaEntity("Сделка с ноутбуком и монитором", new BigDecimal("150000"), "NEW");
+    DealJpaEntity deal = new DealJpaEntity("Сделка", new BigDecimal("150000"), "NEW");
     deal.addDealProduct(new DealProduct(deal, product1, 2, new BigDecimal("81000")));
     deal.addDealProduct(new DealProduct(deal, product2, 1, new BigDecimal("25000")));
     DealJpaEntity saved = dealRepository.save(deal);
 
-    System.out.println("=== @EntityGraph: ОДИН ЗАПРОС С JOIN ===");
-
     Optional<DealJpaEntity> found = dealRepository.findDealWithProducts(saved.getId());
     assertThat(found).isPresent();
     assertThat(found.get().getDealProducts()).hasSize(2);
-
-    System.out.println("=== БЕЗ @EntityGraph было бы: ===");
-    System.out.println("1) SELECT * FROM deals WHERE id = ?");
-    System.out.println("2) SELECT * FROM deal_product WHERE deal_id = ?");
-    System.out.println("3) SELECT * FROM products WHERE id = ? (для каждого продукта)");
-    System.out.println("Итого: 1 + 1 + 2 = 4 запроса вместо одного с JOIN");
   }
 }
