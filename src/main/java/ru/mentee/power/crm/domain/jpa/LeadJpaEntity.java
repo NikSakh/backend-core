@@ -44,6 +44,10 @@ public class LeadJpaEntity {
   @JoinColumn(name = "company_id")
   private Company companyRef;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "rejection_reason_id")
+  private RejectionReasons rejectionReason;
+
   protected LeadJpaEntity() {
   }
 
@@ -87,6 +91,10 @@ public class LeadJpaEntity {
     return companyRef;
   }
 
+  public RejectionReasons getRejectionReason() {
+    return rejectionReason;
+  }
+
   public void setName(String name) {
     this.name = name;
   }
@@ -110,4 +118,9 @@ public class LeadJpaEntity {
   public void setCompanyRef(Company companyRef) {
     this.companyRef = companyRef;
   }
+
+  public void setRejectionReason(RejectionReasons rejectionReason) {
+    this.rejectionReason = rejectionReason;
+  }
+
 }

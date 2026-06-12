@@ -1,6 +1,7 @@
 package ru.mentee.power.crm.spring.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.server.ResponseStatusException;
+import ru.mentee.power.crm.jparepository.RejectionReasonsRepository;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.spring.MockLeadService;
@@ -23,7 +25,7 @@ class LeadControllerUnitTest {
   @BeforeEach
   void setUp() {
     mockService = new MockLeadService();
-    controller = new LeadController(mockService);
+    controller = new LeadController(mockService, mock(RejectionReasonsRepository.class));
   }
 
   @Test
@@ -48,7 +50,8 @@ class LeadControllerUnitTest {
 
   @Test
   void shouldNotRequireSpringContext() {
-    LeadController controller = new LeadController(new MockLeadService());
+    LeadController controller = new LeadController(
+        new MockLeadService(), mock(RejectionReasonsRepository.class));
     assertThat(controller).isNotNull();
   }
 
@@ -92,11 +95,10 @@ class LeadControllerUnitTest {
         LeadStatus.QUALIFIED
     );
 
-    BindingResult errors = new BeanPropertyBindingResult(leadDto, "lead");
     String viewName = controller.updateLead(
         UUID.fromString("11111111-1111-1111-1111-111111111111"),
         leadDto,
-        errors
+        new BeanPropertyBindingResult(leadDto, "lead")
     );
 
     assertThat(viewName).isEqualTo("redirect:/leads");
@@ -150,19 +152,20 @@ class LeadControllerUnitTest {
     BindingResult errors = new BeanPropertyBindingResult(invalidLead, "lead");
     errors.rejectValue("email", "Email", "Email обязателен");
 
-    String viewName = controller.createLead(invalidLead, errors);
+    String viewName = controller.createLead(invalidLead, errors, model);
 
     assertThat(viewName).isEqualTo("leads/create");
+    assertThat(model.getAttribute("errors")).isSameAs(errors);
   }
 
   @Test
   void shouldCreateLeadAndRedirectWhenValid() {
-    LeadDto validLead = new LeadDto(null, "test@example.com", "+123", "Corp", LeadStatus.NEW);
+    LeadDto validLead = new LeadDto(null, "test@example.com", null, "Corp", LeadStatus.NEW);
     Model model = new ExtendedModelMap();
 
     BindingResult errors = new BeanPropertyBindingResult(validLead, "lead");
 
-    String viewName = controller.createLead(validLead, errors);
+    String viewName = controller.createLead(validLead, errors, model);
 
     assertThat(viewName).isEqualTo("redirect:/leads");
   }

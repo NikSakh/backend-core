@@ -15,7 +15,7 @@ public class MockLeadService extends LeadService {
   private final List<LeadDto> mockLeads;
 
   public MockLeadService() {
-    super(new LeadRepository());
+    super(new LeadRepository(), null);
     this.mockLeads = new ArrayList<>(List.of(
         new LeadDto("11111111-1111-1111-1111-111111111111",
             "test1@example.com", "+1234567890", "TestCorp1", LeadStatus.NEW),
@@ -72,5 +72,11 @@ public class MockLeadService extends LeadService {
           return matchesSearch && matchesStatus;
         })
         .toList();
+  }
+
+  @Override
+  public LeadDto updateWithRejectionReason(UUID id, String email, String phone, String company,
+                                           LeadStatus status, String rejectionReasonId) {
+    return update(id, email, phone, company, status);
   }
 }

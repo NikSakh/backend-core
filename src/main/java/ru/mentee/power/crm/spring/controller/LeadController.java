@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import ru.mentee.power.crm.jparepository.RejectionReasonsRepository;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.service.LeadService;
@@ -24,8 +25,12 @@ public class LeadController {
 
   private final LeadService leadService;
 
-  public LeadController(LeadService leadService) {
+  private final RejectionReasonsRepository rejectionReasonsRepository;
+
+  public LeadController(LeadService leadService,
+                        RejectionReasonsRepository rejectionReasonsRepository) {
     this.leadService = leadService;
+    this.rejectionReasonsRepository = rejectionReasonsRepository;
   }
 
   @GetMapping("/leads")
@@ -57,8 +62,11 @@ public class LeadController {
   }
 
   @PostMapping("/leads")
-  public String createLead(@Valid @ModelAttribute LeadDto lead, BindingResult result) {
+  public String createLead(@Valid @ModelAttribute LeadDto lead,
+                           BindingResult result,
+                           Model model) {
     if (result.hasErrors()) {
+      model.addAttribute("errors", result);
       return "leads/create";
     }
     leadService.addLead(lead.email(), lead.company(), lead.status());
@@ -72,6 +80,7 @@ public class LeadController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found");
     }
     model.addAttribute("lead", leadOpt.get());
+    model.addAttribute("rejectionReasons", rejectionReasonsRepository.findByActiveTrue());
     return "leads/edit";
   }
 
@@ -81,7 +90,8 @@ public class LeadController {
     if (result.hasErrors()) {
       return "leads/edit";
     }
-    leadService.update(id, lead.email(), lead.phone(), lead.company(), lead.status());
+    leadService.updateWithRejectionReason(id, lead.email(), lead.phone(), lead.company(),
+        lead.status(), lead.rejectionReasonId());
     return "redirect:/leads";
   }
 

@@ -13,7 +13,6 @@ public record LeadDto(
     @Size(max = 100, message = "Email не должен превышать 100 символов")
     String email,
 
-    @NotBlank(message = "Телефон обязателен")
     @Size(max = 20, message = "Телефон не должен превышать 20 символов")
     String phone,
 
@@ -22,5 +21,17 @@ public record LeadDto(
     String company,
 
     @NotNull(message = "Статус обязателен")
-    LeadStatus status
-) {}
+    LeadStatus status,
+
+    String rejectionReasonId,
+    String rejectionReasonName
+) {
+  public LeadDto(String id, String email, String phone, String company, LeadStatus status) {
+    this(id, email, phone, company, status, null, null);
+  }
+
+  public LeadDto(String id, String email, String phone, String company, LeadStatus status,
+                   String rejectionReasonId) {
+    this(id, email, phone, company, status, rejectionReasonId, null);
+  }
+}

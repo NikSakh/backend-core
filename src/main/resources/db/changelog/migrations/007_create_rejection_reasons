@@ -1,0 +1,8 @@
+--liquibase formatted sql
+--changeset niksakh:7
+
+CREATE TABLE rejection_reasons (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE
+);

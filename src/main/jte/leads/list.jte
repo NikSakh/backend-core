@@ -98,6 +98,7 @@
                 <th class="px-4 py-2 text-left">Email</th>
                 <th class="px-4 py-2 text-left">Company</th>
                 <th class="px-4 py-2 text-left">Status</th>
+                <th class="px-4 py-2 text-left">Причина отказа</th>
                 <th class="px-4 py-2 text-left">Действия</th>
             </tr>
             </thead>
@@ -110,6 +111,13 @@
                         <span class="px-2 py-1 rounded text-sm bg-green-100 text-green-800">
                             ${lead.status()}
                         </span>
+                    </td>
+                    <td class="px-4 py-2 text-sm text-gray-600">
+                        @if(lead.rejectionReasonId() != null)
+                            <span class="text-red-600">Есть</span>
+                        @else
+                            —
+                        @endif
                     </td>
                     <td class="px-4 py-2">
                         <div class="flex gap-2">
