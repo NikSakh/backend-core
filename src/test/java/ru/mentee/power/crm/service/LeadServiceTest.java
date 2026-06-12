@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
 import ru.mentee.power.crm.domain.LeadEntity;
+import ru.mentee.power.crm.jparepository.RejectionReasonsRepository;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
@@ -33,6 +34,9 @@ class LeadServiceTest {
 
   @Mock
   private LeadRepository mockRepository;
+
+  @Mock
+  private RejectionReasonsRepository rejectionReasonsRepository;
 
   @InjectMocks
   private LeadService service;
@@ -271,7 +275,7 @@ class LeadServiceTest {
   @Test
   void shouldReturnOnlyNewLeadsWhenFindByStatusNew() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository);
+    LeadService leadService = new LeadService(repository, null);
 
     leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
     leadService.addLead("new2@example.com", "Corp2", LeadStatus.NEW);
@@ -293,7 +297,7 @@ class LeadServiceTest {
   @Test
   void shouldReturnEmptyListWhenNoLeadsWithStatus() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository);
+    LeadService leadService = new LeadService(repository, null);
 
     leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
     leadService.addLead("contacted1@example.com", "Corp2", LeadStatus.CONTACTED);
@@ -306,7 +310,7 @@ class LeadServiceTest {
   @Test
   void shouldReturnOnlyContactedLeadsWhenFindByStatusContacted() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository);
+    LeadService leadService = new LeadService(repository, null);
 
     leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
     leadService.addLead("contacted1@example.com", "Corp2", LeadStatus.CONTACTED);
@@ -322,7 +326,7 @@ class LeadServiceTest {
   @Test
   void shouldReturnOnlyQualifiedLeadsWhenFindByStatusQualified() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository);
+    LeadService leadService = new LeadService(repository, null);
 
     leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
     leadService.addLead("qualified1@example.com", "Corp2", LeadStatus.QUALIFIED);
@@ -360,6 +364,35 @@ class LeadServiceTest {
     assertThat(updated.phone()).isEqualTo("+123456789");
     assertThat(updated.company()).isEqualTo("New Company");
     assertThat(updated.status()).isEqualTo(LeadStatus.QUALIFIED);
+
+    verify(mockRepository, times(1)).findById(existingId.toString());
+    verify(mockRepository, times(1)).save(any(LeadEntity.class));
+  }
+
+  @Test
+  void shouldUpdateWithRejectionReason() {
+    UUID existingId = UUID.randomUUID();
+    UUID rejectionId = UUID.randomUUID();
+    Address address = new Address("Unknown", "Unknown", "00000");
+    Contact contact = new Contact("old@example.com", "Unknown", address);
+    LeadEntity existingEntity = new LeadEntity(existingId, contact, "Old Company", "NEW");
+
+    when(mockRepository.findById(existingId.toString()))
+        .thenReturn(Optional.of(existingEntity));
+    when(mockRepository.save(any(LeadEntity.class)))
+        .thenAnswer(invocation -> invocation.getArgument(0));
+
+    LeadDto updated = service.updateWithRejectionReason(
+        existingId,
+        "new@example.com",
+        "+123456789",
+        "New Company",
+        LeadStatus.LOST,
+        rejectionId.toString()
+    );
+
+    assertThat(updated.status()).isEqualTo(LeadStatus.LOST);
+    assertThat(updated.rejectionReasonId()).isEqualTo(rejectionId.toString());
 
     verify(mockRepository, times(1)).findById(existingId.toString());
     verify(mockRepository, times(1)).save(any(LeadEntity.class));
@@ -441,7 +474,7 @@ class LeadServiceTest {
   @Test
   void shouldFilterLeadsBySearch() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository);
+    LeadService leadService = new LeadService(repository, null);
 
     leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
     leadService.addLead("petr@example.com", "Petr Ltd", LeadStatus.NEW);
@@ -456,7 +489,7 @@ class LeadServiceTest {
   @Test
   void shouldFilterLeadsByStatus() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository);
+    LeadService leadService = new LeadService(repository, null);
 
     leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
     leadService.addLead("petr@example.com", "Petr Ltd", LeadStatus.QUALIFIED);
@@ -470,7 +503,7 @@ class LeadServiceTest {
   @Test
   void shouldCombineSearchAndStatusFilters() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository);
+    LeadService leadService = new LeadService(repository, null);
 
     leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
     leadService.addLead("ivan2@example.com", "Ivan Ltd", LeadStatus.QUALIFIED);
@@ -484,7 +517,7 @@ class LeadServiceTest {
   @Test
   void shouldReturnAllWhenNoFilters() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository);
+    LeadService leadService = new LeadService(repository, null);
 
     leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
     leadService.addLead("petr@example.com", "Petr Ltd", LeadStatus.QUALIFIED);

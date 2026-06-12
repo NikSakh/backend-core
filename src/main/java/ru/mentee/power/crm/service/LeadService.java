@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
 import ru.mentee.power.crm.domain.LeadEntity;
+import ru.mentee.power.crm.jparepository.RejectionReasonsRepository;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
@@ -25,9 +26,12 @@ public class LeadService {
   private static final Logger LOG = LoggerFactory.getLogger(LeadService.class);
 
   private final LeadRepository repository;
+  private final RejectionReasonsRepository rejectionReasonsRepository;
 
-  public LeadService(LeadRepository repository) {
+  public LeadService(LeadRepository repository,
+                     RejectionReasonsRepository rejectionReasonsRepository) {
     this.repository = repository;
+    this.rejectionReasonsRepository = rejectionReasonsRepository;
     LOG.info("LeadService constructor called");
   }
 
@@ -99,12 +103,23 @@ public class LeadService {
 
   private LeadDto convertToDto(LeadEntity entity) {
     Contact contact = entity.contact();
+    String rejectionReasonName = null;
+    if (entity.rejectionReasonId() != null && !entity.rejectionReasonId().isEmpty()) {
+      LOG.info("Looking up rejection reason: {}", entity.rejectionReasonId());
+      rejectionReasonName = rejectionReasonsRepository
+          .findById(UUID.fromString(entity.rejectionReasonId()))
+          .map(r -> r.getName())
+          .orElse(null);
+      LOG.info("Found rejection reason name: {}", rejectionReasonName);
+    }
     return new LeadDto(
         entity.id().toString(),
         contact.email(),
         contact.phone(),
         entity.company(),
-        LeadStatus.valueOf(entity.status())
+        LeadStatus.valueOf(entity.status()),
+        entity.rejectionReasonId(),
+        rejectionReasonName
     );
   }
 
@@ -118,7 +133,28 @@ public class LeadService {
         id,
         new Contact(email.trim().toLowerCase(), phone, existing.get().contact().address()),
         company.trim(),
-        status.name()
+        status.name(),
+        existing.get().rejectionReasonId()
+    );
+
+    repository.save(updatedEntity);
+
+    return convertToDto(updatedEntity);
+  }
+
+  public LeadDto updateWithRejectionReason(UUID id, String email, String phone, String company,
+                                           LeadStatus status, String rejectionReasonId) {
+    Optional<LeadEntity> existing = repository.findById(id.toString());
+    if (existing.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
+    }
+
+    LeadEntity updatedEntity = new LeadEntity(
+        id,
+        new Contact(email.trim().toLowerCase(), phone, existing.get().contact().address()),
+        company.trim(),
+        status.name(),
+        rejectionReasonId
     );
 
     repository.save(updatedEntity);

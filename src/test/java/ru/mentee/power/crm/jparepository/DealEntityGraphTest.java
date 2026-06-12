@@ -32,8 +32,10 @@ class DealEntityGraphTest {
     String uniqueSku1 = "LAPTOP-" + UUID.randomUUID().toString().substring(0, 6);
     String uniqueSku2 = "MONITOR-" + UUID.randomUUID().toString().substring(0, 6);
 
-    Product product1 = productRepository.save(new Product("Ноутбук", uniqueSku1, new BigDecimal("90000"), true));
-    Product product2 = productRepository.save(new Product("Монитор", uniqueSku2, new BigDecimal("25000"), true));
+    Product product1 = productRepository.save(new Product("Ноутбук", uniqueSku1,
+        new BigDecimal("90000"), true));
+    Product product2 = productRepository.save(new Product("Монитор", uniqueSku2,
+        new BigDecimal("25000"), true));
 
     DealJpaEntity deal = new DealJpaEntity("Сделка", new BigDecimal("150000"), "NEW");
     deal.addDealProduct(new DealProduct(deal, product1, 2, new BigDecimal("81000")));

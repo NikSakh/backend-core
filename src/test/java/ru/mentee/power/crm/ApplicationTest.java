@@ -16,7 +16,7 @@ class ApplicationTest {
   @Test
   void leadServiceShouldContainFiveInitialLeads() {
     LeadRepository repository = new LeadRepository();
-    LeadService service = new LeadService(repository);
+    LeadService service = new LeadService(repository, null);
 
     service.addLead("john@example.com", "TechCorp", LeadStatus.NEW);
     service.addLead("alice@example.com", "Innovate Inc", LeadStatus.QUALIFIED);

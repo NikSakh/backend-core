@@ -44,14 +44,39 @@ public class DealProduct {
     this.unitPrice = unitPrice;
   }
 
-  public UUID getId() { return id; }
-  public DealJpaEntity getDeal() { return deal; }
-  public Product getProduct() { return product; }
-  public Integer getQuantity() { return quantity; }
-  public BigDecimal getUnitPrice() { return unitPrice; }
+  public UUID getId() {
+    return id;
+  }
 
-  public void setDeal(DealJpaEntity deal) { this.deal = deal; }
-  public void setProduct(Product product) { this.product = product; }
-  public void setQuantity(Integer quantity) { this.quantity = quantity; }
-  public void setUnitPrice(BigDecimal unitPrice) { this.unitPrice = unitPrice; }
+  public DealJpaEntity getDeal() {
+    return deal;
+  }
+
+  public Product getProduct() {
+    return product;
+  }
+
+  public Integer getQuantity() {
+    return quantity;
+  }
+
+  public BigDecimal getUnitPrice() {
+    return unitPrice;
+  }
+
+  public void setDeal(DealJpaEntity deal) {
+    this.deal = deal;
+  }
+
+  public void setProduct(Product product) {
+    this.product = product;
+  }
+
+  public void setQuantity(Integer quantity) {
+    this.quantity = quantity;
+  }
+
+  public void setUnitPrice(BigDecimal unitPrice) {
+    this.unitPrice = unitPrice;
+  }
 }
