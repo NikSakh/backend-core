@@ -1,5 +1,3 @@
-ALTER TABLE leads ADD COLUMN IF NOT EXISTS version BIGINT DEFAULT 0 NOT NULL;
-
 CREATE TABLE IF NOT EXISTS companies (
                                          id UUID PRIMARY KEY,
                                          name VARCHAR(255) NOT NULL,
@@ -24,6 +22,8 @@ CREATE TABLE IF NOT EXISTS leads (
                              version BIGINT DEFAULT 0 NOT NULL,
                              company_id UUID REFERENCES companies(id)
     );
+
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS version BIGINT DEFAULT 0 NOT NULL;
 
 CREATE INDEX IF NOT EXISTS idx_leads_email ON leads(email);
 CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);

@@ -14,3 +14,18 @@
 Оба стека возвращают идентичные данные, но Spring Boot требует в 5 раз меньше кода за счёт auto-configuration. Trade-off: Spring стартует медленнее из-за инициализации IoC контейнера.
 
 *Данные получены из `StackComparisonTest.java`*
+
+## Стратегии блокировок в CRM
+
+### Pessimistic Locking (пессимистическая)
+
+**Когда использовать:**
+- Критические операции с высокой конкуренцией
+- Конверсия Lead→Deal (атомарное изменение статуса)
+- Гарантия отсутствия конфликтов (нет retry-логики)
+
+**Реализация в проекте:**
+```java
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+@Query("SELECT l FROM LeadJpaEntity l WHERE l.id = :id")
+Optional<LeadJpaEntity> findByIdForUpdate(@Param("id") UUID id);

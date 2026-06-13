@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +23,10 @@ public interface LeadJpaRepository extends JpaRepository<LeadJpaEntity, UUID> {
 
   @Query(value = "SELECT * FROM leads WHERE status = ?1", nativeQuery = true)
   List<LeadJpaEntity> findByStatusNative(String status);
+
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("SELECT l FROM LeadJpaEntity l WHERE l.id = :id")
+  Optional<LeadJpaEntity> findByIdForUpdate(@Param("id") UUID id);
 
   Optional<LeadJpaEntity> findByEmail(String email);
 
@@ -49,8 +55,8 @@ public interface LeadJpaRepository extends JpaRepository<LeadJpaEntity, UUID> {
   Page<LeadJpaEntity> findByCompany(String company, Pageable pageable);
 
   @Query("SELECT l FROM LeadJpaEntity l WHERE l.status IN :statuses")
-  Page<LeadJpaEntity> findByStatusInPaged(@Param("statuses")
-                                          List<String> statuses, Pageable pageable);
+  Page<LeadJpaEntity> findByStatusInPaged(@Param("statuses") List<String> statuses,
+                                          Pageable pageable);
 
   @Modifying(clearAutomatically = true)
   @Query("UPDATE LeadJpaEntity l SET l.status = :newStatus WHERE l.status = :oldStatus")
