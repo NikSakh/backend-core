@@ -3,6 +3,8 @@ package ru.mentee.power.crm.service;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +20,11 @@ public class LeadTransactionalService {
   public LeadTransactionalService(LeadJpaRepository repository, LeadProcessor leadProcessor) {
     this.repository = repository;
     this.leadProcessor = leadProcessor;
+  }
+
+  public Page<LeadJpaEntity> getFirstPage(int pageSize) {
+    PageRequest pageRequest = PageRequest.of(0, pageSize);
+    return repository.findAll(pageRequest);
   }
 
   @Transactional
