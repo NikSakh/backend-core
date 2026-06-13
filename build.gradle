@@ -153,9 +153,7 @@ jacocoTestCoverageVerification {
                         '**/web/**',
                         '**/generated/**',
                         '**/core/**',
-                        '**/domain/jpa/**',
-                        '**/service/LeadTransactionalService*',
-                        '**/service/LeadProcessor*'
+                        '**/domain/jpa/**'
                 ])
             }
     )
