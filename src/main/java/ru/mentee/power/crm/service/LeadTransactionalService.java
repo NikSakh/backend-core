@@ -1,24 +1,35 @@
 package ru.mentee.power.crm.service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import ru.mentee.power.crm.domain.jpa.DealJpaEntity;
 import ru.mentee.power.crm.domain.jpa.LeadJpaEntity;
+import ru.mentee.power.crm.jparepository.DealJpaRepository;
 import ru.mentee.power.crm.jparepository.LeadJpaRepository;
 
 @Service
 public class LeadTransactionalService {
 
+  private static final Logger LOG = LoggerFactory.getLogger(LeadTransactionalService.class);
+
   private final LeadJpaRepository repository;
+  private final DealJpaRepository dealRepository;
   private final LeadProcessor leadProcessor;
 
-  public LeadTransactionalService(LeadJpaRepository repository, LeadProcessor leadProcessor) {
+  public LeadTransactionalService(LeadJpaRepository repository,
+                                  DealJpaRepository dealRepository,
+                                  LeadProcessor leadProcessor) {
     this.repository = repository;
+    this.dealRepository = dealRepository;
     this.leadProcessor = leadProcessor;
   }
 
@@ -31,6 +42,17 @@ public class LeadTransactionalService {
   public LeadJpaEntity createLead(String email, String company, String status) {
     LeadJpaEntity lead = new LeadJpaEntity(email, company, status);
     return repository.save(lead);
+  }
+
+  @Transactional
+  public DealJpaEntity convertLeadToDeal(UUID leadId, BigDecimal amount) {
+    LeadJpaEntity lead = repository.findById(leadId)
+        .orElseThrow(() -> new IllegalArgumentException("Lead not found: " + leadId));
+    lead.setStatus("CONVERTED");
+    repository.save(lead);
+
+    DealJpaEntity deal = new DealJpaEntity("Deal for lead " + leadId, amount, "NEW");
+    return dealRepository.save(deal);
   }
 
   @Transactional
@@ -58,11 +80,11 @@ public class LeadTransactionalService {
     try {
       updateSingleLeadWithNewTransaction(lead2.getId(), "updated@example.com");
     } catch (RuntimeException e) {
-      System.out.println("Caught exception: " + e.getMessage());
+      LOG.info("Caught exception in self-invocation: {}", e.getMessage());
     }
 
-    System.out.println("Lead1 status: " + repository.findById(lead1.getId()).get().getStatus());
-    System.out.println("Lead2 email: " + repository.findById(lead2.getId()).get().getEmail());
+    LOG.info("Lead1 status: {}", repository.findById(lead1.getId()).get().getStatus());
+    LOG.info("Lead2 email: {}", repository.findById(lead2.getId()).get().getEmail());
   }
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -74,6 +96,14 @@ public class LeadTransactionalService {
     throw new RuntimeException("Error in separate transaction!");
   }
 
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  public void updateSingleLeadSuccessfully(UUID id, String newEmail) {
+    LeadJpaEntity lead = repository.findById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Lead not found"));
+    lead.setEmail(newEmail);
+    repository.save(lead);
+  }
+
   public void processLeadsWithSolution() {
     LeadJpaEntity lead1 = createLead("lead3@example.com", "Corp3", "NEW");
     LeadJpaEntity lead2 = createLead("lead4@example.com", "Corp4", "NEW");
@@ -81,10 +111,10 @@ public class LeadTransactionalService {
     try {
       leadProcessor.updateSingleLead(lead2.getId(), "updated@example.com");
     } catch (RuntimeException e) {
-      System.out.println("Caught exception: " + e.getMessage());
+      LOG.info("Caught exception in processor: {}", e.getMessage());
     }
 
-    System.out.println("Lead3 status: " + repository.findById(lead1.getId()).get().getStatus());
-    System.out.println("Lead4 email: " + repository.findById(lead2.getId()).get().getEmail());
+    LOG.info("Lead3 status: {}", repository.findById(lead1.getId()).get().getStatus());
+    LOG.info("Lead4 email: {}", repository.findById(lead2.getId()).get().getEmail());
   }
 }
