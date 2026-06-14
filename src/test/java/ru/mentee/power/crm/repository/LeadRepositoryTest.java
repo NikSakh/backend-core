@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.crm.domain.Address;
@@ -143,13 +142,13 @@ class LeadRepositoryTest {
 
     Address addressFirst = new Address("CityFirst", "StreetFirst", "11111");
     Contact contactFirst = new Contact("same@example.com", "+111111111", addressFirst);
-    LeadEntity leadWithSameEmailFirst = new LeadEntity(idFirst, contactFirst,
-        "Company First", "NEW");
+    LeadEntity leadWithSameEmailFirst =
+        new LeadEntity(idFirst, contactFirst, "Company First", "NEW");
 
     Address addressSecond = new Address("CitySecond", "StreetSecond", "22222");
     Contact contactSecond = new Contact("same@example.com", "+222222222", addressSecond);
-    LeadEntity leadWithSameEmailSecond = new LeadEntity(idSecond, contactSecond,
-        "Company Second", "QUALIFIED");
+    LeadEntity leadWithSameEmailSecond =
+        new LeadEntity(idSecond, contactSecond, "Company Second", "QUALIFIED");
 
     repository.save(leadWithSameEmailFirst);
     repository.save(leadWithSameEmailSecond);

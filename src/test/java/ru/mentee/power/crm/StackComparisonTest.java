@@ -6,7 +6,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,24 +26,24 @@ class StackComparisonTest {
   @Test
   @DisplayName("Оба стека должны возвращать лидов")
   void shouldReturnLeadsFromBothStacks() throws Exception {
-    HttpRequest servletRequest = HttpRequest.newBuilder()
-        .uri(URI.create("http://localhost:" + SERVLET_PORT + "/leads"))
-        .GET()
-        .build();
+    HttpRequest servletRequest =
+        HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:" + SERVLET_PORT + "/leads"))
+            .GET()
+            .build();
 
-    HttpRequest springRequest = HttpRequest.newBuilder()
-        .uri(URI.create("http://localhost:" + SPRING_PORT + "/leads"))
-        .GET()
-        .build();
+    HttpRequest springRequest =
+        HttpRequest.newBuilder()
+            .uri(URI.create("http://localhost:" + SPRING_PORT + "/leads"))
+            .GET()
+            .build();
 
-    HttpResponse<String> servletResponse = httpClient.send(
-        servletRequest, HttpResponse.BodyHandlers.ofString());
-    HttpResponse<String> springResponse = httpClient.send(
-        springRequest, HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> servletResponse =
+        httpClient.send(servletRequest, HttpResponse.BodyHandlers.ofString());
+    HttpResponse<String> springResponse =
+        httpClient.send(springRequest, HttpResponse.BodyHandlers.ofString());
 
-    assertThat(servletResponse.statusCode())
-        .as("Servlet stack should return 200")
-        .isEqualTo(200);
+    assertThat(servletResponse.statusCode()).as("Servlet stack should return 200").isEqualTo(200);
 
     assertThat(springResponse.statusCode())
         .as("Spring Boot stack should return 200")
@@ -77,7 +76,8 @@ class StackComparisonTest {
     System.out.println("=== Сравнение времени старта ===");
     System.out.printf("Servlet стек: %d ms%n", servletStartupMs);
     System.out.printf("Spring Boot: %d ms%n", springStartupMs);
-    System.out.printf("Разница: Spring %s на %d ms%n",
+    System.out.printf(
+        "Разница: Spring %s на %d ms%n",
         springStartupMs > servletStartupMs ? "медленнее" : "быстрее",
         Math.abs(springStartupMs - servletStartupMs));
 
@@ -108,8 +108,7 @@ class StackComparisonTest {
           org.springframework.boot.SpringApplication.run(
               ru.mentee.power.crm.spring.Application.class,
               "--server.port=0",
-              "--spring.main.web-application-type=servlet"
-          );
+              "--spring.main.web-application-type=servlet");
       context.close();
     } catch (Exception e) {
       throw new RuntimeException(e);

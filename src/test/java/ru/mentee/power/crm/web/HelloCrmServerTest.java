@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,8 +41,8 @@ class HelloCrmServerTest {
     assertTrue(contentType != null && contentType.contains("text/html"));
     assertTrue(contentType != null && contentType.contains("charset=UTF-8"));
 
-    try (BufferedReader reader = new BufferedReader(
-        new InputStreamReader(connection.getInputStream()))) {
+    try (BufferedReader reader =
+        new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
       StringBuilder response = new StringBuilder();
       String line;
       while ((line = reader.readLine()) != null) {
@@ -75,8 +74,8 @@ class HelloCrmServerTest {
 
       int responseCode = connection.getResponseCode();
 
-      try (BufferedReader reader = new BufferedReader(
-          new InputStreamReader(connection.getInputStream()))) {
+      try (BufferedReader reader =
+          new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
         StringBuilder response = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {

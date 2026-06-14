@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +21,9 @@ import ru.mentee.power.crm.spring.Application;
 @ContextConfiguration(classes = Application.class)
 class DealEntityGraphTest {
 
-  @Autowired
-  private DealJpaRepository dealRepository;
+  @Autowired private DealJpaRepository dealRepository;
 
-  @Autowired
-  private ProductRepository productRepository;
+  @Autowired private ProductRepository productRepository;
 
   @BeforeEach
   void setUp() {
@@ -36,12 +33,20 @@ class DealEntityGraphTest {
 
   @Test
   void shouldSaveDealWithProductsAndLoadWithEntityGraph() {
-    Product product1 = productRepository.save(
-        new Product("Ноутбук", "LAPTOP-" + UUID.randomUUID().toString().substring(0, 6),
-            new BigDecimal("90000"), true));
-    Product product2 = productRepository.save(
-        new Product("Монитор", "MONITOR-" + UUID.randomUUID().toString().substring(0, 6),
-            new BigDecimal("25000"), true));
+    Product product1 =
+        productRepository.save(
+            new Product(
+                "Ноутбук",
+                "LAPTOP-" + UUID.randomUUID().toString().substring(0, 6),
+                new BigDecimal("90000"),
+                true));
+    Product product2 =
+        productRepository.save(
+            new Product(
+                "Монитор",
+                "MONITOR-" + UUID.randomUUID().toString().substring(0, 6),
+                new BigDecimal("25000"),
+                true));
 
     DealJpaEntity deal = new DealJpaEntity("Сделка", new BigDecimal("150000"), "NEW");
     deal.addDealProduct(new DealProduct(deal, product1, 2, new BigDecimal("81000")));
@@ -58,9 +63,13 @@ class DealEntityGraphTest {
 
   @Test
   void shouldLoadDealProductsWithMetadata() {
-    Product product = productRepository.save(
-        new Product("Клавиатура", "KEY-" + UUID.randomUUID().toString().substring(0, 6),
-            new BigDecimal("5000"), true));
+    Product product =
+        productRepository.save(
+            new Product(
+                "Клавиатура",
+                "KEY-" + UUID.randomUUID().toString().substring(0, 6),
+                new BigDecimal("5000"),
+                true));
 
     DealJpaEntity deal = new DealJpaEntity("Сделка с клавиатурой", new BigDecimal("10000"), "NEW");
     deal.addDealProduct(new DealProduct(deal, product, 3, new BigDecimal("4500")));
@@ -68,6 +77,7 @@ class DealEntityGraphTest {
 
     Optional<DealJpaEntity> found = dealRepository.findDealWithProducts(deal.getId());
     assertThat(found.get().getDealProducts().get(0).getQuantity()).isEqualTo(3);
-    assertThat(found.get().getDealProducts().get(0).getUnitPrice()).isEqualTo(new BigDecimal("4500"));
+    assertThat(found.get().getDealProducts().get(0).getUnitPrice())
+        .isEqualTo(new BigDecimal("4500"));
   }
 }

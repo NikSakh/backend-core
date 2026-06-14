@@ -3,7 +3,6 @@ package ru.mentee.power.crm.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 
 class CustomerTest {
@@ -15,15 +14,9 @@ class CustomerTest {
 
     Contact contact = new Contact("john@example.com", "+123456789", contactAddress);
 
-    Customer customer = new Customer(
-        UUID.randomUUID(),
-        contact,
-        billingAddress,
-        "GOLD"
-    );
+    Customer customer = new Customer(UUID.randomUUID(), contact, billingAddress, "GOLD");
 
-    assertThat(customer.contact().address())
-        .isNotEqualTo(customer.billingAddress());
+    assertThat(customer.contact().address()).isNotEqualTo(customer.billingAddress());
 
     assertThat(customer.contact().email()).isEqualTo("john@example.com");
     assertThat(customer.contact().address().city()).isEqualTo("San Francisco");
@@ -38,19 +31,10 @@ class CustomerTest {
 
     UUID id = UUID.randomUUID();
 
-    LeadEntity lead = new LeadEntity(
-        id,
-        sharedContact,
-        "Acme Corp",
-        "NEW"
-    );
+    LeadEntity lead = new LeadEntity(id, sharedContact, "Acme Corp", "NEW");
 
-    Customer customer = new Customer(
-        id,
-        sharedContact,
-        new Address("Boston", "Park St", "02108"),
-        "SILVER"
-    );
+    Customer customer =
+        new Customer(id, sharedContact, new Address("Boston", "Park St", "02108"), "SILVER");
 
     assertThat(lead.contact()).isSameAs(customer.contact());
 

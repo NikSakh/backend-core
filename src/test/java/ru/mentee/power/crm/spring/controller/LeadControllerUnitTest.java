@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.ExtendedModelMap;
@@ -50,8 +49,8 @@ class LeadControllerUnitTest {
 
   @Test
   void shouldNotRequireSpringContext() {
-    LeadController controller = new LeadController(
-        new MockLeadService(), mock(RejectionReasonsRepository.class));
+    LeadController controller =
+        new LeadController(new MockLeadService(), mock(RejectionReasonsRepository.class));
     assertThat(controller).isNotNull();
   }
 
@@ -67,8 +66,8 @@ class LeadControllerUnitTest {
   @Test
   void shouldShowEditFormForExistingLead() {
     Model model = new ExtendedModelMap();
-    String viewName = controller.showEditForm(UUID.fromString(
-        "11111111-1111-1111-1111-111111111111"), model);
+    String viewName =
+        controller.showEditForm(UUID.fromString("11111111-1111-1111-1111-111111111111"), model);
 
     assertThat(viewName).isEqualTo("leads/edit");
     assertThat(model.getAttribute("lead")).isNotNull();
@@ -87,28 +86,27 @@ class LeadControllerUnitTest {
 
   @Test
   void shouldUpdateLeadAndRedirect() {
-    LeadDto leadDto = new LeadDto(
-        "11111111-1111-1111-1111-111111111111",
-        "updated@example.com",
-        "+123",
-        "Updated Corp",
-        LeadStatus.QUALIFIED
-    );
+    LeadDto leadDto =
+        new LeadDto(
+            "11111111-1111-1111-1111-111111111111",
+            "updated@example.com",
+            "+123",
+            "Updated Corp",
+            LeadStatus.QUALIFIED);
 
-    String viewName = controller.updateLead(
-        UUID.fromString("11111111-1111-1111-1111-111111111111"),
-        leadDto,
-        new BeanPropertyBindingResult(leadDto, "lead")
-    );
+    String viewName =
+        controller.updateLead(
+            UUID.fromString("11111111-1111-1111-1111-111111111111"),
+            leadDto,
+            new BeanPropertyBindingResult(leadDto, "lead"));
 
     assertThat(viewName).isEqualTo("redirect:/leads");
   }
 
   @Test
   void shouldDeleteLeadAndRedirect() {
-    String viewName = controller.deleteLead(
-        UUID.fromString("11111111-1111-1111-1111-111111111111")
-    );
+    String viewName =
+        controller.deleteLead(UUID.fromString("11111111-1111-1111-1111-111111111111"));
     assertThat(viewName).isEqualTo("redirect:/leads");
   }
 

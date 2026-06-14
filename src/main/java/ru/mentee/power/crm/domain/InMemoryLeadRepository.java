@@ -34,9 +34,7 @@ public class InMemoryLeadRepository implements Repository<LeadEntity> {
     if (id == null) {
       throw new IllegalArgumentException("ID cannot be null");
     }
-    return internalStorage.stream()
-        .filter(lead -> lead.id().equals(id))
-        .findFirst();
+    return internalStorage.stream().filter(lead -> lead.id().equals(id)).findFirst();
   }
 
   @Override

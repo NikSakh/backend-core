@@ -30,9 +30,7 @@ public class Deal {
 
   public void transitionTo(DealStatus newStatus) {
     if (!this.status.canTransitionTo(newStatus)) {
-      throw new IllegalStateException(
-          "Cannot transition from " + this.status + " to " + newStatus
-      );
+      throw new IllegalStateException("Cannot transition from " + this.status + " to " + newStatus);
     }
     this.status = newStatus;
   }

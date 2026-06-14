@@ -3,7 +3,6 @@ package ru.mentee.power.crm.service;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -25,9 +24,8 @@ public class LeadTransactionalService {
   private final DealJpaRepository dealRepository;
   private final LeadProcessor leadProcessor;
 
-  public LeadTransactionalService(LeadJpaRepository repository,
-                                  DealJpaRepository dealRepository,
-                                  LeadProcessor leadProcessor) {
+  public LeadTransactionalService(
+      LeadJpaRepository repository, DealJpaRepository dealRepository, LeadProcessor leadProcessor) {
     this.repository = repository;
     this.dealRepository = dealRepository;
     this.leadProcessor = leadProcessor;
@@ -46,8 +44,10 @@ public class LeadTransactionalService {
 
   @Transactional
   public DealJpaEntity convertLeadToDeal(UUID leadId, BigDecimal amount) {
-    LeadJpaEntity lead = repository.findById(leadId)
-        .orElseThrow(() -> new IllegalArgumentException("Lead not found: " + leadId));
+    LeadJpaEntity lead =
+        repository
+            .findById(leadId)
+            .orElseThrow(() -> new IllegalArgumentException("Lead not found: " + leadId));
     lead.setStatus("CONVERTED");
     repository.save(lead);
 
@@ -89,8 +89,8 @@ public class LeadTransactionalService {
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void updateSingleLeadWithNewTransaction(UUID id, String newEmail) {
-    LeadJpaEntity lead = repository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Lead not found"));
+    LeadJpaEntity lead =
+        repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Lead not found"));
     lead.setEmail(newEmail);
     repository.save(lead);
     throw new RuntimeException("Error in separate transaction!");
@@ -98,8 +98,8 @@ public class LeadTransactionalService {
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void updateSingleLeadSuccessfully(UUID id, String newEmail) {
-    LeadJpaEntity lead = repository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Lead not found"));
+    LeadJpaEntity lead =
+        repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Lead not found"));
     lead.setEmail(newEmail);
     repository.save(lead);
   }

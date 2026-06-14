@@ -17,11 +17,9 @@ import ru.mentee.power.crm.spring.Application;
 @ContextConfiguration(classes = Application.class)
 class CompanyRepositoryTest {
 
-  @Autowired
-  private CompanyRepository companyRepository;
+  @Autowired private CompanyRepository companyRepository;
 
-  @Autowired
-  private LeadJpaRepository leadRepository;
+  @Autowired private LeadJpaRepository leadRepository;
 
   @BeforeEach
   void setUp() {

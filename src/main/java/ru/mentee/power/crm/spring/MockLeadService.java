@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
@@ -16,12 +15,21 @@ public class MockLeadService extends LeadService {
 
   public MockLeadService() {
     super(new LeadRepository(), null);
-    this.mockLeads = new ArrayList<>(List.of(
-        new LeadDto("11111111-1111-1111-1111-111111111111",
-            "test1@example.com", "+1234567890", "TestCorp1", LeadStatus.NEW),
-        new LeadDto("22222222-2222-2222-2222-222222222222",
-            "test2@example.com", "+0987654321", "TestCorp2", LeadStatus.QUALIFIED)
-    ));
+    this.mockLeads =
+        new ArrayList<>(
+            List.of(
+                new LeadDto(
+                    "11111111-1111-1111-1111-111111111111",
+                    "test1@example.com",
+                    "+1234567890",
+                    "TestCorp1",
+                    LeadStatus.NEW),
+                new LeadDto(
+                    "22222222-2222-2222-2222-222222222222",
+                    "test2@example.com",
+                    "+0987654321",
+                    "TestCorp2",
+                    LeadStatus.QUALIFIED)));
   }
 
   @Override
@@ -31,16 +39,12 @@ public class MockLeadService extends LeadService {
 
   @Override
   public List<LeadDto> findByStatus(LeadStatus status) {
-    return mockLeads.stream()
-        .filter(lead -> lead.status() == status)
-        .toList();
+    return mockLeads.stream().filter(lead -> lead.status() == status).toList();
   }
 
   @Override
   public Optional<LeadDto> findById(UUID id) {
-    return mockLeads.stream()
-        .filter(lead -> lead.id().equals(id.toString()))
-        .findFirst();
+    return mockLeads.stream().filter(lead -> lead.id().equals(id.toString())).findFirst();
   }
 
   @Override
@@ -63,20 +67,30 @@ public class MockLeadService extends LeadService {
   @Override
   public List<LeadDto> findLeads(String search, String status) {
     return mockLeads.stream()
-        .filter(lead -> {
-          boolean matchesSearch = search == null || search.isEmpty()
-              || lead.email().toLowerCase().contains(search.toLowerCase())
-              || lead.company().toLowerCase().contains(search.toLowerCase());
-          boolean matchesStatus = status == null || status.isEmpty()
-              || lead.status().name().equalsIgnoreCase(status);
-          return matchesSearch && matchesStatus;
-        })
+        .filter(
+            lead -> {
+              boolean matchesSearch =
+                  search == null
+                      || search.isEmpty()
+                      || lead.email().toLowerCase().contains(search.toLowerCase())
+                      || lead.company().toLowerCase().contains(search.toLowerCase());
+              boolean matchesStatus =
+                  status == null
+                      || status.isEmpty()
+                      || lead.status().name().equalsIgnoreCase(status);
+              return matchesSearch && matchesStatus;
+            })
         .toList();
   }
 
   @Override
-  public LeadDto updateWithRejectionReason(UUID id, String email, String phone, String company,
-                                           LeadStatus status, String rejectionReasonId) {
+  public LeadDto updateWithRejectionReason(
+      UUID id,
+      String email,
+      String phone,
+      String company,
+      LeadStatus status,
+      String rejectionReasonId) {
     return update(id, email, phone, company, status);
   }
 }

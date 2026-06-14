@@ -2,7 +2,6 @@ package ru.mentee.power.crm.spring.controller;
 
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,10 +37,11 @@ public class RejectionReasonsController {
   @PostMapping("/{id}/toggle")
   public String toggle(@PathVariable UUID id) {
     Optional<RejectionReasons> found = repository.findById(id);
-    found.ifPresent(reason -> {
-      reason.setActive(!reason.getActive());
-      repository.save(reason);
-    });
+    found.ifPresent(
+        reason -> {
+          reason.setActive(!reason.getActive());
+          repository.save(reason);
+        });
     return "redirect:/admin/rejection-reasons";
   }
 }

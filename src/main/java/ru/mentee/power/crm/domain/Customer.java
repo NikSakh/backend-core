@@ -5,9 +5,7 @@ import java.util.UUID;
 
 public record Customer(UUID id, Contact contact, Address billingAddress, String loyaltyTier) {
 
-  private static final Set<String> ALLOWED_LOYALTY_TIERS = Set.of(
-      "BRONZE", "SILVER", "GOLD"
-  );
+  private static final Set<String> ALLOWED_LOYALTY_TIERS = Set.of("BRONZE", "SILVER", "GOLD");
 
   public Customer {
     if (id == null) {
@@ -24,9 +22,11 @@ public record Customer(UUID id, Contact contact, Address billingAddress, String 
     }
     if (!ALLOWED_LOYALTY_TIERS.contains(loyaltyTier)) {
       throw new IllegalArgumentException(
-          "Loyalty tier must be one of: " + ALLOWED_LOYALTY_TIERS + ", but was: '" + loyaltyTier
-              + "'"
-      );
+          "Loyalty tier must be one of: "
+              + ALLOWED_LOYALTY_TIERS
+              + ", but was: '"
+              + loyaltyTier
+              + "'");
     }
   }
 }

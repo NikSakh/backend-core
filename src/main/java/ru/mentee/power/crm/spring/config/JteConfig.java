@@ -7,24 +7,21 @@ import gg.jte.output.StringOutput;
 import gg.jte.resolve.DirectoryCodeResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
-
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
 
 @Configuration
 public class JteConfig {
 
   @Bean
   public TemplateEngine templateEngine() {
-    CodeResolver codeResolver = new DirectoryCodeResolver(
-        Paths.get("src/main/jte")
-    );
+    CodeResolver codeResolver = new DirectoryCodeResolver(Paths.get("src/main/jte"));
     return TemplateEngine.create(codeResolver, ContentType.Html);
   }
 
@@ -35,8 +32,9 @@ public class JteConfig {
       public View resolveViewName(String viewName, Locale locale) throws Exception {
         return new View() {
           @Override
-          public void render(Map<String, ?> model, HttpServletRequest request,
-                             HttpServletResponse response) throws Exception {
+          public void render(
+              Map<String, ?> model, HttpServletRequest request, HttpServletResponse response)
+              throws Exception {
             response.setContentType("text/html;charset=UTF-8");
             StringOutput output = new StringOutput();
 

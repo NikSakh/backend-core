@@ -28,7 +28,6 @@ class LeadStatusTest {
             LeadStatus.CONTACTED,
             LeadStatus.QUALIFIED,
             LeadStatus.CONVERTED,
-            LeadStatus.LOST
-        );
+            LeadStatus.LOST);
   }
 }

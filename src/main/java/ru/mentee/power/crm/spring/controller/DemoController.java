@@ -12,8 +12,7 @@ public class DemoController {
 
   private final LeadService constructorService;
 
-  @Autowired
-  private LeadRepository fieldRepository;
+  @Autowired private LeadRepository fieldRepository;
 
   private LeadService setterService;
 

@@ -12,7 +12,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,23 +31,18 @@ import ru.mentee.power.crm.repository.LeadRepository;
 @ExtendWith(MockitoExtension.class)
 class LeadServiceTest {
 
-  @Mock
-  private LeadRepository mockRepository;
+  @Mock private LeadRepository mockRepository;
 
-  @Mock
-  private RejectionReasonsRepository rejectionReasonsRepository;
+  @Mock private RejectionReasonsRepository rejectionReasonsRepository;
 
-  @InjectMocks
-  private LeadService service;
+  @InjectMocks private LeadService service;
 
   @BeforeEach
-  void setUp() {
-  }
+  void setUp() {}
 
   @Test
   void shouldCallRepositorySaveWhenAddingNewLead() {
-    when(mockRepository.findByEmail(any(String.class)))
-        .thenReturn(Optional.empty());
+    when(mockRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
     when(mockRepository.save(any(LeadEntity.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -67,12 +61,9 @@ class LeadServiceTest {
     Contact contact = new Contact("existing@example.com", "+123456789", address);
     LeadEntity existingLead = new LeadEntity(existingId, contact, "Existing Company", "QUALIFIED");
 
-    when(mockRepository.findByEmail("existing@example.com"))
-        .thenReturn(Optional.of(existingLead));
+    when(mockRepository.findByEmail("existing@example.com")).thenReturn(Optional.of(existingLead));
 
-    assertThatThrownBy(() ->
-        service.addLead("existing@example.com", "New Company", LeadStatus.NEW)
-    )
+    assertThatThrownBy(() -> service.addLead("existing@example.com", "New Company", LeadStatus.NEW))
         .isInstanceOf(IllegalStateException.class)
         .hasMessageContaining("Lead with email 'existing@example.com' already exists");
 
@@ -81,8 +72,7 @@ class LeadServiceTest {
 
   @Test
   void shouldCallFindByEmailBeforeSave() {
-    when(mockRepository.findByEmail(any(String.class)))
-        .thenReturn(Optional.empty());
+    when(mockRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
     when(mockRepository.save(any(LeadEntity.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -95,8 +85,7 @@ class LeadServiceTest {
 
   @Test
   void shouldNormalizeEmailWhenAddingLead() {
-    when(mockRepository.findByEmail("test@example.com"))
-        .thenReturn(Optional.empty());
+    when(mockRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
     when(mockRepository.save(any(LeadEntity.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -144,13 +133,13 @@ class LeadServiceTest {
   void findAllShouldDelegateToRepository() {
     Address addressFirst = new Address("CityFirst", "StreetFirst", "11111");
     Contact contactFirst = new Contact("leadFirst@example.com", "+111111111", addressFirst);
-    LeadEntity entityFirst = new LeadEntity(UUID.randomUUID(), contactFirst,
-        "Company First", "NEW");
+    LeadEntity entityFirst =
+        new LeadEntity(UUID.randomUUID(), contactFirst, "Company First", "NEW");
 
     Address addressSecond = new Address("CitySecond", "StreetSecond", "22222");
     Contact contactSecond = new Contact("leadSecond@example.com", "+222222222", addressSecond);
-    LeadEntity entitySecond = new LeadEntity(UUID.randomUUID(), contactSecond,
-        "Company Second", "QUALIFIED");
+    LeadEntity entitySecond =
+        new LeadEntity(UUID.randomUUID(), contactSecond, "Company Second", "QUALIFIED");
 
     List<LeadEntity> entities = List.of(entityFirst, entitySecond);
     when(mockRepository.findAll()).thenReturn(entities);
@@ -158,16 +147,20 @@ class LeadServiceTest {
     List<LeadDto> result = service.findAll();
 
     assertThat(result).hasSize(2);
-    assertThat(result).anySatisfy(lead -> {
-      assertThat(lead.email()).isEqualTo("leadFirst@example.com");
-      assertThat(lead.company()).isEqualTo("Company First");
-      assertThat(lead.status()).isEqualTo(LeadStatus.NEW);
-    });
-    assertThat(result).anySatisfy(lead -> {
-      assertThat(lead.email()).isEqualTo("leadSecond@example.com");
-      assertThat(lead.company()).isEqualTo("Company Second");
-      assertThat(lead.status()).isEqualTo(LeadStatus.QUALIFIED);
-    });
+    assertThat(result)
+        .anySatisfy(
+            lead -> {
+              assertThat(lead.email()).isEqualTo("leadFirst@example.com");
+              assertThat(lead.company()).isEqualTo("Company First");
+              assertThat(lead.status()).isEqualTo(LeadStatus.NEW);
+            });
+    assertThat(result)
+        .anySatisfy(
+            lead -> {
+              assertThat(lead.email()).isEqualTo("leadSecond@example.com");
+              assertThat(lead.company()).isEqualTo("Company Second");
+              assertThat(lead.status()).isEqualTo(LeadStatus.QUALIFIED);
+            });
 
     verify(mockRepository, times(1)).findAll();
   }
@@ -248,8 +241,7 @@ class LeadServiceTest {
 
   @Test
   void shouldCreateLeadWithDefaultAddressAndUnknownPhone() {
-    when(mockRepository.findByEmail(any(String.class)))
-        .thenReturn(Optional.empty());
+    when(mockRepository.findByEmail(any(String.class))).thenReturn(Optional.empty());
 
     ArgumentCaptor<LeadEntity> entityCaptor = ArgumentCaptor.forClass(LeadEntity.class);
     when(mockRepository.save(entityCaptor.capture()))
@@ -346,18 +338,13 @@ class LeadServiceTest {
     Contact contact = new Contact("old@example.com", "Unknown", address);
     LeadEntity existingEntity = new LeadEntity(existingId, contact, "Old Company", "NEW");
 
-    when(mockRepository.findById(existingId.toString()))
-        .thenReturn(Optional.of(existingEntity));
+    when(mockRepository.findById(existingId.toString())).thenReturn(Optional.of(existingEntity));
     when(mockRepository.save(any(LeadEntity.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
 
-    LeadDto updated = service.update(
-        existingId,
-        "new@example.com",
-        "+123456789",
-        "New Company",
-        LeadStatus.QUALIFIED
-    );
+    LeadDto updated =
+        service.update(
+            existingId, "new@example.com", "+123456789", "New Company", LeadStatus.QUALIFIED);
 
     assertThat(updated.id()).isEqualTo(existingId.toString());
     assertThat(updated.email()).isEqualTo("new@example.com");
@@ -377,19 +364,18 @@ class LeadServiceTest {
     Contact contact = new Contact("old@example.com", "Unknown", address);
     LeadEntity existingEntity = new LeadEntity(existingId, contact, "Old Company", "NEW");
 
-    when(mockRepository.findById(existingId.toString()))
-        .thenReturn(Optional.of(existingEntity));
+    when(mockRepository.findById(existingId.toString())).thenReturn(Optional.of(existingEntity));
     when(mockRepository.save(any(LeadEntity.class)))
         .thenAnswer(invocation -> invocation.getArgument(0));
 
-    LeadDto updated = service.updateWithRejectionReason(
-        existingId,
-        "new@example.com",
-        "+123456789",
-        "New Company",
-        LeadStatus.LOST,
-        rejectionId.toString()
-    );
+    LeadDto updated =
+        service.updateWithRejectionReason(
+            existingId,
+            "new@example.com",
+            "+123456789",
+            "New Company",
+            LeadStatus.LOST,
+            rejectionId.toString());
 
     assertThat(updated.status()).isEqualTo(LeadStatus.LOST);
     assertThat(updated.rejectionReasonId()).isEqualTo(rejectionId.toString());
@@ -401,12 +387,11 @@ class LeadServiceTest {
   @Test
   void shouldThrowExceptionWhenUpdatingNonexistentLead() {
     UUID nonExistentId = UUID.randomUUID();
-    when(mockRepository.findById(nonExistentId.toString()))
-        .thenReturn(Optional.empty());
+    when(mockRepository.findById(nonExistentId.toString())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() ->
-        service.update(nonExistentId, "new@example.com", "+123", "Company", LeadStatus.NEW)
-    )
+    assertThatThrownBy(
+            () ->
+                service.update(nonExistentId, "new@example.com", "+123", "Company", LeadStatus.NEW))
         .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("not found");
 
@@ -420,20 +405,15 @@ class LeadServiceTest {
     Contact contact = new Contact("old@example.com", "Unknown", originalAddress);
     LeadEntity existingEntity = new LeadEntity(existingId, contact, "Old Company", "NEW");
 
-    when(mockRepository.findById(existingId.toString()))
-        .thenReturn(Optional.of(existingEntity));
+    when(mockRepository.findById(existingId.toString())).thenReturn(Optional.of(existingEntity));
 
     ArgumentCaptor<LeadEntity> entityCaptor = ArgumentCaptor.forClass(LeadEntity.class);
     when(mockRepository.save(entityCaptor.capture()))
         .thenAnswer(invocation -> invocation.getArgument(0));
 
-    LeadDto updated = service.update(
-        existingId,
-        "new@example.com",
-        "+79991234567",
-        "New Company",
-        LeadStatus.CONTACTED
-    );
+    LeadDto updated =
+        service.update(
+            existingId, "new@example.com", "+79991234567", "New Company", LeadStatus.CONTACTED);
 
     LeadEntity savedEntity = entityCaptor.getValue();
     assertThat(savedEntity.contact().address().city()).isEqualTo("Moscow");
@@ -449,8 +429,7 @@ class LeadServiceTest {
     Contact contact = new Contact("delete@example.com", "+123456789", address);
     LeadEntity existingEntity = new LeadEntity(existingId, contact, "Delete Corp", "NEW");
 
-    when(mockRepository.findById(existingId.toString()))
-        .thenReturn(Optional.of(existingEntity));
+    when(mockRepository.findById(existingId.toString())).thenReturn(Optional.of(existingEntity));
 
     service.delete(existingId);
 
@@ -461,8 +440,7 @@ class LeadServiceTest {
   @Test
   void shouldThrowExceptionWhenDeletingNonexistentLead() {
     UUID nonExistentId = UUID.randomUUID();
-    when(mockRepository.findById(nonExistentId.toString()))
-        .thenReturn(Optional.empty());
+    when(mockRepository.findById(nonExistentId.toString())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> service.delete(nonExistentId))
         .isInstanceOf(ResponseStatusException.class)

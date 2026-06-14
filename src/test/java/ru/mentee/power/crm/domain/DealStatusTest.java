@@ -10,15 +10,15 @@ class DealStatusTest {
 
   @ParameterizedTest
   @CsvSource({
-      "NEW, QUALIFIED, true",
-      "NEW, LOST, true",
-      "NEW, WON, false",
-      "QUALIFIED, PROPOSAL_SENT, true",
-      "PROPOSAL_SENT, NEGOTIATION, true",
-      "NEGOTIATION, WON, true",
-      "NEGOTIATION, LOST, true",
-      "WON, NEW, false",
-      "LOST, QUALIFIED, false"
+    "NEW, QUALIFIED, true",
+    "NEW, LOST, true",
+    "NEW, WON, false",
+    "QUALIFIED, PROPOSAL_SENT, true",
+    "PROPOSAL_SENT, NEGOTIATION, true",
+    "NEGOTIATION, WON, true",
+    "NEGOTIATION, LOST, true",
+    "WON, NEW, false",
+    "LOST, QUALIFIED, false"
   })
   void shouldValidateTransitions(DealStatus from, DealStatus to, boolean expected) {
     assertThat(from.canTransitionTo(to)).isEqualTo(expected);

@@ -1,10 +1,9 @@
 package ru.mentee.power.crm.jparepository;
 
+import jakarta.persistence.LockModeType;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -55,8 +54,8 @@ public interface LeadJpaRepository extends JpaRepository<LeadJpaEntity, UUID> {
   Page<LeadJpaEntity> findByCompany(String company, Pageable pageable);
 
   @Query("SELECT l FROM LeadJpaEntity l WHERE l.status IN :statuses")
-  Page<LeadJpaEntity> findByStatusInPaged(@Param("statuses") List<String> statuses,
-                                          Pageable pageable);
+  Page<LeadJpaEntity> findByStatusInPaged(
+      @Param("statuses") List<String> statuses, Pageable pageable);
 
   @Modifying(clearAutomatically = true)
   @Query("UPDATE LeadJpaEntity l SET l.status = :newStatus WHERE l.status = :oldStatus")

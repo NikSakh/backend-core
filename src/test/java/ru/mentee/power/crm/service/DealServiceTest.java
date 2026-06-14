@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,14 +29,11 @@ import ru.mentee.power.crm.repository.LeadRepository;
 @ExtendWith(MockitoExtension.class)
 class DealServiceTest {
 
-  @Mock
-  private DealRepository dealRepository;
+  @Mock private DealRepository dealRepository;
 
-  @Mock
-  private LeadRepository leadRepository;
+  @Mock private LeadRepository leadRepository;
 
-  @InjectMocks
-  private DealService dealService;
+  @InjectMocks private DealService dealService;
 
   private UUID leadId;
   private UUID dealId;
@@ -47,8 +43,13 @@ class DealServiceTest {
   void setUp() {
     leadId = UUID.randomUUID();
     dealId = UUID.randomUUID();
-    testDeal = new Deal(dealId, leadId, new BigDecimal("100000.00"),
-        DealStatus.NEW, java.time.LocalDateTime.now());
+    testDeal =
+        new Deal(
+            dealId,
+            leadId,
+            new BigDecimal("100000.00"),
+            DealStatus.NEW,
+            java.time.LocalDateTime.now());
   }
 
   @Test
@@ -71,9 +72,7 @@ class DealServiceTest {
   void shouldThrowExceptionWhenLeadNotFound() {
     when(leadRepository.findById(leadId.toString())).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() ->
-        dealService.convertLeadToDeal(leadId, new BigDecimal("1000"))
-    )
+    assertThatThrownBy(() -> dealService.convertLeadToDeal(leadId, new BigDecimal("1000")))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("Lead not found");
   }
@@ -92,9 +91,7 @@ class DealServiceTest {
   void shouldThrowExceptionWhenDealNotFound() {
     when(dealRepository.findById(dealId)).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() ->
-        dealService.transitionDealStatus(dealId, DealStatus.QUALIFIED)
-    )
+    assertThatThrownBy(() -> dealService.transitionDealStatus(dealId, DealStatus.QUALIFIED))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("Deal not found");
   }

@@ -1,12 +1,11 @@
 package ru.mentee.power.crm.service;
 
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,8 +27,8 @@ public class LeadService {
   private final LeadRepository repository;
   private final RejectionReasonsRepository rejectionReasonsRepository;
 
-  public LeadService(LeadRepository repository,
-                     RejectionReasonsRepository rejectionReasonsRepository) {
+  public LeadService(
+      LeadRepository repository, RejectionReasonsRepository rejectionReasonsRepository) {
     this.repository = repository;
     this.rejectionReasonsRepository = rejectionReasonsRepository;
     LOG.info("LeadService constructor called");
@@ -56,20 +55,16 @@ public class LeadService {
     Optional<LeadEntity> existing = repository.findByEmail(normalizedEmail);
     if (existing.isPresent()) {
       throw new IllegalStateException(
-          String.format("Lead with email '%s' already exists (ID: %s)",
-              normalizedEmail, existing.get().id().toString())
-      );
+          String.format(
+              "Lead with email '%s' already exists (ID: %s)",
+              normalizedEmail, existing.get().id().toString()));
     }
 
     Address address = new Address("Unknown", "Unknown", "00000");
     Contact contact = new Contact(normalizedEmail, "Unknown", address);
 
-    LeadEntity leadEntity = new LeadEntity(
-        UUID.randomUUID(),
-        contact,
-        company.trim(),
-        status.name()
-    );
+    LeadEntity leadEntity =
+        new LeadEntity(UUID.randomUUID(), contact, company.trim(), status.name());
 
     LeadEntity savedEntity = repository.save(leadEntity);
 
@@ -78,9 +73,7 @@ public class LeadService {
 
   public List<LeadDto> findAll() {
     List<LeadEntity> entities = repository.findAll();
-    return entities.stream()
-        .map(this::convertToDto)
-        .collect(Collectors.toList());
+    return entities.stream().map(this::convertToDto).collect(Collectors.toList());
   }
 
   public List<LeadDto> findByStatus(LeadStatus status) {
@@ -106,10 +99,11 @@ public class LeadService {
     String rejectionReasonName = null;
     if (entity.rejectionReasonId() != null && !entity.rejectionReasonId().isEmpty()) {
       LOG.info("Looking up rejection reason: {}", entity.rejectionReasonId());
-      rejectionReasonName = rejectionReasonsRepository
-          .findById(UUID.fromString(entity.rejectionReasonId()))
-          .map(r -> r.getName())
-          .orElse(null);
+      rejectionReasonName =
+          rejectionReasonsRepository
+              .findById(UUID.fromString(entity.rejectionReasonId()))
+              .map(r -> r.getName())
+              .orElse(null);
       LOG.info("Found rejection reason name: {}", rejectionReasonName);
     }
     return new LeadDto(
@@ -119,8 +113,7 @@ public class LeadService {
         entity.company(),
         LeadStatus.valueOf(entity.status()),
         entity.rejectionReasonId(),
-        rejectionReasonName
-    );
+        rejectionReasonName);
   }
 
   public LeadDto update(UUID id, String email, String phone, String company, LeadStatus status) {
@@ -129,33 +122,38 @@ public class LeadService {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
     }
 
-    LeadEntity updatedEntity = new LeadEntity(
-        id,
-        new Contact(email.trim().toLowerCase(), phone, existing.get().contact().address()),
-        company.trim(),
-        status.name(),
-        existing.get().rejectionReasonId()
-    );
+    LeadEntity updatedEntity =
+        new LeadEntity(
+            id,
+            new Contact(email.trim().toLowerCase(), phone, existing.get().contact().address()),
+            company.trim(),
+            status.name(),
+            existing.get().rejectionReasonId());
 
     repository.save(updatedEntity);
 
     return convertToDto(updatedEntity);
   }
 
-  public LeadDto updateWithRejectionReason(UUID id, String email, String phone, String company,
-                                           LeadStatus status, String rejectionReasonId) {
+  public LeadDto updateWithRejectionReason(
+      UUID id,
+      String email,
+      String phone,
+      String company,
+      LeadStatus status,
+      String rejectionReasonId) {
     Optional<LeadEntity> existing = repository.findById(id.toString());
     if (existing.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
     }
 
-    LeadEntity updatedEntity = new LeadEntity(
-        id,
-        new Contact(email.trim().toLowerCase(), phone, existing.get().contact().address()),
-        company.trim(),
-        status.name(),
-        rejectionReasonId
-    );
+    LeadEntity updatedEntity =
+        new LeadEntity(
+            id,
+            new Contact(email.trim().toLowerCase(), phone, existing.get().contact().address()),
+            company.trim(),
+            status.name(),
+            rejectionReasonId);
 
     repository.save(updatedEntity);
 
@@ -177,10 +175,11 @@ public class LeadService {
 
     if (search != null && !search.isEmpty()) {
       String lowerSearch = search.toLowerCase();
-      stream = stream.filter(lead ->
-          lead.contact().email().toLowerCase().contains(lowerSearch)
-              || lead.company().toLowerCase().contains(lowerSearch)
-      );
+      stream =
+          stream.filter(
+              lead ->
+                  lead.contact().email().toLowerCase().contains(lowerSearch)
+                      || lead.company().toLowerCase().contains(lowerSearch));
     }
 
     if (status != null && !status.isEmpty()) {

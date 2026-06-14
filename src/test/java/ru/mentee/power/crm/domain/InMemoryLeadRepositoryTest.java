@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -206,9 +205,7 @@ class InMemoryLeadRepositoryTest {
     // Given - populate with multiple leads
     for (int i = 0; i < 5; i++) {
       UUID id = UUID.randomUUID();
-      Address address = new Address(
-          "City " + i, "Street " + i, String.format("%05d", i)
-      );
+      Address address = new Address("City " + i, "Street " + i, String.format("%05d", i));
       Contact contact = new Contact("email" + i + "@test.com", "+123" + i, address);
       LeadEntity lead = new LeadEntity(id, contact, "Company " + i, "NEW");
       repository.add(lead);

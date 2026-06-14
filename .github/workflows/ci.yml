@@ -26,6 +26,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Check code formatting (Spotless)
+        run: ./gradlew --no-daemon spotlessCheck
+
       - name: Run Checkstyle analysis
         run: ./gradlew --no-daemon checkstyleMain
 
