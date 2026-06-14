@@ -1,10 +1,9 @@
 package ru.mentee.power.crm.spring.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,17 +26,18 @@ public class LeadController {
 
   private final RejectionReasonsRepository rejectionReasonsRepository;
 
-  public LeadController(LeadService leadService,
-                        RejectionReasonsRepository rejectionReasonsRepository) {
+  public LeadController(
+      LeadService leadService, RejectionReasonsRepository rejectionReasonsRepository) {
     this.leadService = leadService;
     this.rejectionReasonsRepository = rejectionReasonsRepository;
   }
 
   @GetMapping("/leads")
-  public String showLeads(@RequestParam(required = false) LeadStatus status,
-                          @RequestParam(required = false) String search,
-                          @RequestParam(required = false) String statusFilter,
-                          Model model) {
+  public String showLeads(
+      @RequestParam(required = false) LeadStatus status,
+      @RequestParam(required = false) String search,
+      @RequestParam(required = false) String statusFilter,
+      Model model) {
     List<LeadDto> leads;
 
     if (search != null && !search.isEmpty() || statusFilter != null && !statusFilter.isEmpty()) {
@@ -62,9 +62,7 @@ public class LeadController {
   }
 
   @PostMapping("/leads")
-  public String createLead(@Valid @ModelAttribute LeadDto lead,
-                           BindingResult result,
-                           Model model) {
+  public String createLead(@Valid @ModelAttribute LeadDto lead, BindingResult result, Model model) {
     if (result.hasErrors()) {
       model.addAttribute("errors", result);
       return "leads/create";
@@ -85,13 +83,13 @@ public class LeadController {
   }
 
   @PostMapping("/leads/{id}")
-  public String updateLead(@PathVariable UUID id,
-                           @Valid @ModelAttribute LeadDto lead, BindingResult result) {
+  public String updateLead(
+      @PathVariable UUID id, @Valid @ModelAttribute LeadDto lead, BindingResult result) {
     if (result.hasErrors()) {
       return "leads/edit";
     }
-    leadService.updateWithRejectionReason(id, lead.email(), lead.phone(), lead.company(),
-        lead.status(), lead.rejectionReasonId());
+    leadService.updateWithRejectionReason(
+        id, lead.email(), lead.phone(), lead.company(), lead.status(), lead.rejectionReasonId());
     return "redirect:/leads";
   }
 

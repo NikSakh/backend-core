@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.crm.domain.Address;
@@ -84,12 +83,15 @@ class LeadRepositoryTest {
 
     Set<LeadEntity> resultSet = repository.findAll();
 
-    assertThatThrownBy(() -> resultSet.add(new LeadEntity(
-        UUID.randomUUID(),
-        new Contact("Test", "test@example.com", new Address("Test", "Test", "00000")),
-        "Test Company",
-        "NEW"
-    )))
+    assertThatThrownBy(
+            () ->
+                resultSet.add(
+                    new LeadEntity(
+                        UUID.randomUUID(),
+                        new Contact(
+                            "Test", "test@example.com", new Address("Test", "Test", "00000")),
+                        "Test Company",
+                        "NEW")))
         .isInstanceOf(UnsupportedOperationException.class);
   }
 
@@ -136,10 +138,10 @@ class LeadRepositoryTest {
     double speedRatio = (double) arrayListDuration / hashSetDuration;
     System.out.println("Speed ratio: " + speedRatio + "x");
 
-    String failMessage = String.format(
-        ("HashSet должен быть быстрее ArrayList минимум в 10 раз, но соотношение: %.2fx"),
-        speedRatio
-    );
+    String failMessage =
+        String.format(
+            ("HashSet должен быть быстрее ArrayList минимум в 10 раз, но соотношение: %.2fx"),
+            speedRatio);
 
     assertThat(arrayListDuration)
         .withFailMessage(failMessage)

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +20,11 @@ import ru.mentee.power.crm.spring.Application;
 @ActiveProfiles("test")
 class LeadTransactionalServiceTest {
 
-  @Autowired
-  private LeadTransactionalService service;
+  @Autowired private LeadTransactionalService service;
 
-  @Autowired
-  private LeadJpaRepository leadRepository;
+  @Autowired private LeadJpaRepository leadRepository;
 
-  @Autowired
-  private DealJpaRepository dealRepository;
+  @Autowired private DealJpaRepository dealRepository;
 
   @BeforeEach
   void setUp() {

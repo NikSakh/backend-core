@@ -1,7 +1,5 @@
 package ru.mentee.power.crm.domain.jpa;
 
-import java.util.UUID;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import java.util.UUID;
 
 @Entity
 @Table(name = "leads")
@@ -27,11 +26,9 @@ public class LeadJpaEntity {
   @Column(nullable = false, unique = true)
   private String email;
 
-  @Column
-  private String phone;
+  @Column private String phone;
 
-  @Column
-  private String company;
+  @Column private String company;
 
   @Column(nullable = false)
   private String status;
@@ -48,8 +45,7 @@ public class LeadJpaEntity {
   @JoinColumn(name = "rejection_reason_id")
   private RejectionReasons rejectionReason;
 
-  protected LeadJpaEntity() {
-  }
+  protected LeadJpaEntity() {}
 
   public LeadJpaEntity(String email, String company, String status) {
     this.name = "Unknown";
@@ -122,5 +118,4 @@ public class LeadJpaEntity {
   public void setRejectionReason(RejectionReasons rejectionReason) {
     this.rejectionReason = rejectionReason;
   }
-
 }

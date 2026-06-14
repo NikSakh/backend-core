@@ -1,9 +1,5 @@
 package ru.mentee.power.crm.domain.jpa;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "companies")
@@ -24,14 +23,12 @@ public class Company {
   @Column(nullable = false)
   private String name;
 
-  @Column
-  private String industry;
+  @Column private String industry;
 
   @OneToMany(mappedBy = "companyRef", cascade = CascadeType.PERSIST)
   private List<LeadJpaEntity> leads = new ArrayList<>();
 
-  protected Company() {
-  }
+  protected Company() {}
 
   public Company(String name, String industry) {
     this.name = name;

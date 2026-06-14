@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 
 class DealTest {
@@ -34,13 +33,13 @@ class DealTest {
 
   @Test
   void shouldThrowExceptionWhenTransitionInvalid() {
-    Deal deal = new Deal(
-        UUID.randomUUID(),
-        UUID.randomUUID(),
-        new BigDecimal("50000"),
-        DealStatus.WON,
-        LocalDateTime.now()
-    );
+    Deal deal =
+        new Deal(
+            UUID.randomUUID(),
+            UUID.randomUUID(),
+            new BigDecimal("50000"),
+            DealStatus.WON,
+            LocalDateTime.now());
 
     assertThatThrownBy(() -> deal.transitionTo(DealStatus.NEW))
         .isInstanceOf(IllegalStateException.class)
@@ -91,10 +90,12 @@ class DealTest {
   @Test
   void shouldBeEqualWhenSameId() {
     UUID id = UUID.randomUUID();
-    Deal deal1 = new Deal(id, UUID.randomUUID(),
-        new BigDecimal("1000"), DealStatus.NEW, LocalDateTime.now());
-    Deal deal2 = new Deal(id, UUID.randomUUID(),
-        new BigDecimal("2000"), DealStatus.WON, LocalDateTime.now());
+    Deal deal1 =
+        new Deal(
+            id, UUID.randomUUID(), new BigDecimal("1000"), DealStatus.NEW, LocalDateTime.now());
+    Deal deal2 =
+        new Deal(
+            id, UUID.randomUUID(), new BigDecimal("2000"), DealStatus.WON, LocalDateTime.now());
 
     assertThat(deal1).isEqualTo(deal2);
     assertThat(deal1.hashCode()).isEqualTo(deal2.hashCode());

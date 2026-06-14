@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-
 import ru.mentee.power.crm.domain.LeadEntity;
 
 public class LeadRepository {
@@ -21,9 +20,7 @@ public class LeadRepository {
   }
 
   Optional<LeadEntity> findById(UUID id) {
-    return leads.stream()
-        .filter(lead -> lead.id().equals(id))
-        .findFirst();
+    return leads.stream().filter(lead -> lead.id().equals(id)).findFirst();
   }
 
   Optional<LeadEntity> findByEmail(String email) {

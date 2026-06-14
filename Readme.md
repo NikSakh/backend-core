@@ -1,3 +1,5 @@
+[![Java CI Pipeline](https://github.com/NikSakh/backend-core/actions/workflows/ci.yml/badge.svg)](https://github.com/NikSakh/backend-core/actions/workflows/ci.yml)
+
 ## Сравнение стеков Servlet vs Spring Boot
 
 ### Результаты интеграционного теста

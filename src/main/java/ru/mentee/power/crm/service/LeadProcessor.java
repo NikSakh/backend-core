@@ -1,7 +1,6 @@
 package ru.mentee.power.crm.service;
 
 import java.util.UUID;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +18,8 @@ public class LeadProcessor {
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void updateSingleLead(UUID id, String newEmail) {
-    LeadJpaEntity lead = repository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Lead not found"));
+    LeadJpaEntity lead =
+        repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Lead not found"));
     lead.setEmail(newEmail);
     repository.save(lead);
     throw new RuntimeException("Error in separate transaction!");

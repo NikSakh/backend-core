@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -24,8 +23,7 @@ import ru.mentee.power.crm.jparepository.RejectionReasonsRepository;
 @EnableJpaRepositories(basePackages = "ru.mentee.power.crm.jparepository")
 class RejectionReasonsTest {
 
-  @Autowired
-  private RejectionReasonsRepository repository;
+  @Autowired private RejectionReasonsRepository repository;
 
   @BeforeEach
   void setUp() {

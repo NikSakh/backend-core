@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import ru.mentee.power.crm.domain.Deal;
 import ru.mentee.power.crm.domain.DealStatus;
@@ -47,9 +46,7 @@ public class DealService {
   }
 
   public List<DealDto> getAllDeals() {
-    return dealRepository.findAll().stream()
-        .map(this::convertToDto)
-        .collect(Collectors.toList());
+    return dealRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
   }
 
   public Map<DealStatus, List<DealDto>> getDealsByStatusForKanban() {
@@ -64,7 +61,6 @@ public class DealService {
         deal.getLeadId().toString(),
         deal.getAmount(),
         deal.getStatus(),
-        deal.getCreatedAt()
-    );
+        deal.getCreatedAt());
   }
 }

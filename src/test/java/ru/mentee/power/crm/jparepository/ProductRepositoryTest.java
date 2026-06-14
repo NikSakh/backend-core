@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,7 @@ import ru.mentee.power.crm.spring.Application;
 @ContextConfiguration(classes = Application.class)
 class ProductRepositoryTest {
 
-  @Autowired
-  private ProductRepository repository;
+  @Autowired private ProductRepository repository;
 
   @BeforeEach
   void setUp() {
@@ -64,9 +62,11 @@ class ProductRepositoryTest {
   void shouldEnforceUniqueSkuConstraint() {
     repository.save(new Product("Первый", "UNIQUE-SKU", new BigDecimal("100"), true));
 
-    assertThatThrownBy(() -> {
-      repository.save(new Product("Второй", "UNIQUE-SKU", new BigDecimal("200"), true));
-      repository.flush();
-    }).isInstanceOf(DataIntegrityViolationException.class);
+    assertThatThrownBy(
+            () -> {
+              repository.save(new Product("Второй", "UNIQUE-SKU", new BigDecimal("200"), true));
+              repository.flush();
+            })
+        .isInstanceOf(DataIntegrityViolationException.class);
   }
 }

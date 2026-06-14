@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 
 class LeadTest {
@@ -53,12 +52,7 @@ class LeadTest {
   @Test
   void shouldThrowExceptionWhenContactIsNull() {
     // When & Then
-    assertThatThrownBy(() -> new LeadEntity(
-        UUID.randomUUID(),
-        null,
-        "Acme Corp",
-        "NEW"
-    ))
+    assertThatThrownBy(() -> new LeadEntity(UUID.randomUUID(), null, "Acme Corp", "NEW"))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("Contact cannot be null");
   }
@@ -70,12 +64,7 @@ class LeadTest {
     Contact contact = new Contact("test@example.com", "+123", address);
 
     // When & Then
-    assertThatThrownBy(() -> new LeadEntity(
-        UUID.randomUUID(),
-        contact,
-        "Test Company",
-        "INVALID"
-    ))
+    assertThatThrownBy(() -> new LeadEntity(UUID.randomUUID(), contact, "Test Company", "INVALID"))
         .isInstanceOf(IllegalArgumentException.class)
         .hasMessageContaining("Status must be one of:")
         .hasMessageContaining("NEW")

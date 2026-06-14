@@ -4,14 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import gg.jte.output.StringOutput;
@@ -21,6 +13,13 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,20 +32,15 @@ import ru.mentee.power.crm.service.LeadService;
 @ExtendWith(MockitoExtension.class)
 class LeadListServletTest {
 
-  @Mock
-  private HttpServletRequest mockRequest;
+  @Mock private HttpServletRequest mockRequest;
 
-  @Mock
-  private HttpServletResponse mockResponse;
+  @Mock private HttpServletResponse mockResponse;
 
-  @Mock
-  private ServletContext mockServletContext;
+  @Mock private ServletContext mockServletContext;
 
-  @Mock
-  private ServletConfig mockServletConfig;
+  @Mock private ServletConfig mockServletConfig;
 
-  @Mock
-  private LeadService mockLeadService;
+  @Mock private LeadService mockLeadService;
 
   private LeadListServlet servlet;
   private TemplateEngine templateEngine;
@@ -113,8 +107,8 @@ class LeadListServletTest {
 
   @Test
   void doGetShouldRenderTemplateWithSingleLead() throws ServletException, IOException {
-    LeadDto lead = new LeadDto("1", "test@example.com", "+123456789",
-        "Test Company", LeadStatus.NEW);
+    LeadDto lead =
+        new LeadDto("1", "test@example.com", "+123456789", "Test Company", LeadStatus.NEW);
     List<LeadDto> leads = List.of(lead);
 
     when(mockServletContext.getAttribute("leadService")).thenReturn(mockLeadService);
@@ -138,12 +132,13 @@ class LeadListServletTest {
 
   @Test
   void doGetShouldRenderTemplateWithMultipleLeads() throws ServletException, IOException {
-    LeadDto leadFirst = new LeadDto("1", "first@example.com", "+111111111",
-        "Company First", LeadStatus.NEW);
-    LeadDto leadSecond = new LeadDto("2", "second@example.com", "+222222222",
-        "Company Second", LeadStatus.QUALIFIED);
-    LeadDto leadThird = new LeadDto("3", "third@example.com", "+333333333",
-        "Company Third", LeadStatus.CONVERTED);
+    LeadDto leadFirst =
+        new LeadDto("1", "first@example.com", "+111111111", "Company First", LeadStatus.NEW);
+    LeadDto leadSecond =
+        new LeadDto(
+            "2", "second@example.com", "+222222222", "Company Second", LeadStatus.QUALIFIED);
+    LeadDto leadThird =
+        new LeadDto("3", "third@example.com", "+333333333", "Company Third", LeadStatus.CONVERTED);
     List<LeadDto> leads = List.of(leadFirst, leadSecond, leadThird);
 
     when(mockServletContext.getAttribute("leadService")).thenReturn(mockLeadService);
