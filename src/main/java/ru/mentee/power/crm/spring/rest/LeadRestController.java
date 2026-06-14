@@ -3,7 +3,6 @@ package ru.mentee.power.crm.spring.rest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,8 +31,7 @@ public class LeadRestController {
   @GetMapping("/{id}")
   public ResponseEntity<LeadDto> getLeadById(@PathVariable UUID id) {
     Optional<LeadDto> lead = leadService.findById(id);
-    return lead.map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+    return lead.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping
