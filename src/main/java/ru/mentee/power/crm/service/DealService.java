@@ -6,7 +6,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+
 import ru.mentee.power.crm.domain.Deal;
 import ru.mentee.power.crm.domain.DealStatus;
 import ru.mentee.power.crm.domain.LeadEntity;

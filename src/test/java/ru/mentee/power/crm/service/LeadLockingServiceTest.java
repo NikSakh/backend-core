@@ -6,11 +6,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+
 import ru.mentee.power.crm.domain.jpa.LeadJpaEntity;
 import ru.mentee.power.crm.jparepository.LeadJpaRepository;
 import ru.mentee.power.crm.spring.Application;

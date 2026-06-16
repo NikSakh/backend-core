@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 
 class DealTest {

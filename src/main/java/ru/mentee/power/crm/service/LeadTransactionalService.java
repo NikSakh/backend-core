@@ -3,6 +3,7 @@ package ru.mentee.power.crm.service;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
 import ru.mentee.power.crm.domain.jpa.DealJpaEntity;
 import ru.mentee.power.crm.domain.jpa.LeadJpaEntity;
 import ru.mentee.power.crm.jparepository.DealJpaRepository;

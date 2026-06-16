@@ -1,9 +1,11 @@
 package ru.mentee.power.crm.spring.controller;
 
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+
 import ru.mentee.power.crm.jparepository.RejectionReasonsRepository;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
