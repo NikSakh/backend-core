@@ -28,24 +28,24 @@ import ru.mentee.power.crm.spring.Application;
 @ContextConfiguration(classes = Application.class)
 class EmailValidationFeignClientContractTest {
 
-  private static final WireMockServer wireMockServer =
+  private static final WireMockServer WIRE_MOCK_SERVER =
       new WireMockServer(WireMockConfiguration.options().dynamicPort());
 
   @Autowired private EmailValidationFeignClient feignClient;
 
   @BeforeAll
   static void startWireMock() {
-    wireMockServer.start();
+    WIRE_MOCK_SERVER.start();
   }
 
   @AfterAll
   static void stopWireMock() {
-    wireMockServer.stop();
+    WIRE_MOCK_SERVER.stop();
   }
 
   @DynamicPropertySource
   static void configureProperties(DynamicPropertyRegistry registry) {
-    registry.add("email.validation.base-url", () -> wireMockServer.baseUrl());
+    registry.add("email.validation.base-url", () -> WIRE_MOCK_SERVER.baseUrl());
   }
 
   @Test

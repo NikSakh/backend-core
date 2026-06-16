@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -87,7 +88,8 @@ class LeadRestControllerTest {
             put("/api/leads/{id}", id)
                 .contentType("application/json")
                 .content(
-                    "{\"email\":\"updated@test.com\",\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
+                    "{\"email\":\"updated@test.com\","
+                        + "\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
         .andExpect(status().isOk());
   }
 
@@ -101,7 +103,8 @@ class LeadRestControllerTest {
             put("/api/leads/{id}", UUID.randomUUID())
                 .contentType("application/json")
                 .content(
-                    "{\"email\":\"updated@test.com\",\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
+                    "{\"email\":\"updated@test.com\","
+                        + "\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
         .andExpect(status().isNotFound());
   }
 }
