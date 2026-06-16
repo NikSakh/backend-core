@@ -21,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
+
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
 import ru.mentee.power.crm.domain.LeadEntity;
@@ -39,8 +40,7 @@ class LeadServiceTest {
   @InjectMocks private LeadService service;
 
   @BeforeEach
-  void setUp() {
-  }
+  void setUp() {}
 
   @Test
   void shouldCallRepositorySaveWhenAddingNewLead() {

@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
+
 import ru.mentee.power.crm.domain.DealStatus;
 import ru.mentee.power.crm.service.DealService;
 import ru.mentee.power.crm.service.LeadService;
@@ -30,8 +31,7 @@ class DealControllerUnitTest {
   @InjectMocks private DealController controller;
 
   @BeforeEach
-  void setUp() {
-  }
+  void setUp() {}
 
   @Test
   void shouldListDeals() {

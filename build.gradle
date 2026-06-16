@@ -180,5 +180,6 @@ spotless {
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
+        importOrder('java', 'javax', 'jakarta', 'org', 'com', 'gg', 'ru')
     }
 }
