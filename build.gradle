@@ -19,6 +19,7 @@ ext {
     tomcatVersion = '10.1.25'
     jteVersion = '3.1.15'
     springBootVersion = '3.4.1'
+    mapstructVersion = '1.6.3'
 }
 
 java {
@@ -75,6 +76,10 @@ dependencies {
     implementation 'org.liquibase:liquibase-core'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     testImplementation 'org.wiremock:wiremock-standalone:3.4.2'
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
 }
 
 jte {
