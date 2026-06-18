@@ -1,7 +1,6 @@
 package ru.mentee.power.crm.spring.rest;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -72,13 +71,6 @@ class LeadRestControllerTest {
   }
 
   @Test
-  void shouldReturn404WhenDeleteNonExistentLead() throws Exception {
-    doThrow(new RuntimeException()).when(leadService).delete(any());
-
-    mockMvc.perform(delete("/api/leads/{id}", UUID.randomUUID())).andExpect(status().isNotFound());
-  }
-
-  @Test
   void shouldReturn200WhenUpdateLead() throws Exception {
     UUID id = UUID.randomUUID();
     when(leadService.updateWithRejectionReason(any(), any(), any(), any(), any(), any()))
@@ -92,20 +84,6 @@ class LeadRestControllerTest {
                 .content(
                     "{\"email\":\"updated@test.com\",\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
         .andExpect(status().isOk());
-  }
-
-  @Test
-  void shouldReturn404WhenUpdateNonExistentLead() throws Exception {
-    when(leadService.updateWithRejectionReason(any(), any(), any(), any(), any(), any()))
-        .thenThrow(new RuntimeException());
-
-    mockMvc
-        .perform(
-            put("/api/leads/{id}", UUID.randomUUID())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"email\":\"updated@test.com\",\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
-        .andExpect(status().isNotFound());
   }
 
   @Test

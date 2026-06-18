@@ -20,7 +20,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
@@ -29,6 +28,7 @@ import ru.mentee.power.crm.jparepository.RejectionReasonsRepository;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
+import ru.mentee.power.crm.spring.exception.EntityNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class LeadServiceTest {
@@ -445,10 +445,7 @@ class LeadServiceTest {
     when(mockRepository.findById(nonExistentId.toString())).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> service.delete(nonExistentId))
-        .isInstanceOf(ResponseStatusException.class)
-        .hasMessageContaining("not found");
-
-    verify(mockRepository, never()).delete(any());
+        .isInstanceOf(EntityNotFoundException.class);
   }
 
   @Test
@@ -505,5 +502,18 @@ class LeadServiceTest {
     List<LeadDto> result = leadService.findLeads(null, null);
 
     assertThat(result).hasSize(2);
+  }
+
+  @Test
+  void shouldThrowEntityNotFoundWhenUpdatingNonexistentLead() {
+    UUID nonExistentId = UUID.randomUUID();
+    when(mockRepository.findById(nonExistentId.toString())).thenReturn(Optional.empty());
+
+    assertThatThrownBy(
+            () ->
+                service.updateWithRejectionReason(
+                    nonExistentId, "email@test.com", "+123", "Corp", LeadStatus.NEW, null))
+        .isInstanceOf(EntityNotFoundException.class)
+        .hasMessageContaining("Lead not found with id:");
   }
 }

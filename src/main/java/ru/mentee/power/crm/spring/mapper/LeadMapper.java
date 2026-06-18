@@ -13,10 +13,12 @@ public interface LeadMapper {
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "rejectionReasonId", ignore = true)
+  @Mapping(target = "rejectionReasonName", ignore = true)
   LeadDto toEntity(CreateLeadRequest request);
 
   LeadResponse toResponse(LeadDto dto);
 
   @Mapping(target = "id", ignore = true)
+  @Mapping(target = "rejectionReasonName", ignore = true)
   LeadDto toEntity(UpdateLeadRequest request);
 }

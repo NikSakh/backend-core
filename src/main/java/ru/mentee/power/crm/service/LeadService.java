@@ -10,9 +10,7 @@ import jakarta.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
@@ -21,6 +19,7 @@ import ru.mentee.power.crm.jparepository.RejectionReasonsRepository;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
+import ru.mentee.power.crm.spring.exception.EntityNotFoundException;
 
 @Service
 public class LeadService {
@@ -122,7 +121,7 @@ public class LeadService {
   public LeadDto update(UUID id, String email, String phone, String company, LeadStatus status) {
     Optional<LeadEntity> existing = repository.findById(id.toString());
     if (existing.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
+      throw new EntityNotFoundException("Lead not found with id: " + id);
     }
 
     LeadEntity updatedEntity =
@@ -147,7 +146,7 @@ public class LeadService {
       String rejectionReasonId) {
     Optional<LeadEntity> existing = repository.findById(id.toString());
     if (existing.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
+      throw new EntityNotFoundException("Lead not found with id: " + id);
     }
 
     LeadEntity updatedEntity =
@@ -166,7 +165,7 @@ public class LeadService {
   public void delete(UUID id) {
     Optional<LeadEntity> existing = repository.findById(id.toString());
     if (existing.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
+      throw new EntityNotFoundException("Lead not found with id: " + id);
     }
     repository.delete(id.toString());
   }
