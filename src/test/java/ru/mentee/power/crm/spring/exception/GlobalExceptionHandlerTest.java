@@ -49,7 +49,7 @@ class GlobalExceptionHandlerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     "{\"email\":\"\",\"company\":\"\",\"status"
-                       + "\":\"NEW\",\"firstName\":\"\",\"lastName\":\"\"}"))
+                        + "\":\"NEW\",\"firstName\":\"\",\"lastName\":\"\"}"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status").value(400))
         .andExpect(jsonPath("$.error").value("Bad Request"));

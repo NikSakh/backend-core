@@ -96,7 +96,7 @@ class LeadRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
                     "{\"email\":\" \",\"company\":\"Corp\","
-                       + "\"status\":\"NEW\",\"firstName\":\"John\",\"lastName\":\"Doe\"}"))
+                        + "\"status\":\"NEW\",\"firstName\":\"John\",\"lastName\":\"Doe\"}"))
         .andExpect(status().isBadRequest());
   }
 
@@ -106,8 +106,7 @@ class LeadRestControllerTest {
         .perform(
             post("/api/leads")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"notanemail\",\"company\":\"Corp\","
-                    + "\"status\":\"NEW\"}"))
+                .content("{\"email\":\"notanemail\",\"company\":\"Corp\"," + "\"status\":\"NEW\"}"))
         .andExpect(status().isBadRequest());
   }
 
