@@ -34,3 +34,7 @@ logging:
   level:
     org.springframework.web: DEBUG
     ru.mentee.power.crm: DEBUG
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
