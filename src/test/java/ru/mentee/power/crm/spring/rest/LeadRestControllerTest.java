@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -59,7 +60,7 @@ class LeadRestControllerTest {
     mockMvc
         .perform(
             post("/api/leads")
-                .contentType("application/json")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"new@test.com\",\"company\":\"Corp\",\"status\":\"NEW\"}"))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", "/api/leads/" + id));
@@ -87,10 +88,9 @@ class LeadRestControllerTest {
     mockMvc
         .perform(
             put("/api/leads/{id}", id)
-                .contentType("application/json")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(
-                    "{\"email\":\"updated@test.com\","
-                        + "\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
+                    "{\"email\":\"updated@test.com\",\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
         .andExpect(status().isOk());
   }
 
@@ -102,10 +102,39 @@ class LeadRestControllerTest {
     mockMvc
         .perform(
             put("/api/leads/{id}", UUID.randomUUID())
-                .contentType("application/json")
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(
-                    "{\"email\":\"updated@test.com\","
-                        + "\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
+                    "{\"email\":\"updated@test.com\",\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
         .andExpect(status().isNotFound());
+  }
+
+  @Test
+  void shouldReturn400WhenEmailIsBlank() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/leads")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\":\"\",\"company\":\"Corp\",\"status\":\"NEW\"}"))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void shouldReturn400WhenEmailIsInvalid() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/leads")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\":\"notanemail\",\"company\":\"Corp\",\"status\":\"NEW\"}"))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void shouldReturn400WhenCompanyIsBlank() throws Exception {
+    mockMvc
+        .perform(
+            post("/api/leads")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"email\":\"test@test.com\",\"company\":\"\",\"status\":\"NEW\"}"))
+        .andExpect(status().isBadRequest());
   }
 }

@@ -4,7 +4,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +28,7 @@ import ru.mentee.power.crm.spring.mapper.LeadMapper;
 
 @RestController
 @RequestMapping("/api/leads")
+@Validated
 public class LeadRestController {
 
   private final LeadService leadService;
@@ -42,7 +47,8 @@ public class LeadRestController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<LeadResponse> getLeadById(@PathVariable UUID id) {
+  public ResponseEntity<LeadResponse> getLeadById(
+      @PathVariable @NotNull(message = "ID лида обязателен") UUID id) {
     return leadService
         .findById(id)
         .map(leadMapper::toResponse)
@@ -51,7 +57,7 @@ public class LeadRestController {
   }
 
   @PostMapping
-  public ResponseEntity<LeadResponse> createLead(@RequestBody CreateLeadRequest request) {
+  public ResponseEntity<LeadResponse> createLead(@Valid @RequestBody CreateLeadRequest request) {
     LeadDto created =
         leadService.addLead(
             request.getEmail(), request.getCompany(), LeadStatus.valueOf(request.getStatus()));
@@ -61,7 +67,8 @@ public class LeadRestController {
 
   @PutMapping("/{id}")
   public ResponseEntity<LeadResponse> updateLead(
-      @PathVariable UUID id, @RequestBody UpdateLeadRequest request) {
+      @PathVariable @NotNull(message = "ID лида обязателен") UUID id,
+      @Valid @RequestBody UpdateLeadRequest request) {
     try {
       LeadDto updated =
           leadService.updateWithRejectionReason(
@@ -78,7 +85,8 @@ public class LeadRestController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteLead(@PathVariable UUID id) {
+  public ResponseEntity<Void> deleteLead(
+      @PathVariable @NotNull(message = "ID лида обязателен") UUID id) {
     try {
       leadService.delete(id);
       return ResponseEntity.noContent().build();
