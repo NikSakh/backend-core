@@ -503,4 +503,16 @@ class LeadServiceTest {
 
     assertThat(result).hasSize(2);
   }
+
+  @Test
+  void shouldThrowEntityNotFoundWhenUpdatingNonexistentLead() {
+    UUID nonExistentId = UUID.randomUUID();
+    when(mockRepository.findById(nonExistentId.toString())).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() ->
+        service.updateWithRejectionReason(nonExistentId, "email@test.com", "+123", "Corp", LeadStatus.NEW, null)
+    )
+        .isInstanceOf(EntityNotFoundException.class)
+        .hasMessageContaining("Lead not found with id:");
+  }
 }
