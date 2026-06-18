@@ -21,7 +21,8 @@ public class CreateLeadRequest {
   @NotBlank(message = "Статус обязателен")
   private String status;
 
-  public CreateLeadRequest() {}
+  public CreateLeadRequest() {
+  }
 
   public CreateLeadRequest(String email, String phone, String company, String status) {
     this.email = email;
@@ -30,35 +31,13 @@ public class CreateLeadRequest {
     this.status = status;
   }
 
-  public String getEmail() {
-    return email;
-  }
+  public String getEmail() { return email; }
+  public String getPhone() { return phone; }
+  public String getCompany() { return company; }
+  public String getStatus() { return status; }
 
-  public String getPhone() {
-    return phone;
-  }
-
-  public String getCompany() {
-    return company;
-  }
-
-  public String getStatus() {
-    return status;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
-  public void setCompany(String company) {
-    this.company = company;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
+  public void setEmail(String email) { this.email = email; }
+  public void setPhone(String phone) { this.phone = phone; }
+  public void setCompany(String company) { this.company = company; }
+  public void setStatus(String status) { this.status = status; }
 }
