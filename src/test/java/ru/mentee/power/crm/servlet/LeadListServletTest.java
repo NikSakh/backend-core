@@ -12,23 +12,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import gg.jte.output.StringOutput;
+import gg.jte.resolve.DirectoryCodeResolver;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import gg.jte.ContentType;
-import gg.jte.TemplateEngine;
-import gg.jte.output.StringOutput;
-import gg.jte.resolve.DirectoryCodeResolver;
-
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.service.LeadService;

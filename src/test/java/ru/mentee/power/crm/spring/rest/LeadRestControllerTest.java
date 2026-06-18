@@ -21,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.service.LeadService;
@@ -37,8 +36,10 @@ class LeadRestControllerTest {
 
   @Test
   void shouldReturn200WhenGetAllLeads() throws Exception {
+    String validId = UUID.randomUUID().toString();
     when(leadService.findAll())
-        .thenReturn(List.of(new LeadDto("1", "test@example.com", "+123", "Corp", LeadStatus.NEW)));
+        .thenReturn(
+            List.of(new LeadDto(validId, "test@example.com", "+123", "Corp", LeadStatus.NEW)));
 
     mockMvc.perform(get("/api/leads")).andExpect(status().isOk());
   }
@@ -82,7 +83,8 @@ class LeadRestControllerTest {
             put("/api/leads/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
-                    "{\"email\":\"updated@test.com\",\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
+                    "{\"email\":\"updated@test.com\",\"company\":"
+                        + "\"Corp\",\"status\":\"QUALIFIED\"}"))
         .andExpect(status().isOk());
   }
 
@@ -92,7 +94,9 @@ class LeadRestControllerTest {
         .perform(
             post("/api/leads")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"\",\"company\":\"Corp\",\"status\":\"NEW\"}"))
+                .content(
+                    "{\"email\":\" \",\"company\":\"Corp\","
+                        + "\"status\":\"NEW\",\"firstName\":\"John\",\"lastName\":\"Doe\"}"))
         .andExpect(status().isBadRequest());
   }
 
@@ -102,7 +106,7 @@ class LeadRestControllerTest {
         .perform(
             post("/api/leads")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"notanemail\",\"company\":\"Corp\",\"status\":\"NEW\"}"))
+                .content("{\"email\":\"notanemail\",\"company\":\"Corp\"," + "\"status\":\"NEW\"}"))
         .andExpect(status().isBadRequest());
   }
 
@@ -112,7 +116,9 @@ class LeadRestControllerTest {
         .perform(
             post("/api/leads")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"test@test.com\",\"company\":\"\",\"status\":\"NEW\"}"))
+                .content(
+                    "{\"email\":\"test@test.com\",\"company\":\"\",\"status\":\"NEW\","
+                        + "\"firstName\":\"John\",\"lastName\":\"Doe\"}"))
         .andExpect(status().isBadRequest());
   }
 }
