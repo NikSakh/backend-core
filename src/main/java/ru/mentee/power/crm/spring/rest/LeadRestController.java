@@ -39,6 +39,11 @@ public class LeadRestController {
     this.leadMapper = leadMapper;
   }
 
+  @GetMapping("/error-demo")
+  public ResponseEntity<String> errorDemo() {
+    throw new RuntimeException("Test 500 error for GlobalExceptionHandler demo");
+  }
+
   @GetMapping
   public ResponseEntity<List<LeadResponse>> getAllLeads() {
     List<LeadResponse> responses =
@@ -67,31 +72,21 @@ public class LeadRestController {
 
   @PutMapping("/{id}")
   public ResponseEntity<LeadResponse> updateLead(
-      @PathVariable @NotNull(message = "ID лида обязателен") UUID id,
-      @Valid @RequestBody UpdateLeadRequest request) {
-    try {
-      LeadDto updated =
-          leadService.updateWithRejectionReason(
-              id,
-              request.getEmail(),
-              request.getPhone(),
-              request.getCompany(),
-              LeadStatus.valueOf(request.getStatus()),
-              request.getRejectionReasonId());
-      return ResponseEntity.ok(leadMapper.toResponse(updated));
-    } catch (RuntimeException e) {
-      return ResponseEntity.notFound().build();
-    }
+      @PathVariable @NotNull UUID id, @Valid @RequestBody UpdateLeadRequest request) {
+    LeadDto updated =
+        leadService.updateWithRejectionReason(
+            id,
+            request.getEmail(),
+            request.getPhone(),
+            request.getCompany(),
+            LeadStatus.valueOf(request.getStatus()),
+            request.getRejectionReasonId());
+    return ResponseEntity.ok(leadMapper.toResponse(updated));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteLead(
-      @PathVariable @NotNull(message = "ID лида обязателен") UUID id) {
-    try {
-      leadService.delete(id);
-      return ResponseEntity.noContent().build();
-    } catch (RuntimeException e) {
-      return ResponseEntity.notFound().build();
-    }
+  public ResponseEntity<Void> deleteLead(@PathVariable @NotNull UUID id) {
+    leadService.delete(id);
+    return ResponseEntity.noContent().build();
   }
 }
