@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import ru.mentee.power.crm.domain.DealStatus;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.service.DealService;

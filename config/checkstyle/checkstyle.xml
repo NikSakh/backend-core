@@ -107,7 +107,7 @@
         <!--  WARNING: Right brace placement  -->
         <module name="RightCurly">
             <property name="severity" value="warning"/>
-            <property name="option" value="alone"/>
+            <property name="option" value="alone_or_singleline"/>
             <property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT, INSTANCE_INIT"/>
         </module>
         <!--  ==================== INDENTATION ====================  -->

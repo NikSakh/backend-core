@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-
 import ru.mentee.power.crm.domain.jpa.LeadJpaEntity;
 import ru.mentee.power.crm.spring.Application;
 

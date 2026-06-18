@@ -115,6 +115,7 @@ checkstyleMain {
     exclude 'build/generated/**'
     exclude '**/Jte*.java'
     exclude '**/jte/**'
+    exclude '**/generated/**'
 }
 
 checkstyleTest {
@@ -188,7 +189,11 @@ spotless {
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
-        importOrder('java', 'javax', 'jakarta', 'org', 'com', 'gg', 'ru')
+        importOrder(
+                'java',
+                'javax',
+                ''
+        )
     }
 }
 

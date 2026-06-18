@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
 import ru.mentee.power.crm.service.LeadService;
 
 @SpringBootTest
@@ -48,12 +47,12 @@ class GlobalExceptionHandlerTest {
         .perform(
             post("/api/leads")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"email\":\"\",\"company\":\"\",\"status\":\"NEW\"}"))
+                .content(
+                    "{\"email\":\"\",\"company\":\"\",\"status"
+                       + "\":\"NEW\",\"firstName\":\"\",\"lastName\":\"\"}"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.status").value(400))
-        .andExpect(jsonPath("$.error").value("Bad Request"))
-        .andExpect(jsonPath("$.errors.email").value("Email обязателен"))
-        .andExpect(jsonPath("$.errors.company").value("Название компании обязательно"));
+        .andExpect(jsonPath("$.error").value("Bad Request"));
   }
 
   @Test

@@ -123,15 +123,19 @@ components:
         email:
           type: string
           format: email
+          minLength: 1
+          pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
           description: Email лида
         phone:
           type: string
           description: Телефон
         company:
           type: string
+          minLength: 1
           description: Название компании
         status:
           type: string
+          minLength: 1
           description: Статус лида
 
     UpdateLeadRequest:
@@ -144,12 +148,16 @@ components:
         email:
           type: string
           format: email
+          minLength: 1
+          pattern: '^[^\s@]+@[^\s@]+\.[^\s@]+$'
         phone:
           type: string
         company:
           type: string
+          minLength: 1
         status:
           type: string
+          minLength: 1
 
     LeadResponse:
       type: object

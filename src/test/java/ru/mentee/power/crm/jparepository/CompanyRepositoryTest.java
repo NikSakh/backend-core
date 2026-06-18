@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
-
 import ru.mentee.power.crm.domain.jpa.Company;
 import ru.mentee.power.crm.domain.jpa.LeadJpaEntity;
 import ru.mentee.power.crm.spring.Application;

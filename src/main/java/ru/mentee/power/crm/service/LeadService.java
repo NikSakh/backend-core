@@ -7,11 +7,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.PostConstruct;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
 import ru.mentee.power.crm.domain.LeadEntity;

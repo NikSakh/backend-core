@@ -5,28 +5,21 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-  @Override
-  protected ResponseEntity<Object> handleMethodArgumentNotValid(
-      MethodArgumentNotValidException ex,
-      HttpHeaders headers,
-      HttpStatusCode status,
-      WebRequest request) {
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ErrorResponse> handleValidation(
+      MethodArgumentNotValidException ex, WebRequest request) {
 
     Map<String, String> fieldErrors = new HashMap<>();
     ex.getBindingResult()
@@ -58,6 +51,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleGenericException(Exception ex, WebRequest request) {
 
+    System.out.println("=== EXCEPTION TYPE: " + ex.getClass().getName());
+
     LOG.error("Unexpected error: {}", ex.getMessage(), ex);
 
     ErrorResponse body =
@@ -67,10 +62,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             "Internal server error occurred",
             request.getDescription(false).replace("uri=", ""));
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
-  }
-
-  @GetMapping("/error-demo")
-  public ResponseEntity<String> errorDemo() {
-    throw new RuntimeException("Test 500 error for GlobalExceptionHandler demo");
   }
 }

@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Repository;
-
 import ru.mentee.power.crm.domain.LeadEntity;
 
 @Repository
