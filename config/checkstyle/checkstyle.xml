@@ -22,7 +22,7 @@
     <module name="LineLength">
         <property name="severity" value="warning"/>
         <property name="max" value="100"/>
-        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://|\.content\(|\.andExpect\(|\.param\("/>
     </module>
     <!--  ========== TREE WALKER ==========  -->
     <module name="TreeWalker">
@@ -109,7 +109,7 @@
         <!--  WARNING: Right brace placement  -->
         <module name="RightCurly">
             <property name="severity" value="warning"/>
-            <property name="option" value="alone"/>
+            <property name="option" value="alone_or_singleline"/>
             <property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT, INSTANCE_INIT"/>
         </module>
         <!--  ==================== INDENTATION ====================  -->

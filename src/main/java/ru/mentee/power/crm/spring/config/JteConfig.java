@@ -1,5 +1,10 @@
 package ru.mentee.power.crm.spring.config;
 
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import gg.jte.CodeResolver;
 import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
@@ -7,10 +12,6 @@ import gg.jte.output.StringOutput;
 import gg.jte.resolve.DirectoryCodeResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.View;
