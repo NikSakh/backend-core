@@ -34,7 +34,6 @@ application {
 springBoot {
     mainClass = 'ru.mentee.power.crm.spring.Application'
 }
-
 bootRun {
     mainClass = 'ru.mentee.power.crm.spring.Application'
 }
@@ -67,6 +66,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     testRuntimeOnly 'com.h2database:h2:2.3.232'
     implementation 'org.liquibase:liquibase-core'
+    testImplementation 'org.wiremock:wiremock-standalone:3.4.2'
 }
 
 jte {
@@ -174,3 +174,6 @@ spotless {
         endWithNewline()
     }
 }
+
+
+

@@ -1,12 +1,13 @@
 package ru.mentee.power.crm.domain.jpa;
 
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.util.UUID;
 
 @Entity
 @Table(name = "rejection_reasons")
@@ -22,7 +23,8 @@ public class RejectionReasons {
   @Column(nullable = false)
   private Boolean active = true;
 
-  protected RejectionReasons() {}
+  protected RejectionReasons() {
+  }
 
   public RejectionReasons(String name) {
     this.name = name;

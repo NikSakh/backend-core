@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,8 @@ import ru.mentee.power.crm.domain.jpa.DealJpaEntity;
 import ru.mentee.power.crm.domain.jpa.LeadJpaEntity;
 import ru.mentee.power.crm.jparepository.DealJpaRepository;
 import ru.mentee.power.crm.jparepository.LeadJpaRepository;
-import ru.mentee.power.crm.spring.Application;
 
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(classes = ru.mentee.power.crm.spring.Application.class)
 @ActiveProfiles("test")
 class LeadTransactionalServiceTest {
 
@@ -94,3 +94,4 @@ class LeadTransactionalServiceTest {
     assertThat(found.getEmail()).isEqualTo("updated@test.com");
   }
 }
+

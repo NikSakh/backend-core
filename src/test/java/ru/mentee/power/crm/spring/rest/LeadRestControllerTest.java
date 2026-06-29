@@ -11,11 +11,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -23,9 +22,7 @@ import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.service.LeadService;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("test")
+@WebMvcTest(LeadRestController.class)
 class LeadRestControllerTest {
 
   @Autowired private MockMvc mockMvc;
@@ -72,7 +69,6 @@ class LeadRestControllerTest {
 
   @Test
   void shouldCreateLead() throws Exception {
-    LeadDto request = new LeadDto(null, "new@test.com", "+123", "NewCorp", LeadStatus.NEW);
     LeadDto response =
         new LeadDto(
             UUID.randomUUID().toString(), "new@test.com", "+123", "NewCorp", LeadStatus.NEW);

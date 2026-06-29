@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,12 @@ import org.springframework.test.context.ContextConfiguration;
 import ru.mentee.power.crm.domain.jpa.DealJpaEntity;
 import ru.mentee.power.crm.domain.jpa.DealProduct;
 import ru.mentee.power.crm.domain.jpa.Product;
+import ru.mentee.power.crm.jpa.JpaConfig;
 import ru.mentee.power.crm.spring.Application;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@ContextConfiguration(classes = Application.class)
+@ContextConfiguration(classes = {Application.class, JpaConfig.class})
 class DealEntityGraphTest {
 
   @Autowired private DealJpaRepository dealRepository;
@@ -81,3 +83,4 @@ class DealEntityGraphTest {
         .isEqualTo(new BigDecimal("4500"));
   }
 }
+

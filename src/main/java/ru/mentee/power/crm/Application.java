@@ -1,6 +1,7 @@
 package ru.mentee.power.crm;
 
 import java.io.File;
+
 import org.apache.catalina.Context;
 import org.apache.catalina.startup.Tomcat;
 import ru.mentee.power.crm.model.LeadStatus;
@@ -14,7 +15,7 @@ public class Application {
     System.out.println("Starting Tomcat...");
 
     LeadRepository leadRepository = new LeadRepository();
-    LeadService leadService = new LeadService(leadRepository, null);
+    LeadService leadService = new LeadService(leadRepository, null, null);
 
     leadService.addLead("john@example.com", "TechCorp", LeadStatus.NEW);
     leadService.addLead("alice@example.com", "Innovate Inc", LeadStatus.QUALIFIED);

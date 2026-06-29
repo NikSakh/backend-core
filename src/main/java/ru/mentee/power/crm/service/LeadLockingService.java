@@ -1,6 +1,7 @@
 package ru.mentee.power.crm.service;
 
 import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;

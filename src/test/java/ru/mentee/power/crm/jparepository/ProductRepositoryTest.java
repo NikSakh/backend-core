@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import ru.mentee.power.crm.domain.jpa.Product;
+import ru.mentee.power.crm.jpa.JpaConfig;
 import ru.mentee.power.crm.spring.Application;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@ContextConfiguration(classes = Application.class)
+@ContextConfiguration(classes = {Application.class, JpaConfig.class})
 class ProductRepositoryTest {
 
   @Autowired private ProductRepository repository;
@@ -70,3 +72,4 @@ class ProductRepositoryTest {
         .isInstanceOf(DataIntegrityViolationException.class);
   }
 }
+

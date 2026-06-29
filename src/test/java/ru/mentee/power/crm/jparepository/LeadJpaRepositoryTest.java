@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +14,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import ru.mentee.power.crm.domain.jpa.LeadJpaEntity;
+import ru.mentee.power.crm.jpa.JpaConfig;
 import ru.mentee.power.crm.spring.Application;
 
 @DataJpaTest
 @ActiveProfiles("test")
-@ContextConfiguration(classes = Application.class)
+@ContextConfiguration(classes = {Application.class, JpaConfig.class})
 class LeadJpaRepositoryTest {
 
   @Autowired private LeadJpaRepository repository;
@@ -126,3 +128,4 @@ class LeadJpaRepositoryTest {
     assertThat(found.get().getCompany()).isEqualTo("Corp");
   }
 }
+
