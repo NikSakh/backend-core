@@ -15,9 +15,8 @@ import ru.mentee.power.crm.domain.jpa.DealJpaEntity;
 import ru.mentee.power.crm.domain.jpa.LeadJpaEntity;
 import ru.mentee.power.crm.jparepository.DealJpaRepository;
 import ru.mentee.power.crm.jparepository.LeadJpaRepository;
-import ru.mentee.power.crm.spring.Application;
 
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(classes = ru.mentee.power.crm.spring.Application.class)
 @ActiveProfiles("test")
 class LeadTransactionalServiceTest {
 

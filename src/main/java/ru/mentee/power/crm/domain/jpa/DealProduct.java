@@ -34,7 +34,8 @@ public class DealProduct {
   @Column(name = "unit_price", precision = 15, scale = 2, nullable = false)
   private BigDecimal unitPrice;
 
-  protected DealProduct() {}
+  protected DealProduct() {
+  }
 
   public DealProduct(DealJpaEntity deal, Product product, Integer quantity, BigDecimal unitPrice) {
     this.deal = deal;

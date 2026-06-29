@@ -30,7 +30,8 @@ class DealControllerUnitTest {
   @InjectMocks private DealController controller;
 
   @BeforeEach
-  void setUp() {}
+  void setUp() {
+  }
 
   @Test
   void shouldListDeals() {

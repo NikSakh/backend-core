@@ -46,7 +46,8 @@ public class LeadJpaEntity {
   @JoinColumn(name = "rejection_reason_id")
   private RejectionReasons rejectionReason;
 
-  protected LeadJpaEntity() {}
+  protected LeadJpaEntity() {
+  }
 
   public LeadJpaEntity(String email, String company, String status) {
     this.name = "Unknown";

@@ -37,7 +37,8 @@ public class DealJpaEntity {
   @Column(nullable = false)
   private String stage;
 
-  @Column private Integer probability;
+  @Column
+  private Integer probability;
 
   @Column(name = "expected_close_date")
   private LocalDate expectedCloseDate;
@@ -48,7 +49,8 @@ public class DealJpaEntity {
   @OneToMany(mappedBy = "deal", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<DealProduct> dealProducts = new ArrayList<>();
 
-  protected DealJpaEntity() {}
+  protected DealJpaEntity() {
+  }
 
   public DealJpaEntity(String title, BigDecimal amount, String stage) {
     this.title = title;

@@ -15,7 +15,7 @@ public class Application {
     System.out.println("Starting Tomcat...");
 
     LeadRepository leadRepository = new LeadRepository();
-    LeadService leadService = new LeadService(leadRepository, null);
+    LeadService leadService = new LeadService(leadRepository, null, null);
 
     leadService.addLead("john@example.com", "TechCorp", LeadStatus.NEW);
     leadService.addLead("alice@example.com", "Innovate Inc", LeadStatus.QUALIFIED);

@@ -23,7 +23,8 @@ public class RejectionReasons {
   @Column(nullable = false)
   private Boolean active = true;
 
-  protected RejectionReasons() {}
+  protected RejectionReasons() {
+  }
 
   public RejectionReasons(String name) {
     this.name = name;

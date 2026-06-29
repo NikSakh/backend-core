@@ -24,12 +24,14 @@ public class Company {
   @Column(nullable = false)
   private String name;
 
-  @Column private String industry;
+  @Column
+  private String industry;
 
   @OneToMany(mappedBy = "companyRef", cascade = CascadeType.PERSIST)
   private List<LeadJpaEntity> leads = new ArrayList<>();
 
-  protected Company() {}
+  protected Company() {
+  }
 
   public Company(String name, String industry) {
     this.name = name;

@@ -9,7 +9,9 @@ import java.util.stream.Stream;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.mentee.power.crm.domain.Address;
 import ru.mentee.power.crm.domain.Contact;
 import ru.mentee.power.crm.domain.LeadEntity;
@@ -17,7 +19,9 @@ import ru.mentee.power.crm.jparepository.RejectionReasonsRepository;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
-import ru.mentee.power.crm.spring.exception.EntityNotFoundException;
+import ru.mentee.power.crm.spring.client.EmailValidationClient;
+import ru.mentee.power.crm.spring.client.EmailValidationException;
+import ru.mentee.power.crm.spring.client.EmailValidationResponse;
 
 @Service
 public class LeadService {
@@ -26,11 +30,15 @@ public class LeadService {
 
   private final LeadRepository repository;
   private final RejectionReasonsRepository rejectionReasonsRepository;
+  private final EmailValidationClient emailValidationClient;
 
   public LeadService(
-      LeadRepository repository, RejectionReasonsRepository rejectionReasonsRepository) {
+      LeadRepository repository,
+      RejectionReasonsRepository rejectionReasonsRepository,
+      EmailValidationClient emailValidationClient) {
     this.repository = repository;
     this.rejectionReasonsRepository = rejectionReasonsRepository;
+    this.emailValidationClient = emailValidationClient;
     LOG.info("LeadService constructor called");
   }
 
@@ -51,6 +59,18 @@ public class LeadService {
     }
 
     String normalizedEmail = email.trim().toLowerCase();
+
+    // Валидация email через внешний API
+    try {
+      EmailValidationResponse validation = emailValidationClient.validateEmail(normalizedEmail);
+      if (!validation.valid()) {
+        throw new IllegalArgumentException("Email validation failed: " + validation.reason());
+      }
+    } catch (EmailValidationException e) {
+      LOG.warn(
+          "Email validation service unavailable, proceeding without validation: {}",
+          e.getMessage());
+    }
 
     Optional<LeadEntity> existing = repository.findByEmail(normalizedEmail);
     if (existing.isPresent()) {
@@ -119,7 +139,7 @@ public class LeadService {
   public LeadDto update(UUID id, String email, String phone, String company, LeadStatus status) {
     Optional<LeadEntity> existing = repository.findById(id.toString());
     if (existing.isEmpty()) {
-      throw new EntityNotFoundException("Lead not found with id: " + id);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
     }
 
     LeadEntity updatedEntity =
@@ -144,7 +164,7 @@ public class LeadService {
       String rejectionReasonId) {
     Optional<LeadEntity> existing = repository.findById(id.toString());
     if (existing.isEmpty()) {
-      throw new EntityNotFoundException("Lead not found with id: " + id);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
     }
 
     LeadEntity updatedEntity =
@@ -163,7 +183,7 @@ public class LeadService {
   public void delete(UUID id) {
     Optional<LeadEntity> existing = repository.findById(id.toString());
     if (existing.isEmpty()) {
-      throw new EntityNotFoundException("Lead not found with id: " + id);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lead not found with id: " + id);
     }
     repository.delete(id.toString());
   }

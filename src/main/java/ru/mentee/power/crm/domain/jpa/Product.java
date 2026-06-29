@@ -38,7 +38,8 @@ public class Product {
   @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
   private List<DealProduct> dealProducts = new ArrayList<>();
 
-  protected Product() {}
+  protected Product() {
+  }
 
   public Product(String name, String sku, BigDecimal price, Boolean active) {
     this.name = name;

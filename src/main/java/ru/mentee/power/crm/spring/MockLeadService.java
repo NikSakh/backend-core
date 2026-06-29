@@ -9,13 +9,20 @@ import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
 import ru.mentee.power.crm.service.LeadService;
+import ru.mentee.power.crm.spring.client.EmailValidationClient;
+import ru.mentee.power.crm.spring.client.EmailValidationResponse;
 
 public class MockLeadService extends LeadService {
 
   private final List<LeadDto> mockLeads;
 
   public MockLeadService() {
-    super(new LeadRepository(), null);
+    super(new LeadRepository(), null, new EmailValidationClient(null, null) {
+      @Override
+      public EmailValidationResponse validateEmail(String email) {
+        return new EmailValidationResponse(email, true, "OK");
+      }
+    });
     this.mockLeads =
         new ArrayList<>(
             List.of(

@@ -11,10 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import ru.mentee.power.crm.domain.jpa.Company;
 import ru.mentee.power.crm.domain.jpa.LeadJpaEntity;
+import ru.mentee.power.crm.jpa.JpaConfig;
 import ru.mentee.power.crm.spring.Application;
 
 @Disabled("Requires PostgreSQL — run locally")
-@SpringBootTest(classes = Application.class)
+@SpringBootTest(classes = {Application.class, JpaConfig.class})
 @ActiveProfiles("dev")
 class N1DemoTest {
 
