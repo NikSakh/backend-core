@@ -76,4 +76,3 @@ class RejectionReasonsTest {
     assertThat(found.getActive()).isFalse();
   }
 }
-

@@ -80,4 +80,3 @@ class CompanyRepositoryTest {
     assertThat(foundLead.getCompanyRef().getName()).isEqualTo("VK");
   }
 }
-

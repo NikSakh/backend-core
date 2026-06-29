@@ -83,4 +83,3 @@ class DealEntityGraphTest {
         .isEqualTo(new BigDecimal("4500"));
   }
 }
-

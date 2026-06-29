@@ -32,4 +32,3 @@ class N1DemoTest {
     assertThat(found.get().getLeads()).hasSize(2);
   }
 }
-

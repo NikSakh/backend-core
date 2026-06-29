@@ -94,4 +94,3 @@ class LeadTransactionalServiceTest {
     assertThat(found.getEmail()).isEqualTo("updated@test.com");
   }
 }
-

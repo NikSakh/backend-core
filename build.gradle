@@ -168,7 +168,6 @@ spotless {
     java {
         target 'src/**/*.java'
         targetExclude 'build/**', 'jte-classes/**'
-        googleJavaFormat('1.22.0')
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()

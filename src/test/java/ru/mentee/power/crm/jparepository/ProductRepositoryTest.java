@@ -72,4 +72,3 @@ class ProductRepositoryTest {
         .isInstanceOf(DataIntegrityViolationException.class);
   }
 }
-

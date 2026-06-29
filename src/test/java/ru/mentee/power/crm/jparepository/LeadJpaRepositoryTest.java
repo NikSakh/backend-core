@@ -128,4 +128,3 @@ class LeadJpaRepositoryTest {
     assertThat(found.get().getCompany()).isEqualTo("Corp");
   }
 }
-

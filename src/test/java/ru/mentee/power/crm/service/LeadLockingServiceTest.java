@@ -99,4 +99,3 @@ class LeadLockingServiceTest {
     assertThat(found.getStatus()).isIn("CONTACTED", "QUALIFIED");
   }
 }
-
