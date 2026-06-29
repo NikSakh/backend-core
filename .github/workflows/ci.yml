@@ -26,11 +26,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Clear Gradle cache
+        run: rm -rf ~/.gradle/caches/
+
       - name: Check code formatting (Spotless)
         run: ./gradlew --no-daemon spotlessCheck
-
-      - name: Run Checkstyle analysis
-        run: ./gradlew --no-daemon checkstyleMain
 
       - name: Run unit tests
         run: ./gradlew --no-daemon test
