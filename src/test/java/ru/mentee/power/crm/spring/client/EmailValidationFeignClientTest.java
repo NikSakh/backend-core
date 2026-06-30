@@ -19,8 +19,7 @@ import org.springframework.test.context.DynamicPropertySource;
 @ActiveProfiles("test")
 class EmailValidationFeignClientContractTest {
 
-  @Autowired
-  private EmailValidationFeignClient feignClient;
+  @Autowired private EmailValidationFeignClient feignClient;
 
   @DynamicPropertySource
   static void configureProperties(DynamicPropertyRegistry registry) {
@@ -29,9 +28,12 @@ class EmailValidationFeignClientContractTest {
 
   @Test
   void shouldReturnValidWhenEmailIsCorrect() {
-    stubFor(get(urlPathEqualTo("/api/validate/email"))
-        .withQueryParam("email", equalTo("john@example.com"))
-        .willReturn(okJson("""
+    stubFor(
+        get(urlPathEqualTo("/api/validate/email"))
+            .withQueryParam("email", equalTo("john@example.com"))
+            .willReturn(
+                okJson(
+                    """
                 {"email": "john@example.com", "valid": true, "reason": "Email exists"}
                 """)));
 
@@ -43,9 +45,12 @@ class EmailValidationFeignClientContractTest {
 
   @Test
   void shouldReturnInvalidWhenEmailIsIncorrect() {
-    stubFor(get(urlPathEqualTo("/api/validate/email"))
-        .withQueryParam("email", equalTo("invalid-email"))
-        .willReturn(okJson("""
+    stubFor(
+        get(urlPathEqualTo("/api/validate/email"))
+            .withQueryParam("email", equalTo("invalid-email"))
+            .willReturn(
+                okJson(
+                    """
                 {"email": "invalid-email", "valid": false, "reason": "Invalid email format"}
                 """)));
 
@@ -57,8 +62,9 @@ class EmailValidationFeignClientContractTest {
 
   @Test
   void shouldThrowExceptionWhenExternalServiceReturns500() {
-    stubFor(get(urlPathEqualTo("/api/validate/email"))
-        .willReturn(serverError().withBody("Internal Server Error")));
+    stubFor(
+        get(urlPathEqualTo("/api/validate/email"))
+            .willReturn(serverError().withBody("Internal Server Error")));
 
     assertThatThrownBy(() -> feignClient.validateEmail("test@test.com"))
         .isInstanceOf(FeignException.class);
@@ -66,8 +72,9 @@ class EmailValidationFeignClientContractTest {
 
   @Test
   void shouldThrowExceptionWhenExternalServiceTimeouts() {
-    stubFor(get(urlPathEqualTo("/api/validate/email"))
-        .willReturn(okJson("{\"valid\": true}").withFixedDelay(2000)));
+    stubFor(
+        get(urlPathEqualTo("/api/validate/email"))
+            .willReturn(okJson("{\"valid\": true}").withFixedDelay(2000)));
 
     assertThatThrownBy(() -> feignClient.validateEmail("test@test.com"))
         .isInstanceOf(RetryableException.class);

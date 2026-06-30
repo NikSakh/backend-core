@@ -2,8 +2,10 @@ package ru.mentee.power.crm.spring.rest;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
@@ -54,5 +56,27 @@ class LeadRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"new@test.com\",\"company\":\"NewCorp\",\"status\":\"NEW\"}"))
         .andExpect(status().isCreated());
+  }
+
+  @Test
+  void shouldReturn200WhenUpdateLead() throws Exception {
+    UUID id = UUID.randomUUID();
+    LeadDto response =
+        new LeadDto(id.toString(), "updated@test.com", "+123", "Corp", LeadStatus.QUALIFIED);
+    when(leadService.updateWithRejectionReason(any(), any(), any(), any(), any(), any()))
+        .thenReturn(response);
+
+    mockMvc
+        .perform(
+            put("/api/leads/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(
+                    "{\"email\":\"updated@test.com\",\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void shouldReturn204WhenDeleteExistingLead() throws Exception {
+    mockMvc.perform(delete("/api/leads/{id}", UUID.randomUUID())).andExpect(status().isNoContent());
   }
 }
