@@ -53,6 +53,6 @@ class LeadRestControllerTest {
             post("/api/leads")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"new@test.com\",\"company\":\"NewCorp\",\"status\":\"NEW\"}"))
-        .andExpect(status().isOk());
+        .andExpect(status().isCreated());
   }
 }
