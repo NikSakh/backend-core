@@ -29,9 +29,6 @@ jobs:
       - name: Clear Gradle cache
         run: rm -rf ~/.gradle/
 
-      - name: Debug - check build.gradle for checkstyle
-        run: grep "checkstyle" build.gradle
-
       - name: Check code formatting (Spotless)
         run: ./gradlew --no-daemon spotlessCheck
 
