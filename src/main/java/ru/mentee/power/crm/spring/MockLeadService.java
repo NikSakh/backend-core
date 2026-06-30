@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.repository.LeadRepository;
@@ -17,12 +16,15 @@ public class MockLeadService extends LeadService {
   private final List<LeadDto> mockLeads;
 
   public MockLeadService() {
-    super(new LeadRepository(), null, new EmailValidationClient(null, null) {
-      @Override
-      public EmailValidationResponse validateEmail(String email) {
-        return new EmailValidationResponse(email, true, "OK");
-      }
-    });
+    super(
+        new LeadRepository(),
+        null,
+        new EmailValidationClient(null, null) {
+          @Override
+          public EmailValidationResponse validateEmail(String email) {
+            return new EmailValidationResponse(email, true, "OK");
+          }
+        });
     this.mockLeads =
         new ArrayList<>(
             List.of(

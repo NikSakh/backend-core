@@ -7,7 +7,6 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.mentee.power.crm.model.LeadDto;
@@ -24,7 +23,8 @@ class ApplicationTest {
   @BeforeEach
   void setUp() {
     emailValidationClient = mock(EmailValidationClient.class);
-    lenient().when(emailValidationClient.validateEmail(any(String.class)))
+    lenient()
+        .when(emailValidationClient.validateEmail(any(String.class)))
         .thenReturn(new EmailValidationResponse("test@test.com", true, "OK"));
   }
 
@@ -70,21 +70,21 @@ class ApplicationTest {
   @Test
   void mainMethodShouldNotThrowExceptions() {
     assertThatCode(
-        () -> {
-          Thread thread =
-              new Thread(
-                  () -> {
-                    try {
-                      Application.main(new String[] {});
-                    } catch (Exception e) {
-                      e.printStackTrace();
-                    }
-                  });
-          thread.setDaemon(true);
-          thread.start();
-          Thread.sleep(500);
-          thread.interrupt();
-        })
+            () -> {
+              Thread thread =
+                  new Thread(
+                      () -> {
+                        try {
+                          Application.main(new String[] {});
+                        } catch (Exception e) {
+                          e.printStackTrace();
+                        }
+                      });
+              thread.setDaemon(true);
+              thread.start();
+              Thread.sleep(500);
+              thread.interrupt();
+            })
         .doesNotThrowAnyException();
   }
 }

@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +43,8 @@ class LeadServiceTest {
 
   @BeforeEach
   void setUp() {
-    lenient().when(emailValidationClient.validateEmail(any(String.class)))
+    lenient()
+        .when(emailValidationClient.validateEmail(any(String.class)))
         .thenReturn(new EmailValidationResponse("test@test.com", true, "OK"));
   }
 
@@ -275,8 +275,8 @@ class LeadServiceTest {
   @Test
   void shouldReturnOnlyNewLeadsWhenFindByStatusNew() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository, rejectionReasonsRepository,
-        emailValidationClient);
+    LeadService leadService =
+        new LeadService(repository, rejectionReasonsRepository, emailValidationClient);
 
     leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
     leadService.addLead("new2@example.com", "Corp2", LeadStatus.NEW);
@@ -298,8 +298,8 @@ class LeadServiceTest {
   @Test
   void shouldReturnEmptyListWhenNoLeadsWithStatus() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository, rejectionReasonsRepository,
-        emailValidationClient);
+    LeadService leadService =
+        new LeadService(repository, rejectionReasonsRepository, emailValidationClient);
 
     leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
     leadService.addLead("contacted1@example.com", "Corp2", LeadStatus.CONTACTED);
@@ -312,8 +312,8 @@ class LeadServiceTest {
   @Test
   void shouldReturnOnlyContactedLeadsWhenFindByStatusContacted() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository, rejectionReasonsRepository,
-        emailValidationClient);
+    LeadService leadService =
+        new LeadService(repository, rejectionReasonsRepository, emailValidationClient);
 
     leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
     leadService.addLead("contacted1@example.com", "Corp2", LeadStatus.CONTACTED);
@@ -329,8 +329,8 @@ class LeadServiceTest {
   @Test
   void shouldReturnOnlyQualifiedLeadsWhenFindByStatusQualified() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository, rejectionReasonsRepository,
-        emailValidationClient);
+    LeadService leadService =
+        new LeadService(repository, rejectionReasonsRepository, emailValidationClient);
 
     leadService.addLead("new1@example.com", "Corp1", LeadStatus.NEW);
     leadService.addLead("qualified1@example.com", "Corp2", LeadStatus.QUALIFIED);
@@ -356,8 +356,7 @@ class LeadServiceTest {
 
     LeadDto updated =
         service.update(
-            existingId, "new@example.com", "+123456789", "New Company",
-            LeadStatus.QUALIFIED);
+            existingId, "new@example.com", "+123456789", "New Company", LeadStatus.QUALIFIED);
 
     assertThat(updated.id()).isEqualTo(existingId.toString());
     assertThat(updated.email()).isEqualTo("new@example.com");
@@ -404,8 +403,7 @@ class LeadServiceTest {
 
     assertThatThrownBy(
             () ->
-                service.update(nonExistentId, "new@example.com", "+123",
-                    "Company", LeadStatus.NEW))
+                service.update(nonExistentId, "new@example.com", "+123", "Company", LeadStatus.NEW))
         .isInstanceOf(RuntimeException.class)
         .hasMessageContaining("not found");
 
@@ -427,8 +425,7 @@ class LeadServiceTest {
 
     LeadDto updated =
         service.update(
-            existingId, "new@example.com", "+79991234567", "New Company",
-            LeadStatus.CONTACTED);
+            existingId, "new@example.com", "+79991234567", "New Company", LeadStatus.CONTACTED);
 
     LeadEntity savedEntity = entityCaptor.getValue();
     assertThat(savedEntity.contact().address().city()).isEqualTo("Moscow");
@@ -467,8 +464,8 @@ class LeadServiceTest {
   @Test
   void shouldFilterLeadsBySearch() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository, rejectionReasonsRepository,
-        emailValidationClient);
+    LeadService leadService =
+        new LeadService(repository, rejectionReasonsRepository, emailValidationClient);
 
     leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
     leadService.addLead("petr@example.com", "Petr Ltd", LeadStatus.NEW);
@@ -483,8 +480,8 @@ class LeadServiceTest {
   @Test
   void shouldFilterLeadsByStatus() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository, rejectionReasonsRepository,
-        emailValidationClient);
+    LeadService leadService =
+        new LeadService(repository, rejectionReasonsRepository, emailValidationClient);
 
     leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
     leadService.addLead("petr@example.com", "Petr Ltd", LeadStatus.QUALIFIED);
@@ -498,8 +495,8 @@ class LeadServiceTest {
   @Test
   void shouldCombineSearchAndStatusFilters() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository, rejectionReasonsRepository,
-        emailValidationClient);
+    LeadService leadService =
+        new LeadService(repository, rejectionReasonsRepository, emailValidationClient);
 
     leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
     leadService.addLead("ivan2@example.com", "Ivan Ltd", LeadStatus.QUALIFIED);
@@ -513,8 +510,8 @@ class LeadServiceTest {
   @Test
   void shouldReturnAllWhenNoFilters() {
     LeadRepository repository = new LeadRepository();
-    LeadService leadService = new LeadService(repository, rejectionReasonsRepository,
-        emailValidationClient);
+    LeadService leadService =
+        new LeadService(repository, rejectionReasonsRepository, emailValidationClient);
 
     leadService.addLead("ivan@example.com", "Ivan Corp", LeadStatus.NEW);
     leadService.addLead("petr@example.com", "Petr Ltd", LeadStatus.QUALIFIED);

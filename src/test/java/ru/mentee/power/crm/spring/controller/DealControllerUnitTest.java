@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,8 +29,7 @@ class DealControllerUnitTest {
   @InjectMocks private DealController controller;
 
   @BeforeEach
-  void setUp() {
-  }
+  void setUp() {}
 
   @Test
   void shouldListDeals() {
