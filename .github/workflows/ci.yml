@@ -27,7 +27,10 @@ jobs:
           java-version: '21'
 
       - name: Clear Gradle cache
-        run: rm -rf ~/.gradle/
+        run: |
+          rm -rf ~/.gradle/
+          rm -rf .gradle/
+          rm -rf build/
 
       - name: Check code formatting (Spotless)
         run: ./gradlew --no-daemon spotlessCheck
