@@ -1,13 +1,5 @@
 package ru.mentee.power.crm.domain.jpa;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,6 +8,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "deals")
@@ -37,8 +36,7 @@ public class DealJpaEntity {
   @Column(nullable = false)
   private String stage;
 
-  @Column
-  private Integer probability;
+  @Column private Integer probability;
 
   @Column(name = "expected_close_date")
   private LocalDate expectedCloseDate;
@@ -49,8 +47,7 @@ public class DealJpaEntity {
   @OneToMany(mappedBy = "deal", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<DealProduct> dealProducts = new ArrayList<>();
 
-  protected DealJpaEntity() {
-  }
+  protected DealJpaEntity() {}
 
   public DealJpaEntity(String title, BigDecimal amount, String stage) {
     this.title = title;

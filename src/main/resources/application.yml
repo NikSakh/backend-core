@@ -27,6 +27,13 @@ spring:
     default-property-inclusion: non_null
     serialization:
       write-dates-as-timestamps: false
+  cloud:
+    openfeign:
+      client:
+        config:
+          email-validation:
+            connect-timeout: 5000
+            read-timeout: 1000
 
 gg:
   jte:

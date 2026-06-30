@@ -7,5 +7,4 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EnableJpaRepositories(basePackages = "ru.mentee.power.crm.jparepository")
 @EntityScan(basePackages = "ru.mentee.power.crm.domain.jpa")
-public class JpaConfig {
-}
+public class JpaConfig {}
