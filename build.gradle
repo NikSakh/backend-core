@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-   // id 'checkstyle'
+    id 'checkstyle'
     id 'jacoco'
     id 'gg.jte.gradle' version '3.1.15'
     id 'org.springframework.boot' version '3.4.1'
@@ -67,7 +67,7 @@ dependencies {
     testRuntimeOnly 'com.h2database:h2:2.3.232'
     implementation 'org.liquibase:liquibase-core'
     testImplementation 'org.wiremock:wiremock-standalone:3.4.2'
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    checkstyle 'com.puppycrawl.tools:checkstyle:10.21.4'
 }
 
 jte {
@@ -89,22 +89,22 @@ compileJava {
     dependsOn generateJte
 }
 
-//checkstyle {
-   // toolVersion = '10.21.4'
- //   maxErrors = 0
-  //  maxWarnings = 999
-  //  configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
-//}
+checkstyle {
+    toolVersion = '10.21.4'
+    maxErrors = 0
+    maxWarnings = 999
+    configFile = file("${rootDir}/config/checkstyle/checkstyle.xml")
+}
 
-//checkstyleMain {
-   // exclude 'build/generated/**'
-   // exclude '**/Jte*.java'
-  //  exclude '**/jte/**'
-//}
+checkstyleMain {
+    exclude 'build/generated/**'
+    exclude '**/Jte*.java'
+    exclude '**/jte/**'
+}
 
-//checkstyleTest {
-    //exclude 'build/generated/**'
-//}
+checkstyleTest {
+    exclude 'build/generated/**'
+}
 
 jacoco {
     toolVersion = '0.8.12'
@@ -175,12 +175,3 @@ spotless {
         endWithNewline()
     }
 }
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2024.0.0"
-    }
-}
-
-
-
