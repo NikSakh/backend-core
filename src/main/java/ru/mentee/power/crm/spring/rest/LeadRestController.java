@@ -1,15 +1,19 @@
 package ru.mentee.power.crm.spring.rest;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.service.LeadService;
 
@@ -24,18 +28,49 @@ public class LeadRestController {
   }
 
   @GetMapping
-  public List<LeadDto> getAllLeads() {
-    return leadService.findAll();
+  public ResponseEntity<List<LeadDto>> getAllLeads() {
+    return ResponseEntity.ok(leadService.findAll());
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<LeadDto> getLeadById(@PathVariable UUID id) {
-    Optional<LeadDto> lead = leadService.findById(id);
-    return lead.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    return leadService
+        .findById(id)
+        .map(ResponseEntity::ok)
+        .orElse(ResponseEntity.notFound().build());
   }
 
   @PostMapping
-  public LeadDto createLead(@RequestBody LeadDto lead) {
-    return leadService.addLead(lead.email(), lead.company(), lead.status());
+  public ResponseEntity<LeadDto> createLead(@RequestBody LeadDto lead) {
+    LeadDto created = leadService.addLead(lead.email(), lead.company(), lead.status());
+    URI location = URI.create("/api/leads/" + created.id());
+    return ResponseEntity.created(location).body(created);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<LeadDto> updateLead(@PathVariable UUID id, @RequestBody LeadDto lead) {
+    try {
+      LeadDto updated =
+          leadService.updateWithRejectionReason(
+              id,
+              lead.email(),
+              lead.phone(),
+              lead.company(),
+              lead.status(),
+              lead.rejectionReasonId());
+      return ResponseEntity.ok(updated);
+    } catch (RuntimeException e) {
+      return ResponseEntity.notFound().build();
+    }
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteLead(@PathVariable UUID id) {
+    try {
+      leadService.delete(id);
+      return ResponseEntity.noContent().build();
+    } catch (RuntimeException e) {
+      return ResponseEntity.notFound().build();
+    }
   }
 }
