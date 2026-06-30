@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -44,7 +43,9 @@ class LeadRestControllerTest {
 
   @Test
   void shouldCreateLead() throws Exception {
-    LeadDto response = new LeadDto(UUID.randomUUID().toString(), "new@test.com", "+123", "NewCorp", LeadStatus.NEW);
+    LeadDto response =
+        new LeadDto(
+            UUID.randomUUID().toString(), "new@test.com", "+123", "NewCorp", LeadStatus.NEW);
     when(leadService.addLead(any(), any(), any())).thenReturn(response);
 
     mockMvc
