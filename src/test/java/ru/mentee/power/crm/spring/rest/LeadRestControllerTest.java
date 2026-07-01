@@ -20,6 +20,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.service.LeadService;
+import ru.mentee.power.crm.spring.dto.CreateLeadRequest;
+import ru.mentee.power.crm.spring.dto.LeadResponse;
+import ru.mentee.power.crm.spring.dto.UpdateLeadRequest;
+import ru.mentee.power.crm.spring.mapper.LeadMapper;
 
 @WebMvcTest(LeadRestController.class)
 class LeadRestControllerTest {
@@ -28,10 +32,14 @@ class LeadRestControllerTest {
 
   @MockitoBean private LeadService leadService;
 
+  @MockitoBean private LeadMapper leadMapper;
+
   @Test
   void shouldReturn200WhenGetAllLeads() throws Exception {
-    when(leadService.findAll())
-        .thenReturn(List.of(new LeadDto("1", "test@example.com", "+123", "Corp", LeadStatus.NEW)));
+    LeadDto dto = new LeadDto("1", "test@example.com", "+123", "Corp", LeadStatus.NEW);
+    LeadResponse response = new LeadResponse(UUID.randomUUID(), "test@example.com", "+123", "Corp", "NEW");
+    when(leadService.findAll()).thenReturn(List.of(dto));
+    when(leadMapper.toResponse(dto)).thenReturn(response);
 
     mockMvc.perform(get("/api/leads")).andExpect(status().isOk());
   }
@@ -45,10 +53,13 @@ class LeadRestControllerTest {
 
   @Test
   void shouldCreateLead() throws Exception {
-    LeadDto response =
-        new LeadDto(
-            UUID.randomUUID().toString(), "new@test.com", "+123", "NewCorp", LeadStatus.NEW);
-    when(leadService.addLead(any(), any(), any())).thenReturn(response);
+    LeadDto entity = new LeadDto(null, "new@test.com", "+123", "NewCorp", LeadStatus.NEW);
+    LeadDto created = new LeadDto(UUID.randomUUID().toString(), "new@test.com", "+123", "NewCorp", LeadStatus.NEW);
+    LeadResponse response = new LeadResponse(UUID.fromString(created.id()), "new@test.com", "+123", "NewCorp", "NEW");
+
+    when(leadMapper.toEntity(any(CreateLeadRequest.class))).thenReturn(entity);
+    when(leadService.addLead(any(), any(), any())).thenReturn(created);
+    when(leadMapper.toResponse(created)).thenReturn(response);
 
     mockMvc
         .perform(
@@ -61,17 +72,19 @@ class LeadRestControllerTest {
   @Test
   void shouldReturn200WhenUpdateLead() throws Exception {
     UUID id = UUID.randomUUID();
-    LeadDto response =
-        new LeadDto(id.toString(), "updated@test.com", "+123", "Corp", LeadStatus.QUALIFIED);
-    when(leadService.updateWithRejectionReason(any(), any(), any(), any(), any(), any()))
-        .thenReturn(response);
+    LeadDto existing = new LeadDto(id.toString(), "old@test.com", "+111", "OldCorp", LeadStatus.NEW);
+    LeadDto updated = new LeadDto(id.toString(), "updated@test.com", "+123", "Corp", LeadStatus.QUALIFIED);
+    LeadResponse response = new LeadResponse(id, "updated@test.com", "+123", "Corp", "QUALIFIED");
+
+    when(leadService.findById(id)).thenReturn(Optional.of(existing));
+    when(leadService.updateWithRejectionReason(any(), any(), any(), any(), any(), any())).thenReturn(updated);
+    when(leadMapper.toResponse(updated)).thenReturn(response);
 
     mockMvc
         .perform(
             put("/api/leads/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"email\":\"updated@test.com\",\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
+                .content("{\"email\":\"updated@test.com\",\"company\":\"Corp\",\"status\":\"QUALIFIED\"}"))
         .andExpect(status().isOk());
   }
 

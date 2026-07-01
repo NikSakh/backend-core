@@ -19,6 +19,9 @@ ext {
     tomcatVersion = '10.1.25'
     jteVersion = '3.1.15'
     springBootVersion = '3.4.1'
+    mapstructVersion = '1.6.3'
+    lombokVersion = '1.18.36'
+    lombokMapstructBindingVersion = '0.2.0'
 }
 
 java {
@@ -67,9 +70,19 @@ dependencies {
     testRuntimeOnly 'com.h2database:h2:2.3.232'
     implementation 'org.liquibase:liquibase-core'
     testImplementation 'org.wiremock:wiremock-standalone:3.4.2'
-    checkstyle 'com.puppycrawl.tools:checkstyle:10.21.4'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    implementation "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += [
+            '-Amapstruct.defaultComponentModel=spring',
+            '-Amapstruct.unmappedTargetPolicy=ERROR'
+    ]
 }
 
 jte {
