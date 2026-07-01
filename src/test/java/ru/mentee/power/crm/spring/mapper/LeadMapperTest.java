@@ -14,8 +14,7 @@ import ru.mentee.power.crm.spring.dto.LeadResponse;
 @SpringBootTest
 class LeadMapperTest {
 
-  @Autowired
-  private LeadMapper leadMapper;
+  @Autowired private LeadMapper leadMapper;
 
   @Test
   void shouldMapCreateRequestToEntity() {

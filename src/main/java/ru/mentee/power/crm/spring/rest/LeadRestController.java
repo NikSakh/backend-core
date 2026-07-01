@@ -33,9 +33,8 @@ public class LeadRestController {
 
   @GetMapping
   public ResponseEntity<List<LeadResponse>> getAllLeads() {
-    List<LeadResponse> responses = leadService.findAll().stream()
-        .map(leadMapper::toResponse)
-        .toList();
+    List<LeadResponse> responses =
+        leadService.findAll().stream().map(leadMapper::toResponse).toList();
     return ResponseEntity.ok(responses);
   }
 
@@ -57,12 +56,19 @@ public class LeadRestController {
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<LeadResponse> updateLead(@PathVariable UUID id, @RequestBody UpdateLeadRequest request) {
+  public ResponseEntity<LeadResponse> updateLead(
+      @PathVariable UUID id, @RequestBody UpdateLeadRequest request) {
     try {
       LeadDto lead = leadService.findById(id).orElseThrow();
       leadMapper.updateEntity(request, lead);
-      LeadDto updated = leadService.updateWithRejectionReason(
-          id, lead.email(), lead.phone(), lead.company(), lead.status(), lead.rejectionReasonId());
+      LeadDto updated =
+          leadService.updateWithRejectionReason(
+              id,
+              lead.email(),
+              lead.phone(),
+              lead.company(),
+              lead.status(),
+              lead.rejectionReasonId());
       return ResponseEntity.ok(leadMapper.toResponse(updated));
     } catch (RuntimeException e) {
       return ResponseEntity.notFound().build();
