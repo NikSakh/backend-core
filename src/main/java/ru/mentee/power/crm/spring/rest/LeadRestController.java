@@ -1,9 +1,11 @@
 package ru.mentee.power.crm.spring.rest;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +23,7 @@ import ru.mentee.power.crm.spring.mapper.LeadMapper;
 
 @RestController
 @RequestMapping("/api/leads")
+@Validated
 public class LeadRestController {
 
   private final LeadService leadService;
@@ -48,7 +51,7 @@ public class LeadRestController {
   }
 
   @PostMapping
-  public ResponseEntity<LeadResponse> createLead(@RequestBody CreateLeadRequest request) {
+  public ResponseEntity<LeadResponse> createLead(@Valid @RequestBody CreateLeadRequest request) {
     LeadDto entity = leadMapper.toEntity(request);
     LeadDto created = leadService.addLead(entity.email(), entity.company(), entity.status());
     URI location = URI.create("/api/leads/" + created.id());
