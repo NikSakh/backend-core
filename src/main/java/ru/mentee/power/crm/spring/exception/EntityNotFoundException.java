@@ -17,6 +17,11 @@ public class EntityNotFoundException extends BusinessException {
     this.entityId = null;
   }
 
-  public String getEntityType() { return entityType; }
-  public String getEntityId() { return entityId; }
+  public String getEntityType() {
+    return entityType;
+  }
+
+  public String getEntityId() {
+    return entityId;
+  }
 }
