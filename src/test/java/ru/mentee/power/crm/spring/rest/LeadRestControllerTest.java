@@ -20,8 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.model.LeadStatus;
 import ru.mentee.power.crm.service.LeadService;
-import ru.mentee.power.crm.spring.dto.CreateLeadRequest;
-import ru.mentee.power.crm.spring.dto.LeadResponse;
+import ru.mentee.power.crm.spring.dto.generated.CreateLeadRequest;
+import ru.mentee.power.crm.spring.dto.generated.LeadResponse;
 import ru.mentee.power.crm.spring.mapper.LeadMapper;
 
 @WebMvcTest(LeadRestController.class)
@@ -36,8 +36,12 @@ class LeadRestControllerTest {
   @Test
   void shouldReturn200WhenGetAllLeads() throws Exception {
     LeadDto dto = new LeadDto("1", "test@example.com", "+123", "Corp", LeadStatus.NEW);
-    LeadResponse response =
-        new LeadResponse(UUID.randomUUID(), "test@example.com", "+123", "Corp", "NEW");
+    LeadResponse response = new LeadResponse();
+    response.setId(UUID.randomUUID());
+    response.setEmail("test@example.com");
+    response.setPhone("+123");
+    response.setCompany("Corp");
+    response.setStatus("NEW");
     when(leadService.findAll()).thenReturn(List.of(dto));
     when(leadMapper.toResponse(dto)).thenReturn(response);
 
@@ -57,8 +61,12 @@ class LeadRestControllerTest {
     LeadDto created =
         new LeadDto(
             UUID.randomUUID().toString(), "new@test.com", "+123", "NewCorp", LeadStatus.NEW);
-    LeadResponse response =
-        new LeadResponse(UUID.fromString(created.id()), "new@test.com", "+123", "NewCorp", "NEW");
+    LeadResponse response = new LeadResponse();
+    response.setId(UUID.fromString(created.id()));
+    response.setEmail("new@test.com");
+    response.setPhone("+123");
+    response.setCompany("NewCorp");
+    response.setStatus("NEW");
 
     when(leadMapper.toEntity(any(CreateLeadRequest.class))).thenReturn(entity);
     when(leadService.addLead(any(), any(), any())).thenReturn(created);
@@ -79,7 +87,12 @@ class LeadRestControllerTest {
         new LeadDto(id.toString(), "old@test.com", "+111", "OldCorp", LeadStatus.NEW);
     LeadDto updated =
         new LeadDto(id.toString(), "updated@test.com", "+123", "Corp", LeadStatus.QUALIFIED);
-    LeadResponse response = new LeadResponse(id, "updated@test.com", "+123", "Corp", "QUALIFIED");
+    LeadResponse response = new LeadResponse();
+    response.setId(id);
+    response.setEmail("updated@test.com");
+    response.setPhone("+123");
+    response.setCompany("Corp");
+    response.setStatus("QUALIFIED");
 
     when(leadService.findById(id)).thenReturn(Optional.of(existing));
     when(leadService.updateWithRejectionReason(any(), any(), any(), any(), any(), any()))

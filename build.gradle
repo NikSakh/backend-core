@@ -7,6 +7,7 @@ plugins {
     id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'com.diffplug.spotless' version '6.25.0'
+    id 'org.openapi.generator' version '7.1.0'
 }
 
 group = 'ru.mentee.power'
@@ -22,6 +23,7 @@ ext {
     mapstructVersion = '1.6.3'
     lombokVersion = '1.18.36'
     lombokMapstructBindingVersion = '0.2.0'
+    springdocVersion = '2.3.0'
 }
 
 java {
@@ -76,6 +78,8 @@ dependencies {
     implementation "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
     implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -169,6 +173,9 @@ jacocoTestCoverageVerification {
                         '**/HelloController.class',
                         '**/web/**',
                         '**/generated/**',
+                        '**/spring/dto/generated/**',
+                        '**/spring/rest/generated/**',
+                        '**/spring/dto/**',
                         '**/core/**',
                         '**/domain/jpa/**'
                 ])
@@ -196,3 +203,28 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:2024.0.0"
     }
 }
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "${rootProject.projectDir}/src/main/resources/api/api-spec.yaml".replace('\\', '/')
+    outputDir = "${buildDir}/generated".replace('\\', '/')
+    apiPackage = "ru.mentee.power.crm.spring.rest.generated"
+    modelPackage = "ru.mentee.power.crm.spring.dto.generated"
+    configOptions = [
+            interfaceOnly: "true",
+            useTags: "true",
+            dateLibrary: "java8",
+            useSpringBoot3: "true",
+            documentationProvider: "none"
+    ]
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "${buildDir}/generated/src/main/java"
+        }
+    }
+}
+
+compileJava.dependsOn tasks.openApiGenerate
