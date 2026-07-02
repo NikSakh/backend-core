@@ -2,7 +2,6 @@ package ru.mentee.power.crm.spring.rest.fixed;
 
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +23,8 @@ public class InviteeController {
   }
 
   @GetMapping
-  public ResponseEntity<Page<InviteeResponse>> getInvitees(@PageableDefault(size = 20) Pageable pageable) {
+  public ResponseEntity<Page<InviteeResponse>> getInvitees(
+      @PageableDefault(size = 20) Pageable pageable) {
     Page<InviteeResponse> page = inviteeService.getAll(pageable);
     return ResponseEntity.ok(page);
   }
@@ -43,7 +43,8 @@ public class InviteeController {
   }
 
   @PutMapping("/{id}/status")
-  public ResponseEntity<InviteeResponse> updateStatus(@PathVariable UUID id, @Valid @RequestBody UpdateStatusRequest request) {
+  public ResponseEntity<InviteeResponse> updateStatus(
+      @PathVariable UUID id, @Valid @RequestBody UpdateStatusRequest request) {
     InviteeResponse updated = inviteeService.updateStatus(id, request.status());
     return ResponseEntity.ok(updated);
   }

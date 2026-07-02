@@ -1,24 +1,22 @@
 package ru.mentee.power.crm.spring.rest.problematic;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.mentee.power.crm.domain.Invitee;
 import ru.mentee.power.crm.repository.InviteeRepository;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 /**
- * ЗАДАНИЕ: Найдите все проблемы в этом контроллере используя чек-лист.
- * Ожидается найти минимум 10 проблем из разных категорий.
+ * ЗАДАНИЕ: Найдите все проблемы в этом контроллере используя чек-лист. Ожидается найти минимум 10
+ * проблем из разных категорий.
  */
 @RestController
 public class InviteeController {
 
-  @Autowired
-  InviteeRepository repository;
+  @Autowired InviteeRepository repository;
 
   @PostMapping("/getInvitees")
   public List<Invitee> getInvitees() {
