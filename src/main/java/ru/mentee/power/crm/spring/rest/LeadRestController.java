@@ -5,26 +5,17 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.service.LeadService;
-import ru.mentee.power.crm.spring.dto.CreateLeadRequest;
-import ru.mentee.power.crm.spring.dto.LeadResponse;
-import ru.mentee.power.crm.spring.dto.UpdateLeadRequest;
+import ru.mentee.power.crm.spring.dto.generated.CreateLeadRequest;
+import ru.mentee.power.crm.spring.dto.generated.LeadResponse;
+import ru.mentee.power.crm.spring.dto.generated.UpdateLeadRequest;
 import ru.mentee.power.crm.spring.mapper.LeadMapper;
+import ru.mentee.power.crm.spring.rest.generated.LeadManagementApi;
 
 @RestController
-@RequestMapping("/api/leads")
-@Validated
-public class LeadRestController {
+public class LeadRestController implements LeadManagementApi {
 
   private final LeadService leadService;
   private final LeadMapper leadMapper;
@@ -34,15 +25,15 @@ public class LeadRestController {
     this.leadMapper = leadMapper;
   }
 
-  @GetMapping
-  public ResponseEntity<List<LeadResponse>> getAllLeads() {
+  @Override
+  public ResponseEntity<List<LeadResponse>> getLeads() {
     List<LeadResponse> responses =
         leadService.findAll().stream().map(leadMapper::toResponse).toList();
     return ResponseEntity.ok(responses);
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<LeadResponse> getLeadById(@PathVariable UUID id) {
+  @Override
+  public ResponseEntity<LeadResponse> getLeadById(UUID id) {
     return leadService
         .findById(id)
         .map(leadMapper::toResponse)
@@ -50,17 +41,16 @@ public class LeadRestController {
         .orElse(ResponseEntity.notFound().build());
   }
 
-  @PostMapping
-  public ResponseEntity<LeadResponse> createLead(@Valid @RequestBody CreateLeadRequest request) {
+  @Override
+  public ResponseEntity<LeadResponse> createLead(@Valid CreateLeadRequest request) {
     LeadDto entity = leadMapper.toEntity(request);
     LeadDto created = leadService.addLead(entity.email(), entity.company(), entity.status());
     URI location = URI.create("/api/leads/" + created.id());
     return ResponseEntity.created(location).body(leadMapper.toResponse(created));
   }
 
-  @PutMapping("/{id}")
-  public ResponseEntity<LeadResponse> updateLead(
-      @PathVariable UUID id, @RequestBody UpdateLeadRequest request) {
+  @Override
+  public ResponseEntity<LeadResponse> updateLead(UUID id, UpdateLeadRequest request) {
     try {
       LeadDto lead = leadService.findById(id).orElseThrow();
       leadMapper.updateEntity(request, lead);
@@ -78,8 +68,8 @@ public class LeadRestController {
     }
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteLead(@PathVariable UUID id) {
+  @Override
+  public ResponseEntity<Void> deleteLead(UUID id) {
     try {
       leadService.delete(id);
       return ResponseEntity.noContent().build();
