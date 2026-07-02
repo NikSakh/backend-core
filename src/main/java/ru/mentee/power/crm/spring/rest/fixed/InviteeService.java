@@ -3,11 +3,9 @@ package ru.mentee.power.crm.spring.rest.fixed;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import ru.mentee.power.crm.spring.rest.fixed.dto.CreateInviteeRequest;
 import ru.mentee.power.crm.spring.rest.fixed.dto.InviteeResponse;
 
-@Service
 public class InviteeService {
 
   public Page<InviteeResponse> getAll(Pageable pageable) {
