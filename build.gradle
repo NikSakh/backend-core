@@ -224,7 +224,10 @@ openApiGenerate {
 sourceSets {
     main {
         java {
+            srcDir("build/generated/sources/jte/main")
             srcDir "${buildDir}/generated/src/main/java"
+            exclude '**/problematic/**'
+            exclude '**/fixed/**'
         }
     }
 }
