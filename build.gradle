@@ -119,10 +119,12 @@ checkstyleMain {
     exclude 'build/generated/**'
     exclude '**/Jte*.java'
     exclude '**/jte/**'
+    exclude '**/generated/**'
 }
 
 checkstyleTest {
     exclude 'build/generated/**'
+    exclude '**/generated/**'
 }
 
 jacoco {
