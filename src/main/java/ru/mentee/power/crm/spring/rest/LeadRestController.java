@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.service.LeadService;
+import ru.mentee.power.crm.spring.exception.EntityNotFoundException;
 
 @RestController
 @RequestMapping("/api/leads")
@@ -35,7 +36,7 @@ public class LeadRestController {
     return leadService
         .findById(id)
         .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+        .orElseThrow(() -> new EntityNotFoundException("Lead", id.toString()));
   }
 
   @PostMapping
