@@ -26,6 +26,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Debug build.gradle
+        run: head -5 build.gradle
+
       - name: Clear Gradle cache
         run: |
           rm -rf ~/.gradle/
@@ -48,4 +51,4 @@ jobs:
         run: ./gradlew --no-daemon clean jacocoTestCoverageVerification
 
       - name: Build project
-        run: ./gradlew --no-daemon --rerun-tasks build
+        run: ./gradlew --no-daemon build
