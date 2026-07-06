@@ -43,6 +43,10 @@ paths:
                 $ref: '#/components/schemas/LeadResponse'
         '400':
           description: Ошибка валидации
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 
   /api/leads/{id}:
     get:
@@ -66,6 +70,10 @@ paths:
                 $ref: '#/components/schemas/LeadResponse'
         '404':
           description: Лид не найден
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
     put:
       operationId: updateLead
       summary: Обновить существующего лида
@@ -93,6 +101,10 @@ paths:
                 $ref: '#/components/schemas/LeadResponse'
         '404':
           description: Лид не найден
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
     delete:
       operationId: deleteLead
       summary: Удалить лида
@@ -110,6 +122,10 @@ paths:
           description: Лид успешно удалён
         '404':
           description: Лид не найден
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetail'
 
 components:
   schemas:
@@ -174,3 +190,22 @@ components:
           type: string
         status:
           type: string
+
+    ProblemDetail:
+      type: object
+      properties:
+        type:
+          type: string
+          description: URI идентифицирующий тип проблемы
+        title:
+          type: string
+          description: Краткое описание проблемы
+        status:
+          type: integer
+          description: HTTP статус код
+        detail:
+          type: string
+          description: Детальное описание проблемы
+        instance:
+          type: string
+          description: URI запроса вызвавшего ошибку
