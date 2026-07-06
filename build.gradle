@@ -82,13 +82,6 @@ dependencies {
     implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs += [
-            '-Amapstruct.defaultComponentModel=spring',
-            '-Amapstruct.unmappedTargetPolicy=ERROR'
-    ]
-}
-
 jte {
     sourceDirectory.set(file("src/main/jte").toPath())
     targetDirectory.set(file("build/generated/sources/jte/main").toPath())
@@ -100,6 +93,9 @@ sourceSets {
     main {
         java {
             srcDir("build/generated/sources/jte/main")
+            srcDir "${buildDir}/generated/src/main/java"
+            exclude '**/problematic/**'
+            exclude '**/fixed/**'
         }
     }
 }
@@ -219,17 +215,6 @@ openApiGenerate {
             useSpringBoot3: "true",
             documentationProvider: "none"
     ]
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir("build/generated/sources/jte/main")
-            srcDir "${buildDir}/generated/src/main/java"
-            exclude '**/problematic/**'
-            exclude '**/fixed/**'
-        }
-    }
 }
 
 compileJava.dependsOn tasks.openApiGenerate

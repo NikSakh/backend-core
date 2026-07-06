@@ -3,12 +3,13 @@ package ru.mentee.power.crm.spring.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.spring.dto.generated.CreateLeadRequest;
 import ru.mentee.power.crm.spring.dto.generated.LeadResponse;
 import ru.mentee.power.crm.spring.dto.generated.UpdateLeadRequest;
 
-@Mapper
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface LeadMapper {
 
   @Mapping(target = "id", ignore = true)
