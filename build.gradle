@@ -7,6 +7,7 @@ plugins {
     id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'com.diffplug.spotless' version '6.25.0'
+    id 'org.openapi.generator' version '7.1.0'
 }
 
 group = 'ru.mentee.power'
@@ -19,6 +20,10 @@ ext {
     tomcatVersion = '10.1.25'
     jteVersion = '3.1.15'
     springBootVersion = '3.4.1'
+    mapstructVersion = '1.6.3'
+    lombokVersion = '1.18.36'
+    lombokMapstructBindingVersion = '0.2.0'
+    springdocVersion = '2.3.0'
 }
 
 java {
@@ -68,6 +73,20 @@ dependencies {
     implementation 'org.liquibase:liquibase-core'
     testImplementation 'org.wiremock:wiremock-standalone:3.4.2'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    implementation "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${springdocVersion}"
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.6'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += [
+            '-Amapstruct.defaultComponentModel=spring',
+            '-Amapstruct.unmappedTargetPolicy=ERROR'
+    ]
 }
 
 jte {
@@ -100,10 +119,12 @@ checkstyleMain {
     exclude 'build/generated/**'
     exclude '**/Jte*.java'
     exclude '**/jte/**'
+    exclude '**/generated/**'
 }
 
 checkstyleTest {
     exclude 'build/generated/**'
+    exclude '**/generated/**'
 }
 
 jacoco {
@@ -154,6 +175,9 @@ jacocoTestCoverageVerification {
                         '**/HelloController.class',
                         '**/web/**',
                         '**/generated/**',
+                        '**/spring/dto/generated/**',
+                        '**/spring/rest/generated/**',
+                        '**/spring/dto/**',
                         '**/core/**',
                         '**/domain/jpa/**'
                 ])
@@ -181,3 +205,31 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:2024.0.0"
     }
 }
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "${rootProject.projectDir}/src/main/resources/api/api-spec.yaml".replace('\\', '/')
+    outputDir = "${buildDir}/generated".replace('\\', '/')
+    apiPackage = "ru.mentee.power.crm.spring.rest.generated"
+    modelPackage = "ru.mentee.power.crm.spring.dto.generated"
+    configOptions = [
+            interfaceOnly: "true",
+            useTags: "true",
+            dateLibrary: "java8",
+            useSpringBoot3: "true",
+            documentationProvider: "none"
+    ]
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir("build/generated/sources/jte/main")
+            srcDir "${buildDir}/generated/src/main/java"
+            exclude '**/problematic/**'
+            exclude '**/fixed/**'
+        }
+    }
+}
+
+compileJava.dependsOn tasks.openApiGenerate
