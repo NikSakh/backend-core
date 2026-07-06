@@ -8,11 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import ru.mentee.power.crm.model.LeadDto;
 import ru.mentee.power.crm.service.LeadService;
-import ru.mentee.power.crm.spring.dto.generated.CreateLeadRequest;
-import ru.mentee.power.crm.spring.dto.generated.LeadResponse;
-import ru.mentee.power.crm.spring.dto.generated.UpdateLeadRequest;
-import ru.mentee.power.crm.spring.mapper.LeadMapper;
-import ru.mentee.power.crm.spring.rest.generated.LeadManagementApi;
+import ru.mentee.power.crm.spring.exception.EntityNotFoundException;
 
 @RestController
 public class LeadRestController implements LeadManagementApi {
@@ -38,7 +34,7 @@ public class LeadRestController implements LeadManagementApi {
         .findById(id)
         .map(leadMapper::toResponse)
         .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+        .orElseThrow(() -> new EntityNotFoundException("Lead", id.toString()));
   }
 
   @Override
