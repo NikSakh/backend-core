@@ -29,6 +29,14 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
+      - name: Show git log
+        run: |
+          git log --oneline -1
+          echo "---"
+          ls -la build.gradle
+          echo "---"
+          head -10 build.gradle
+
       - name: Debug build.gradle
         run: grep "openapi" build.gradle || echo "openapi NOT found"
 
