@@ -17,8 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          clean: true
-          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set executable permissions for Gradle Wrapper
         run: chmod +x gradlew
@@ -29,22 +28,8 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Show git log
-        run: |
-          git log --oneline -1
-          echo "---"
-          ls -la build.gradle
-          echo "---"
-          head -10 build.gradle
-
-      - name: Debug build.gradle
-        run: grep "openapi" build.gradle || echo "openapi NOT found"
-
       - name: Clear Gradle cache
-        run: |
-          rm -rf ~/.gradle/
-          rm -rf .gradle/
-          rm -rf build/
+        run: rm -rf ~/.gradle/
 
       - name: Check code formatting (Spotless)
         run: ./gradlew --no-daemon spotlessCheck
